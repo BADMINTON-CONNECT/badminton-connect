@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BadmintonConnect</string>
+    <string name="imageButtonProfile">ImageButtonProfile</string>
+    <string name="imageButtonBooking">ImageButtonBooking</string>
+    <string name="imageButtonPlayers">ImageButtonPlayers</string>
+    <string name="BookingActivity">BookingActivity</string>
+    <string name="PlayersActivity">PlayersActivity</string>
+    <string name="ProfileActivity">ProfileActivity</string>
 </resources>
