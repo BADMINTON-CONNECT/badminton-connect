@@ -7,48 +7,61 @@
     tools:context=".HomePageActivity">
 
     <ImageButton
+        android:id="@+id/imageButtonPlayers"
+        android:layout_width="109dp"
+        android:layout_height="109dp"
+        android:layout_marginBottom="84dp"
+        android:adjustViewBounds="true"
+        android:background="#0000"
+        android:contentDescription="TODO"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.125"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/player" />
+
+    <ImageButton
         android:id="@+id/imageButtonProfile"
         android:layout_width="113dp"
         android:layout_height="113dp"
         android:layout_marginTop="128dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageButtonBooking"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.114"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/profile"
-        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:background="#0000"
-        android:contentDescription="TODO" />
+        android:contentDescription="TODO"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/imageButtonBooking"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.127"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.748"
+        app:srcCompat="@drawable/profile" />
 
     <ImageButton
         android:id="@+id/imageButtonBooking"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="28dp"
+        android:adjustViewBounds="true"
+        android:background="#0000"
+        android:contentDescription="TODO"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/imageButtonPlayers"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.122"
+        app:layout_constraintHorizontal_bias="0.136"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/booking"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:background="#0000"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/booking" />
 
-    <ImageButton
-        android:id="@+id/imageButtonPlayers"
-        android:layout_width="109dp"
-        android:layout_height="109dp"
-        android:layout_marginBottom="172dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="124dp"
+        android:text="LOGO GOES HERE"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.112"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/player"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:background="#0000"
-        android:contentDescription="TODO" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
