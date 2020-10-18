@@ -3,6 +3,24 @@ var mysql = require('mysql');
 var app = express();
 const port = 8080;
 
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'root',
+  database: 'badminton_connect'
+});
+
+db.connect();
+
+app.get('/users', (req, res) => {
+  const sql = 'SELECT * FROM users';
+
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
 app.get('/time', (req, res) => {
   var date = new Date();
   res.send(date.toString())
