@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!--Neo's M5 server IP -->
+        <domain includeSubdomains="true">40.88.38.140</domain> <!--Neo's M5 server IP -->
+    </domain-config>
+</network-security-config>
