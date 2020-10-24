@@ -69,10 +69,20 @@ app.delete('/users/:id', (req, res) => {
 //Insert an user
 app.post('/users', (req, res) => {
     var body = req.body;
-    const sql = 'INSERT INTO users (first_name, last_name, email) values (?, ?, ?)';
-    db.query(sql, [body.first_name, body.last_name, body.email], (err, result) => {
-        if (err) throw err;
-        res.send("Inserted at user id: " + result.insertId)
+	const sql = 'INSERT IGNORE INTO users SET IDToken = ?, first_name = ?, last_name = ?, email = ?';
+	const token = body.IDToken;
+    db.query(sql, [body.IDToken, body.first_name, body.last_name, body.email], (err, result) => {
+		if (err) throw err;
+		if (result.affectedRows == 0 && result.warningCount == 1) {
+			// duplicate happened 
+			// get the user_id somehow?
+			console.log("User already existed - duplicate token");
+			res.send("User already existed - duplicate token");
+		}
+		else {
+			console.log("inserted at user id: " + result.insertId);
+			res.send("Inserted at user id: " + result.insertId);
+		}
     })
 });
 
