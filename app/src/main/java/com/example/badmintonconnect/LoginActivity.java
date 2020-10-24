@@ -15,11 +15,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -28,9 +31,13 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class LoginActivity extends AppCompatActivity {
         //private Button signoutbutton;
+        private SignInButton signInButton;
         private GoogleSignInClient mGoogleSignInClient;
         private int RC_SIGN_IN = 1;
         private String TAG = "LoginActivity";
+        private String firstname;
+        private String lastname;
+        private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +47,23 @@ public class LoginActivity extends AppCompatActivity {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        signInButton = findViewById(R.id.google_sign_in);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
 
-        findViewById(R.id.google_sign_in).setOnClickListener(new View.OnClickListener(){
-
+        signInButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                signIn();
-                //TODO: and go somewhere?
+                switch(v.getId()) {
+                    case R.id.google_sign_in:
+                        signIn();
+                        break;
+                }
             }
         });
 
@@ -121,8 +132,14 @@ public class LoginActivity extends AppCompatActivity {
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
+
+        if(account != null) {
+            Intent homePageIntent = new Intent(LoginActivity.this, HomePageActivity.class);
+            startActivity(homePageIntent);
+        }
     }
 
+    // david - change this so that we can do something with these account information
     private void updateUI(GoogleSignInAccount account) {
         if (account == null) {
             Log.d(TAG, "There is no user signed in!");
