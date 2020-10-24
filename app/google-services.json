@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "397498185353",
+    "firebase_url": "https://badminton-connect-4976a.firebaseio.com",
+    "project_id": "badminton-connect-4976a",
+    "storage_bucket": "badminton-connect-4976a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397498185353:android:241b0fc4fc6549db20b858",
+        "android_client_info": {
+          "package_name": "com.example.badmintonconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397498185353-cujn0kce0e155ttq0p3gp8lm0l339amg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb3Z9U81eja9Scw8PQmNSB35A-DD6EnJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397498185353-cujn0kce0e155ttq0p3gp8lm0l339amg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,4 +6,7 @@
     <string name="BookingActivity">BookingActivity</string>
     <string name="PlayersActivity">PlayersActivity</string>
     <string name="ProfileActivity">ProfileActivity</string>
+    <string name="MakeABooking">Make a Booking!</string>
+    <string name="PickADate">1. Pick a date to check availability</string>
+    <string name="CheckDate"> Check Availability of Date!</string>
 </resources>
