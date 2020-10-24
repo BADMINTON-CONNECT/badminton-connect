@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }
+        } 
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -117,6 +117,8 @@ public class LoginActivity extends AppCompatActivity {
 
             // Signed in successfully, show authenticated UI.
             updateUI(account);
+            Intent homePageIntent = new Intent(LoginActivity.this, HomePageActivity.class);
+            startActivity(homePageIntent);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
