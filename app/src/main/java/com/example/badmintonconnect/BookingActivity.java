@@ -18,7 +18,7 @@ public class BookingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
 
-        final TextView textView = (TextView) findViewById(R.id.textView3);
+        final TextView textView = (TextView) findViewById(R.id.MakeABooking);
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
