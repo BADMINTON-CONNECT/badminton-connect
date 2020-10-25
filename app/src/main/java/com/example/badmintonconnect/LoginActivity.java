@@ -63,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void signIn() {
@@ -71,19 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    // taking away the token and setting it to NULL
-    private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                        Log.d(TAG, "Signed out succesful.");
-                    }
-                });
-    }
-
     // to delete all information from the app (and the database)
+    // TODO
     private void revokeAccess() {
         mGoogleSignInClient.revokeAccess()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
@@ -120,8 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // Signed in successfully, show authenticated UI.
             updateUI(account);
-            Intent homePageIntent = new Intent(LoginActivity.this, HomePageActivity.class);
-            startActivity(homePageIntent);
+            goToHomeActivity(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -161,6 +148,15 @@ public class LoginActivity extends AppCompatActivity {
             // send token to your back-end
             // move to another activity
             account.getIdToken(); // cannot print out can only send to somewhere
+        }
+    }
+
+    private void goToHomeActivity(GoogleSignInAccount account) {
+        if (account == null) {
+            Log.d(TAG, "There is no user signed in!");
+        } else {
+            Intent homePageIntent = new Intent(LoginActivity.this, HomePageActivity.class);
+            startActivity(homePageIntent);
         }
     }
 }
