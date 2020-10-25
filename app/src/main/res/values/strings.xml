@@ -9,4 +9,10 @@
     <string name="MakeABooking">Make a Booking!</string>
     <string name="PickADate">1. Pick a date to check availability</string>
     <string name="CheckDate"> Check Availability of Date!</string>
+    <string name="TimeSlot1">Time Slot 1</string>
+    <string name="TimeSlot2">Time Slot 2</string>
+    <string name="TimeSlot3">Time Slot 3</string>
+    <string name="TimeSlot4">Time Slot 4</string>
+    <string name="MakeBookingButton">Book Now</string>
+    <string name="BookingConfirmation">Confirm?</string>
 </resources>

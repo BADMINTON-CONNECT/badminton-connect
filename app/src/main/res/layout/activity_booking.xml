@@ -38,7 +38,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MakeABooking"
-            app:layout_constraintVertical_bias="0.325" />
+            app:layout_constraintVertical_bias="0.032" />
 
         <TextView
             android:id="@+id/PickDateText"
@@ -50,7 +50,7 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/bookingDatePicker"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.156"
+            app:layout_constraintHorizontal_bias="0.152"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MakeABooking"
             app:layout_constraintVertical_bias="1.0" />
@@ -68,60 +68,117 @@
             app:layout_constraintTop_toTopOf="@+id/bookingDatePicker"
             app:layout_constraintVertical_bias="0.965" />
 
+        <Spinner
+            android:id="@+id/time_slot1"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.846"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkDateButton" />
+
+        <Spinner
+            android:id="@+id/time_slot4"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.846"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_slot3" />
+
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/timeslot2text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="@string/TimeSlot2"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/time_slot2"
+            app:layout_constraintHorizontal_bias="0.506"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeslot1text" />
+
+        <TextView
+            android:id="@+id/timeslot1text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:text="@string/TimeSlot1"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/time_slot1"
+            app:layout_constraintHorizontal_bias="0.506"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bookingDatePicker" />
+
+        <TextView
+            android:id="@+id/timeslot3text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
-            android:padding="20dp"
-            android:text="Available Date?"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            android:text="@string/TimeSlot3"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/time_slot3"
+            app:layout_constraintHorizontal_bias="0.506"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkDateButton" />
+            app:layout_constraintTop_toBottomOf="@+id/timeslot2text" />
 
-        <Spinner
-            android:id="@+id/time_slot1"
-            android:layout_width="268dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="176dp"
-            android:padding="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+        <TextView
+            android:id="@+id/timeslot4text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/TimeSlot4"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/time_slot1"
+            app:layout_constraintHorizontal_bias="0.506"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkDateButton" />
+            app:layout_constraintTop_toBottomOf="@+id/timeslot3text" />
 
         <Spinner
             android:id="@+id/time_slot2"
-            android:layout_width="268dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:padding="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.846"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/time_slot1" />
 
         <Spinner
             android:id="@+id/time_slot3"
-            android:layout_width="268dp"
-            android:layout_height="36dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.846"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/time_slot2" />
 
-        <Spinner
-            android:id="@+id/time_slot4"
-            android:layout_width="268dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="28dp"
-            android:padding="20dp"
+        <Button
+            android:id="@+id/bookingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:text="@string/MakeBookingButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/time_slot3" />
+            app:layout_constraintTop_toBottomOf="@+id/time_slot4" />
+
+        <TextView
+            android:id="@+id/bookingDetailText"
+            android:layout_width="288dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bookingButton" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
