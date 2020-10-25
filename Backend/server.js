@@ -1,19 +1,111 @@
 var express = require('express');
 var mysql = require('mysql');
 var app = express();
-//var admin = require('firebase-admin');
+var admin = require('firebase-admin');
+//const {OAuth2Client} = require('google-auth-library');
 const bodyparser = require('body-parser');
 const port = 8080;
+//const CLIENT_ID = '397498185353-cujn0kce0e155ttq0p3gp8lm0l339amg.apps.googleusercontent.com';
+//const client = new OAuth2Client(CLIENT_ID);
+var serviceAccount = require("/home/m5/M5/badminton-connect-4976a-firebase-adminsdk-391bo-e5eaea9e1a.json");
+
+//import { admin } from './firebase-config'
 
 app.use(bodyparser.json());
 
+
 /*
+Google Auth function Start
+*/
+/*
+async function verify() {
+	const ticket = await client.verifyIdToken({
+		idToken: token,
+		audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+		// Or, if multiple clients access the backend:
+		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+	});
+	const payload = ticket.getPayload();
+	const userid = payload['sub'];
+	// If request specified a G Suite domain:
+	// const domain = payload['hd'];
+  }
+  verify().catch(console.error);
+
+*/
+
+/*
+Google Auth function End
+*/
+
+
+
+
+/*
+FCM function Start
+*/
 admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: 'https://<DATABASE_NAME>.firebaseio.com'
+	credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://badminton-connect-4976a.firebaseio.com'
+});
+
+const notification_options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24
+};
+
+const message_notification = {
+	notification: {
+		title: "First notification",
+		body: "Hello world!"
+	}
+};
+
+// This registration token comes from the client FCM SDKs.
+const naomi_registrationToken = 'f5ThjTDyTTukl2bASqxvf0:APA91bGEpVj3dLea-o5CBap7jiwSGl6mzzuhzS1BjAk09Jyiw9jockue2wZGZUaal5WboPdbGE3lZrHgzNYLllMu2PQ56bDrXXiN40ENf6AHmy8Mxv3wu4-T7Iml3Lxazzgo8AOYkcw5';
+const neo_registrationToken = 'emEZxhmdTNuVuYbNPnZ8Qj:APA91bFSl94lxqIc8I9yeJFuERELO-XKtEjcb5KTBPVJuMMhfPTW4Pm1MiT0jAoGMTXOStAQQK0ZnlQapmXjw4tLseUKGE75amz_YQ8i60kD7F2Kv8cgaJBU8mb6g0PO-goxN9SlxPkW';
+
+// Send a message to the device corresponding to the provided
+// registration token.
+/*
+admin.messaging().sendToDevice(neo_registrationToken, message_notification, notification_options)
+  .then((response) => {
+    // Response is a message ID string.
+    console.log('Successfully sent message:', response);
+  })
+  .catch((error) => {
+    console.log('Error sending message:', error);
 });
 */
 
+/*
+app.post('/firebase/notification', (req, res)=>{
+    const registrationToken = neo_registrationToken;
+    const message = message_notification;
+    const options =  notification_options;
+    
+      admin.messaging().sendToDevice(registrationToken, message, options)
+      .then( response => {
+
+       res.status(200).send("Notification sent successfully")
+       
+      })
+      .catch( error => {
+          console.log(error);
+      });
+})
+*/
+
+
+/*
+FCM function End
+*/
+
+
+
+/*
+Database function Start
+*/
 const db = mysql.createConnection({
 	host: 'localhost',
 	user: 'root',
@@ -24,9 +116,27 @@ const db = mysql.createConnection({
 
 db.connect();
 
+/*
+Database function End
+*/
+
+
+/*
+Endpoints
+*/
 
 // get time of server, part of M5
 app.get('/time', (req, res) => {
+	// Send a message to the device corresponding to the provided
+	// registration token.
+	admin.messaging().sendToDevice(neo_registrationToken, message_notification, notification_options)
+	.then((response) => {
+		// Response is a message ID string.
+		console.log('Successfully sent message:', response);
+	})
+	.catch((error) => {
+		console.log('Error sending message:', error);
+	});
 	var date = new Date();
 	res.send(date.toString())
 })
@@ -38,6 +148,14 @@ User tables requests
 // get all users
 app.get('/users', (req, res) => {
 	const sql = 'SELECT * FROM users';
+	admin.messaging().sendToDevice(naomi_registrationToken, message_notification, notification_options)
+	.then((response) => {
+		// Response is a message ID string.
+		console.log('Successfully sent message:', response);
+	})
+	.catch((error) => {
+		console.log('Error sending message:', error);
+	});
   
 	db.query(sql, (err, result) => {
 	  if (err) throw err;
@@ -139,42 +257,3 @@ app.put('/courts', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
-
-
-
-/* example
-// getting data from client 
-app.post('/client', (req, res) => {
-    var body = req.body;
-	
-	console.log("Got this from the client: " + body.first_name)
-	console.log("Got this from the client: " + body.last_name)
-	console.log("Got this from the client: " + body.email)
-
-	res.send("got it!!");
-});
-*/
-
-/*
-// This registration token comes from the client FCM SDKs.
-var registrationToken = 'YOUR_REGISTRATION_TOKEN';
-
-var message = {
-  data: {
-    score: '850',
-    time: '2:45'
-  },
-  token: registrationToken
-};
-
-// Send a message to the device corresponding to the provided
-// registration token.
-admin.messaging().send(message)
-  .then((response) => {
-    // Response is a message ID string.
-    console.log('Successfully sent message:', response);
-  })
-  .catch((error) => {
-    console.log('Error sending message:', error);
-  });
-  */
