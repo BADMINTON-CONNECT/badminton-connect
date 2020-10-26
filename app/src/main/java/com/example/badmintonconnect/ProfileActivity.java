@@ -171,20 +171,18 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateUI(GoogleSignInAccount account) {
         if (account != null){
-            Log.d(TAG, "USERNAME is: " + userInfo.get("first_name"));
-            Log.d(TAG, "USERNAME is: " + userInfo.get("last_name"));
-            Log.d(TAG, "USERNAME is: " + userInfo.get("email"));
             textViewUserName.setText(userInfo.get("first_name") + " " + userInfo.get("last_name"));
             textViewUserEmail.setText(userInfo.get("email"));
             textViewUserSkillLevel.setText(userInfo.get("skill_level"));
 
 //            textViewUserEmail.setText(account.getEmail());
 //            textViewUserName.setText(account.getDisplayName());
-            String personPhotoUrl = account.getPhotoUrl().toString();
-            if(personPhotoUrl == null) {
-                Log.d(TAG, "photoURL is null");
+            // use default image
+            if(account.getPhotoUrl() == null) {
+                imageViewProfilePicture.setImageResource(R.drawable.defaultprofilepicture);
             }
             else {
+                String personPhotoUrl = account.getPhotoUrl().toString();
                 Glide.with(this).load(personPhotoUrl).into(imageViewProfilePicture);
             }
         }
