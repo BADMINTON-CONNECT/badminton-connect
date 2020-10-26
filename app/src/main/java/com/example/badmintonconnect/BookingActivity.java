@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BookingActivity extends AppCompatActivity {
+public class BookingActivity extends Activity {
     final static String TAG = "Booking Activity";
     private RequestQueue queue;
     private Button checkDateButton;
