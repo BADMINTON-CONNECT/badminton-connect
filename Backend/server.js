@@ -174,7 +174,7 @@ app.get('/users/:id', (req, res) => {
 	});
 });
 
-// delete an user: needs to use POSTMAN this so far does not work
+// delete an user
 app.delete('/users/:id', (req, res) => {
 	const sql = 'DELETE FROM users WHERE user_id = ?';
   
@@ -208,7 +208,7 @@ app.post('/users', (req, res) => {
 	})
 });
 
-//Update an user preerfence
+// Update an user preerfence
 app.put('/users/:id', (req, res) => {
     var body = req.body;
 	const sql = 'UPDATE users SET location_x = ?, location_y = ?, skill_level = ?, distance_preference = ? WHERE user_id = ?';
@@ -219,6 +219,7 @@ app.put('/users/:id', (req, res) => {
     })
 });
 
+// puts in a registration token for push notification for the user 
 app.put('/users/RegistrationToken/:id', (req, res) => {
 	var body = req.body;
 	const sql = 'UPDATE users set Registration_Token = ? WHERE user_id = ?';
