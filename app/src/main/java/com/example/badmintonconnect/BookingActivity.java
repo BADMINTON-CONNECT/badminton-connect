@@ -34,15 +34,15 @@ import java.util.List;
 import java.util.Map;
 
 public class BookingActivity extends AppCompatActivity {
-    RequestQueue queue;
-    Button checkDateButton;
-    Button bookingButton;
-    DatePicker datePicker;
-    TextView bookingDetailText;
-    Spinner timeSlot1;
-    Spinner timeSlot2;
-    Spinner timeSlot3;
-    Spinner timeSlot4;
+    private RequestQueue queue;
+    private Button checkDateButton;
+    private Button bookingButton;
+    private DatePicker datePicker;
+    private TextView bookingDetailText;
+    private Spinner timeSlot1;
+    private Spinner timeSlot2;
+    private Spinner timeSlot3;
+    private Spinner timeSlot4;
     Map<String, String> bookingDetails;
 
 
