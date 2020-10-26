@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView textViewUserName;
     private TextView textViewUserSkillLevel;
     private String TAG = "LoginActivity";
-    private String user_ID;
+    public static String user_ID;
     private Map<String, String> userInfo = new HashMap<>();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,75 +69,70 @@ public class ProfileActivity extends AppCompatActivity {
 //        });
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        LoginActivity loginActivity = new LoginActivity();
-//        this.user_ID = loginActivity.user_ID;
-//        getUserID(account);
-        getUserInfoFromBackend(user_ID);
+        getUserID(account);
         updateUI(account);
     }
 
-//    private void getUserID(GoogleSignInAccount account) {
-//        try {
-//            RequestQueue requestQueue = Volley.newRequestQueue(this);
-//            String URL = "http://40.88.38.140:8080/users";
-//            JSONObject userInfo = new JSONObject();
-//            Log.d(TAG, account.getEmail());
-//            userInfo.put("email", account.getEmail());
-//            final String mRequestBody = userInfo.toString();
-//
-//            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String response) {
-//                    Log.d(TAG, "successfully stored new user");
-//                    user_ID = response;
-//                    Log.d(TAG, "THIS IS USERID" + response);
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    Log.d(TAG, "BRAINSSSSSSSSSSSSSSSSSSSS ERRRRRRRRRRRRRRRRRRRRRRRRR");
-//                    Log.d(TAG, error.toString());
-//                }
-//            }) {
-//                @Override
-//                public String getBodyContentType() {
-//                    return "application/json; charset=utf-8";
-//                }
-//
-//                @Override
-//                public byte[] getBody() throws AuthFailureError {
-//                    try {
-//                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-//                    } catch (UnsupportedEncodingException uee) {
-//                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-//                        return null;
-//                    }
-//                }
-//
-//                @Override
-//                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                    String responseString = "";
-//                    if (response != null) {
-//                        //responseString = String.valueOf(response.statusCode);
-//                        return super.parseNetworkResponse(response);
-//                    }
-//                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-//                }
-//            };
-//
-//            requestQueue.add(stringRequest);
-//
-//        } catch (JSONException e) {
-//            Log.d(TAG, "error");
-//            e.printStackTrace();
-//        }
-//    }
+    private void getUserID(GoogleSignInAccount account) {
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            String URL = "http://40.88.38.140:8080/users";
+            JSONObject userInfo = new JSONObject();
+            Log.d(TAG, account.getEmail());
+            userInfo.put("email", account.getEmail());
+            final String mRequestBody = userInfo.toString();
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d(TAG, "successfully retrieved userID");
+                    user_ID = response;
+                    getUserInfoFromBackend(user_ID);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null) {
+                        //responseString = String.valueOf(response.statusCode);
+                        return super.parseNetworkResponse(response);
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+
+            requestQueue.add(stringRequest);
+
+        } catch (JSONException e) {
+            Log.d(TAG, "error");
+            e.printStackTrace();
+        }
+    }
 
     private void getUserInfoFromBackend(String user_ID) {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
-            // TODO - replace "48" with userID when issue is fixed
-            String URL = "http://40.88.38.140:8080/users/" + "48";
-
+            String URL = "http://40.88.38.140:8080/users/" + user_ID;
+            Log.d(TAG, URL);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "successfully received user information");
@@ -146,13 +141,13 @@ public class ProfileActivity extends AppCompatActivity {
                         if(user_ID == null) {
                             Log.d(TAG, "ERROR - userID null");
                         }
-                        JSONArray userArray = response.getJSONArray("");
-
-                        userInfo.put("first_name", userArray.getJSONObject(0).getString("first_name"));
-                        userInfo.put("last_name", userArray.getJSONObject(0).getString("last_name"));
-                        userInfo.put("email", userArray.getJSONObject(0).getString("email"));
-                        userInfo.put("skill_level", userArray.getJSONObject(0).getString("skill_level"));
-                        Log.d(TAG, "username is: " + userInfo.get("firstname"));
+//                        userInfo.put("first_name", response.getString("first_name"));
+//                        userInfo.put("last_name", response.getString("last_name"));
+//                        userInfo.put("email", response.getString("email"));
+//                        userInfo.put("skill_level", response.getString("skill_level"));
+                        textViewUserName.setText(response.getString("first_name") + " " + response.getString("last_name"));
+                        textViewUserEmail.setText(response.getString("email"));
+                        textViewUserSkillLevel.setText(response.getString("skill_level"));
                     } catch (JSONException e) {
                         Log.d(TAG, "user JSON Object incorrectly loaded. Check stacktrace for more information");
                         e.printStackTrace();
@@ -176,12 +171,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateUI(GoogleSignInAccount account) {
         if (account != null){
-//            textViewUserName.setText(userInfo.get("first_name") + " " + userInfo.get("last_name"));
-//            textViewUserEmail.setText(userInfo.get("email"));
-//            textViewUserSkillLevel.setText(userInfo.get("skill_level"));
+            Log.d(TAG, "USERNAME is: " + userInfo.get("first_name"));
+            Log.d(TAG, "USERNAME is: " + userInfo.get("last_name"));
+            Log.d(TAG, "USERNAME is: " + userInfo.get("email"));
+            textViewUserName.setText(userInfo.get("first_name") + " " + userInfo.get("last_name"));
+            textViewUserEmail.setText(userInfo.get("email"));
+            textViewUserSkillLevel.setText(userInfo.get("skill_level"));
 
-            textViewUserEmail.setText(account.getEmail());
-            textViewUserName.setText(account.getDisplayName());
+//            textViewUserEmail.setText(account.getEmail());
+//            textViewUserName.setText(account.getDisplayName());
             String personPhotoUrl = account.getPhotoUrl().toString();
             if(personPhotoUrl == null) {
                 Log.d(TAG, "photoURL is null");
