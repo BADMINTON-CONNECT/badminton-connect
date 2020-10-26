@@ -22,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BookingActivity extends AppCompatActivity {
+    final static String TAG = "Booking Activity";
     private RequestQueue queue;
     private Button checkDateButton;
     private Button bookingButton;
@@ -70,6 +72,10 @@ public class BookingActivity extends AppCompatActivity {
         bookingDetails.put("time_slot2", "0");
         bookingDetails.put("time_slot3", "0");
         bookingDetails.put("time_slot4", "0");
+        bookingDetails.put("time_slot1_original", "0");
+        bookingDetails.put("time_slot2_original", "0");
+        bookingDetails.put("time_slot3_original", "0");
+        bookingDetails.put("time_slot4_original", "0");
         bookingDetails.put("day", "0");
         bookingDetails.put("month", "0");
         bookingDetails.put("year", "0");
@@ -87,25 +93,25 @@ public class BookingActivity extends AppCompatActivity {
                     case R.id.time_slot1:
                         if(value != "No courts available at this time"){
                             bookingDetails.put("time_slot1", value);
-                            Log.d("Booking activity", value);
+                            Log.d(TAG, value);
                         }
                         break;
                     case R.id.time_slot2:
                         if(value != "No courts available at this time"){
                             bookingDetails.put("time_slot2", value);
-                            Log.d("Booking activity", value);
+                            Log.d(TAG, value);
                         }
                         break;
                     case R.id.time_slot3:
                         if(value != "No courts available at this time"){
                             bookingDetails.put("time_slot3", value);
-                            Log.d("Booking activity", value);
+                            Log.d(TAG, value);
                         }
                         break;
                     case R.id.time_slot4:
                         if(value != "No courts available at this time"){
                             bookingDetails.put("time_slot4", value);
-                            Log.d("Booking activity", value);
+                            Log.d(TAG, value);
                         }
                         break;
                 }
@@ -126,7 +132,7 @@ public class BookingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CheckDate();
-                Log.d("Booking Activity", "Attempting to check date");
+                Log.d(TAG, "Attempting to check date");
             }
         });
 
@@ -134,7 +140,7 @@ public class BookingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 MakeBooking();
-                Log.d("Booking Activitiy", "Attempting to book");
+                Log.d(TAG, "Attempting to book");
             }
         });
 
@@ -149,19 +155,19 @@ public class BookingActivity extends AppCompatActivity {
         Integer year = datePicker.getYear();
 
         String url = "http://40.88.38.140:8080/courts/" + year + "/" + (month + 1) + "/" + day + "/"; // this is the server url
-        Log.d("Booking activity", url);
+        Log.d(TAG, url);
 
         bookingDetails.put("day", day.toString());
         bookingDetails.put("month", month.toString());
         bookingDetails.put("year", year.toString());
 
-        // Request a string response from the provided URL.
+        // Request a json array response from the provided URL.
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         // Display the result (what is send from server using res.send)
-                        Log.d("Booking activity", response.toString());
+                        Log.d(TAG, response.toString());
                         int time_slot1_avail = 0;
                         int time_slot2_avail = 0;
                         int time_slot3_avail = 0;
@@ -174,6 +180,10 @@ public class BookingActivity extends AppCompatActivity {
                             time_slot3_avail = (int) res.get("time_slot3");
                             time_slot4_avail = (int) res.get("time_slot4");
                             bookingDetails.put("court_id", res.get("court_id").toString());
+                            bookingDetails.put("time_slot1_original", res.get("time_slot1").toString());
+                            bookingDetails.put("time_slot2_original", res.get("time_slot2").toString());
+                            bookingDetails.put("time_slot3_original", res.get("time_slot3").toString());
+                            bookingDetails.put("time_slot4_original", res.get("time_slot4").toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -199,12 +209,12 @@ public class BookingActivity extends AppCompatActivity {
                         setSpinners(time_slot1_avail_array, time_slot2_avail_array, time_slot3_avail_array, time_slot4_avail_array);
                         // or alternately you can ask me to have another request which takes timeslots specifically
 
-                        Log.d("Booking activity", response.toString());
+                        Log.d(TAG, response.toString());
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Booking activity", error.toString());
+                Log.d(TAG, error.toString());
             }
         });
 
@@ -213,12 +223,74 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void MakeBooking(){
-        String bookingText = "Booking made for: Date: " + bookingDetails.get("day") + "/" +
+        if(bookingDetails.get("time_slot1").equals("0") && bookingDetails.get("time_slot2").equals("0")
+        && bookingDetails.get("time_slot3").equals("0") && bookingDetails.get("time_slot4").equals("0")){
+            bookingDetailText.setText("No bookings made");
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(BookingActivity.this);
+
+
+        String bookingText = "Date: " + bookingDetails.get("day") + "/" +
                 bookingDetails.get("month") + "/" + bookingDetails.get("year") + " At the following timeslots:" +
-                " Time Slot 1: " + bookingDetails.get("time_slot1") + " Time Slot 2: " + bookingDetails.get("time_slot2") +
-                " Time Slot 3: " + bookingDetails.get("time_slot3") + " Time Slot 4: " + bookingDetails.get("time_slot4");
-        Log.d("Booking Activity", bookingText);
-        bookingDetailText.setText(bookingText);
+                "\n Time Slot 1: " + bookingDetails.get("time_slot1") + "\n Time Slot 2: " + bookingDetails.get("time_slot2") +
+                "\n Time Slot 3: " + bookingDetails.get("time_slot3") + "\n Time Slot 4: " + bookingDetails.get("time_slot4");
+        Log.d(TAG, bookingText);
+
+        builder.setTitle("Confirm Booking");
+        builder.setMessage("Would you like to book for: " + bookingText);
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                bookingDetailText.setText("Booking made for: " + bookingText);
+
+                Integer time_slot1 = Integer.parseInt(bookingDetails.get("time_slot1_original")) - Integer.parseInt(bookingDetails.get("time_slot1"));
+                Integer time_slot2 = Integer.parseInt(bookingDetails.get("time_slot2_original")) - Integer.parseInt(bookingDetails.get("time_slot2"));
+                Integer time_slot3 = Integer.parseInt(bookingDetails.get("time_slot3_original")) - Integer.parseInt(bookingDetails.get("time_slot3"));
+                Integer time_slot4 = Integer.parseInt(bookingDetails.get("time_slot4_original")) - Integer.parseInt(bookingDetails.get("time_slot4"));
+
+                String url = "http://40.88.38.140:8080/courts";
+
+
+                JSONObject object = new JSONObject();
+                try {
+                    //input your API parameters
+                    object.put("time_slot1", time_slot1.toString());
+                    object.put("time_slot2", time_slot2.toString());
+                    object.put("time_slot3", time_slot3.toString());
+                    object.put("time_slot4", time_slot4.toString());
+                    object.put("court_id", bookingDetails.get("court_id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                // Enter the correct url for your api service site
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d("JSON", String.valueOf(response));
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, error.toString());
+                    }
+                });
+                queue.add(jsonObjectRequest);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "booking cancelled");
+            }
+        });
+
+        AlertDialog confirmBookingDialog = builder.create();
+        confirmBookingDialog.show();
 
     }
 

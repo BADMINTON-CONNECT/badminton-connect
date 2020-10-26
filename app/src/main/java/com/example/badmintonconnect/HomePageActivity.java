@@ -148,19 +148,7 @@ public class HomePageActivity extends AppCompatActivity{
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            Log.d("JSON", String.valueOf(response));
-                            String Error = response.getString("httpStatus");
-                            if (Error.equals("")||Error.equals(null)){
-
-                            }else if(Error.equals("OK")){
-                                JSONObject body = response.getJSONObject("body");
-
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Log.d("JSON", String.valueOf(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
