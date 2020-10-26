@@ -31,6 +31,19 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture"
         app:layout_constraintVertical_bias="0.281" />
 
+    <TextView
+        android:id="@+id/textViewUserSkillLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.656"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture"
+        app:layout_constraintVertical_bias="0.452" />
+
     <ImageView
         android:id="@+id/imageViewProfilePicture"
         android:layout_width="120dp"
@@ -70,21 +83,34 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture"
         app:layout_constraintVertical_bias="0.005" />
 
+    <TextView
+        android:id="@+id/textViewSkillLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:text="Skill Level"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textViewUserEmail"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture"
+        app:layout_constraintVertical_bias="0.245" />
+
     <ImageButton
-        android:id="@+id/imageButtonProfile"
+        android:id="@+id/imageButtonSettings"
         android:layout_width="40dp"
         android:layout_height="43dp"
-        android:layout_marginTop="24dp"
         android:adjustViewBounds="true"
         android:background="#0000"
         android:contentDescription="TODO"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/imageButtonBooking"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.913"
+        app:layout_constraintHorizontal_bias="0.956"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.748"
+        app:layout_constraintVertical_bias="0.023"
         app:srcCompat="@drawable/settings" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

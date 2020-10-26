@@ -28,7 +28,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class HomePageActivity extends AppCompatActivity{
     final static String TAG = "HomePageActivity";
-    private Button signOutbutton;
     private GoogleSignInClient mGoogleSignInClient;
 
     @Override
@@ -77,7 +76,7 @@ public class HomePageActivity extends AppCompatActivity{
             }
         });
 
-        signOutbutton = findViewById(R.id.logoutButton);
+        ImageButton signOutbutton = (ImageButton) findViewById(R.id.logoutButton);
         signOutbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
