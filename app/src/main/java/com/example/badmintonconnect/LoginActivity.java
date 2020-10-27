@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         private GoogleSignInClient mGoogleSignInClient;
         private int RC_SIGN_IN = 1;
         private String TAG = "LoginActivity";
+        public String user_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,8 +146,9 @@ public class LoginActivity extends AppCompatActivity {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.d(TAG, response);
-
+                    Log.d(TAG, "successfully stored new user");
+                    user_ID = response;
+                    Log.d(TAG, "THIS IS USERID" + response);
                 }
             }, new Response.ErrorListener() {
                 @Override

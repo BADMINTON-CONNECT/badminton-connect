@@ -13,6 +13,13 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,15 +33,23 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class HomePageActivity extends AppCompatActivity{
     final static String TAG = "HomePageActivity";
-    private Button signOutbutton;
     private GoogleSignInClient mGoogleSignInClient;
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        queue = Volley.newRequestQueue(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 //                .requestIdToken(getString(R.string.server_client_id))
@@ -77,7 +92,7 @@ public class HomePageActivity extends AppCompatActivity{
             }
         });
 
-        signOutbutton = findViewById(R.id.logoutButton);
+        ImageButton signOutbutton = (ImageButton) findViewById(R.id.logoutButton);
         signOutbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,9 +122,39 @@ public class HomePageActivity extends AppCompatActivity{
 
                         // Log and toast
                         Log.d(TAG, token);
+                        sendUserToken(token);
                     }
                 });
 
 
+    }
+
+    private void sendUserToken(String token){
+        Log.d(TAG, "sending user token");
+        Log.d(TAG, token);
+        String url = "http://40.88.38.140:8080/users/RegistrationToken/17";
+
+
+        JSONObject object = new JSONObject();
+        try {
+            //input your API parameters
+            object.put("Registration_Token",token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Enter the correct url for your api service site
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("JSON", String.valueOf(response));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+        queue.add(jsonObjectRequest);
     }
 }

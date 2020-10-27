@@ -5,7 +5,7 @@ var admin = require('firebase-admin');
 //const {OAuth2Client} = require('google-auth-library');
 const bodyparser = require('body-parser');
 const port = 8080;
-//const CLIENT_ID = '397498185353-cujn0kce0e155ttq0p3gp8lm0l339amg.apps.googleusercontent.com';
+//const CLIENT_ID = '397498185353-cujn0kce0e155ttq0p3gp8lm0l339amg.apps.googleusercontent.com'; // this needs to be APP client ID 
 //const client = new OAuth2Client(CLIENT_ID);
 var serviceAccount = require("/home/m5/M5/badminton-connect-4976a-firebase-adminsdk-391bo-e5eaea9e1a.json");
 
@@ -168,13 +168,13 @@ app.get('/users', (req, res) => {
 app.get('/users/:id', (req, res) => {
 	const sql = 'SELECT * FROM users WHERE user_id = ?';
   
-	db.query(sql, [req.params.id], (err, result) => {
+	db.query(sql, [req.params.id], (err, row, field) => {
 	  if (err) throw err;
-	  res.send(result);
+	  res.send(row[0]);
 	});
 });
 
-// delete an user: needs to use POSTMAN this so far does not work
+// delete an user
 app.delete('/users/:id', (req, res) => {
 	const sql = 'DELETE FROM users WHERE user_id = ?';
   
@@ -189,36 +189,46 @@ app.post('/users', (req, res) => {
     var body = req.body;
 	const sql = 'INSERT IGNORE INTO users SET IDToken = ?, first_name = ?, last_name = ?, email = ?';
 	const token = body.IDToken;
+	const email = body.email;
     db.query(sql, [body.IDToken, body.first_name, body.last_name, body.email], (err, result) => {
 		if (err) throw err;
 		if (result.affectedRows == 0 && result.warningCount == 1) {
 			// duplicate happened 
-			// get the user_id somehow?
-			console.log("User already existed - duplicate token");
-			res.send("User already existed - duplicate token");
+			
+			db.query('select user_id from users where email = ?', [email], (err, row, field) => {
+				//console.log(row[0].user_id);
+				console.log("" + row[0].user_id);
+				res.send("" + row[0].user_id);
+			})
 		}
 		else {
 			console.log("inserted at user id: " + result.insertId);
-			res.send("Inserted at user id: " + result.insertId);
+			res.send("inserted at user id: " + result.insertId);
 		}
-    })
+	})
 });
 
-//Update an employees
+// Update an user preerfence
 app.put('/users/:id', (req, res) => {
     var body = req.body;
-	const sql = 'UPDATE users SET email = ? WHERE user_id = ?';
-	//UPDATE `m5trial`.`users` SET `first_name` = 'David', `last_name` = 'Kang' WHERE (`id` = '5'); -> this updates multiple thigns at once
-	/*
-	This calls a "procedure" to do data parse basically -> need to create procedure in the database
-	var sql = "SET @EmpID = ?;SET @Name = ?;SET @EmpCode = ?;SET @Salary = ?; \
-    CALL EmployeeAddOrEdit(@EmpID,@Name,@EmpCode,@Salary);";
-	*/
-    db.query(sql, [body.email, req.params.id], (err, result) => {
+	const sql = 'UPDATE users SET location_x = ?, location_y = ?, skill_level = ?, distance_preference = ? WHERE user_id = ?';
+	
+    db.query(sql, [body.location_x, body.location_y, body.skill_level, body.distance_preference, req.params.id], (err, result) => {
         if (err) throw err;
         res.send(result)
     })
 });
+
+// puts in a registration token for push notification for the user 
+app.put('/users/RegistrationToken/:id', (req, res) => {
+	var body = req.body;
+	const sql = 'UPDATE users set Registration_Token = ? WHERE user_id = ?';
+
+	db.query(sql, [body.Registration_Token, req.params.id], (err, result) => {
+		if (err) throw err;
+		res.send(result);
+	})
+})
 
 /*
 Court availability table 
@@ -253,6 +263,39 @@ app.put('/courts', (req, res) => {
     })
 });
 
+/*
+Bookings 
+*/
+
+// get all the bookings 
+app.get('/bookings', (req, res) => {
+	const sql = 'SELECT * FROM bookings';
+
+	db.query(sql, (err, result) => {
+		if (err) throw err;
+		res.send(result);
+	})
+})
+
+// get all the booking by a specific user
+app.get('/bookings/:id', (req, res) => {
+	const sql = 'SELECT * FROM bookings WHERE user_id = ?';
+  
+	db.query(sql, [req.params.id], (err, result) => {
+	  if (err) throw err;
+	  res.send(result);
+	});
+});
+
+
+
+// this is to get the registration token for the TA whenever she signs in so we can push notification
+// node-cron to scheudle sending? or other ways to determine when to send 
+db.query('select Registration_Token from users where user_id = 17', (err, row, field) => {
+	if (err) throw err;
+	console.log(row[0].Registration_Token)
+	//console.log(field)
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
