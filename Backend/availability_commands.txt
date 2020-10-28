@@ -1,0 +1,144 @@
+SELECT user1,
+    user2,
+    day,
+    skill_diff
+FROM (
+    SELECT us1.user_id as user1,
+    us2.user_id as user2,
+    us1.day,
+    us2.hour,
+    abs(us1.skill - us2.skill) AS skill_diff,
+    location formula AS distance
+    FROM availability us1
+    JOIN availability us2
+        on us2.user_id != us2.user_id
+        AND us1.day = us2.day
+        AND us1.hour = us2.hour
+    where user1 = ?
+        AND (distance <= us1.max_dist AND distance <= us2.max_dist)
+        ORDER BY user_id asc, day asc, hour asc
+);
+
+// No distance yet
+
+SELECT user1,
+    user2,
+    day,
+    hour,
+    skill_diff
+FROM (
+    SELECT us1.user_id as user1,
+    us2.user_id as user2,
+    us1.day,
+    us2.hour,
+    abs(us1.skill - us2.skill) AS skill_diff
+    FROM availability us1
+    JOIN availability us2
+        ON us1.user_id != us2.user_id
+        AND us1.day = us2.day
+        AND us1.hour = us2.hour
+    WHERE availability.user_id = 1
+        AND (2 <= us1.max_dist AND 2 <= us2.max_dist)
+        ORDER BY user_id asc, day asc, hour asc
+) AS Matches;
+
+//No odering or user select yet
+
+SELECT user1,
+    user2,
+    day,
+    hour,
+    skill_diff
+FROM (
+    SELECT us1.user_id as user1,
+    us2.user_id as user2,
+    us1.day,
+    us2.hour,
+    abs(us1.skill - us2.skill) AS skill_diff
+    FROM availability us1
+    JOIN availability us2
+        ON us1.user_id != us2.user_id
+        AND us1.day = us2.day
+        AND us1.hour = us2.hour
+    WHERE us1.user_id = 17
+    AND (2 <= us1.max_dist AND 2 <= us2.max_dist)
+    ORDER BY us2.user_id asc, day asc, hour asc
+) AS Matches;
+
+
+app.get('/users', (req, res) => {
+	const sql = 'SELECT * FROM users';
+	admin.messaging().sendToDevice(naomi_registrationToken, message_notification, notification_options)
+	.then((response) => {
+		// Response is a message ID string.
+		console.log('Successfully sent message:', response);
+	})
+	.catch((error) => {
+		console.log('Error sending message:', error);
+	});
+  
+	db.query(sql, (err, result) => {
+	  if (err) throw err;
+	  res.send(result);
+	});
+});
+
+app.delete('/availability/:id', (req, res) => {
+	const sql = 'DELETE FROM availability WHERE user_id = ?';
+  
+	db.query(sql, [req.params.id], (err, result) => {
+	  if (err) throw err;
+	  res.send("Deleted succesfully");
+	});
+});
+
+app.put('/availability/:id', (req, res) => {
+
+    const sql = 'DELETE FROM availability WHERE user_id = ?';
+  
+	db.query(sql, [req.params.id], (err, result) => {
+	  if (err) throw err;
+	  res.send("Deleted succesfully");
+	});
+
+    var i;
+    for (i = 0; i < jasonfile.length; i++) {
+        const sql = 'INSERT FROM availability (user_id,day,hour,skill,locationx,location_y,max_dist)
+            VALUES (user_id = ?,day = ?,hour = ?,skill = ?,location_x = ?,location_y = ?,max_dist = ?)';
+    }
+
+	db.query(sql, [req.params.id], (err, result) => {
+	  if (err) throw err;
+	  res.send("Deleted succesfully");
+	});
+});
+
+
+app.post('/availability', (req, res) => {
+    const sql = 'INSERT INTO availability (user_id,day,hour,skill,locationx,location_y,max_dist) VALUES (user_id = ?,day = ?,hour = ?,skill = ?,location_x = ?,location_y = ?,max_dist = ?)';
+    var body = req.body;
+
+    for(var day in body.hours_available) {
+        // console.log(day);
+        for(var hour in body.hours_available[day]) {
+            // console.log(body.hours_available[day][hour]);
+
+            db.query(sql, [body.user_id, day, hour, body.skill, body.x, body.y, body.max_d], (err, result) => {
+                if (err) throw err;
+                res.send(result)
+            })
+        }
+    }
+    
+    res.send(body);
+}); 
+
+
+{
+    "number": {"day":["Monday","Tuesday","Wednesday"],"1":["one","two","three"],"2":["two","three","four"],"0":["seven","three","four"]}
+}
+
+{
+    "user_id" : ["number"]
+    "hours_available": {"Monday":["1","7","14"],"Tuesday":["3"],"Wednesday":["6","7","8"],"Thursday":["14","18"]}
+}
