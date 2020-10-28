@@ -24,6 +24,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +47,7 @@ public class BookingActivity extends Activity {
     private Spinner timeSlot2;
     private Spinner timeSlot3;
     private Spinner timeSlot4;
+    private String userId;
     Map<String, String> bookingDetails;
 
 
@@ -59,8 +62,6 @@ public class BookingActivity extends Activity {
         timeSlot2 = (Spinner) findViewById(R.id.time_slot2);
         timeSlot3 = (Spinner) findViewById(R.id.time_slot3);
         timeSlot4 = (Spinner) findViewById(R.id.time_slot4);
-
-
 
         List<String> no_court_availability = new ArrayList<>();
         no_court_availability.add("No courts available at this time");
