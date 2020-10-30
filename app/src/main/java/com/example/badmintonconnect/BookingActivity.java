@@ -48,6 +48,10 @@ public class BookingActivity extends Activity {
     private Spinner timeSlot3;
     private Spinner timeSlot4;
     private String userId;
+    private TextView avail1;
+    private TextView avail2;
+    private TextView avail3;
+    private TextView avail4;
     Map<String, String> bookingDetails;
 
 
@@ -62,6 +66,10 @@ public class BookingActivity extends Activity {
         timeSlot2 = (Spinner) findViewById(R.id.time_slot2);
         timeSlot3 = (Spinner) findViewById(R.id.time_slot3);
         timeSlot4 = (Spinner) findViewById(R.id.time_slot4);
+        avail1 = (TextView) findViewById(R.id.time_slot1_availability);
+        avail2 = (TextView) findViewById(R.id.time_slot2_availability);
+        avail3 = (TextView) findViewById(R.id.time_slot3_availability);
+        avail4 = (TextView) findViewById(R.id.time_slot4_availability);
 
         List<String> no_court_availability = new ArrayList<>();
         no_court_availability.add("No courts available at this time");
@@ -185,6 +193,9 @@ public class BookingActivity extends Activity {
                             bookingDetails.put("time_slot2_original", res.get("time_slot2").toString());
                             bookingDetails.put("time_slot3_original", res.get("time_slot3").toString());
                             bookingDetails.put("time_slot4_original", res.get("time_slot4").toString());
+
+                            SetAvailabilityText(res.get("time_slot1").toString(), res.get("time_slot2").toString(),
+                                    res.get("time_slot3").toString(), res.get("time_slot4").toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -223,6 +234,14 @@ public class BookingActivity extends Activity {
         queue.add(jsonArrayRequest);
     }
 
+    private void SetAvailabilityText(String time_slot1, String time_slot2, String time_slot3, String time_slot4){
+        avail1.setText("Courts available: " + time_slot1);
+        avail2.setText("Courts available: " + time_slot2);
+        avail3.setText("Courts available: " + time_slot3);
+        avail4.setText("Courts available: " + time_slot4);
+
+    }
+
     private void MakeBooking(){
         if(bookingDetails.get("time_slot1").equals("0") && bookingDetails.get("time_slot2").equals("0")
         && bookingDetails.get("time_slot3").equals("0") && bookingDetails.get("time_slot4").equals("0")){
@@ -252,7 +271,8 @@ public class BookingActivity extends Activity {
                 Integer time_slot3 = Integer.parseInt(bookingDetails.get("time_slot3_original")) - Integer.parseInt(bookingDetails.get("time_slot3"));
                 Integer time_slot4 = Integer.parseInt(bookingDetails.get("time_slot4_original")) - Integer.parseInt(bookingDetails.get("time_slot4"));
 
-                String url = "http://40.88.38.140:8080/courts";
+                String urlCourts = "http://40.88.38.140:8080/courts";
+                String urlBookings = "http://40.88.38.140:8080/bookings";
 
 
                 JSONObject object = new JSONObject();
@@ -266,8 +286,8 @@ public class BookingActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                // Enter the correct url for your api service site
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
+                // Updating court availability
+                JsonObjectRequest jsonObjectRequestCourts = new JsonObjectRequest(Request.Method.PUT, urlCourts, object,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -279,7 +299,31 @@ public class BookingActivity extends Activity {
                         Log.d(TAG, error.toString());
                     }
                 });
-                queue.add(jsonObjectRequest);
+                queue.add(jsonObjectRequestCourts);
+
+                try {
+                    object.put("user_id", UserInfo.getUserId());
+                    object.put("Year", bookingDetails.get("year"));
+                    object.put("Month", bookingDetails.get("month"));
+                    object.put("Date", bookingDetails.get("day"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                //Updating user booking
+                JsonObjectRequest jsonObjectRequestBookings = new JsonObjectRequest(Request.Method.POST, urlBookings, object,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d("JSON", String.valueOf(response));
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, error.toString());
+                    }
+                });
+                queue.add(jsonObjectRequestBookings);
             }
         });
 

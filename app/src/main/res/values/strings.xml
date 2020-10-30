@@ -15,6 +15,8 @@
     <string name="TimeSlot4">Time Slot 4</string>
     <string name="MakeBookingButton">Book Now</string>
     <string name="BookingConfirmation">Confirm?</string>
+    <string name="NoBookingsMade">No bookings made</string>
     <string name="PlayerPageHeader">Here are some players in your area,
                                     Would you like to connect?</string>
+    <string name="NoPlayerMatch">No player matches available</string>
 </resources>
