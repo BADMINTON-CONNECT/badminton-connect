@@ -44,7 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView imageViewProfilePicture;
     private ImageButton buttonSettings;
     private TextView textViewUserEmail;
-    private TextView textViewUserName;
+    private TextView editTextUserName;
     private TextView textViewUserSkillLevel;
     private String TAG = "LoginActivity";
     public static String user_ID;
@@ -56,17 +56,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
-        textViewUserName = (TextView) findViewById(R.id.textViewUserName);
+        editTextUserName = (TextView) findViewById(R.id.editTextUserName);
         textViewUserSkillLevel = (TextView) findViewById(R.id.textViewUserSkillLevel);
 
-        // TODO - allow the user to configure their profile page
-//        buttonSettings = (ImageButton) findViewById(R.id.imageButtonSettings);
-//        buttonSettings.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d(TAG, "Clicked settings button");
-//            }
-//        });
+        buttonSettings = (ImageButton) findViewById(R.id.imageButtonSettings);
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Clicked settings button");
+                Intent profileSettingsIntent = new Intent(ProfileActivity.this, ProfileSettingsActivity.class);
+                startActivity(profileSettingsIntent);
+            }
+        });
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
@@ -90,7 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                        userInfo.put("last_name", response.getString("last_name"));
 //                        userInfo.put("email", response.getString("email"));
 //                        userInfo.put("skill_level", response.getString("skill_level"));
-                        textViewUserName.setText(response.getString("first_name") + " " + response.getString("last_name"));
+                        editTextUserName.setText(response.getString("first_name") + " " + response.getString("last_name"));
                         textViewUserEmail.setText(response.getString("email"));
                         textViewUserSkillLevel.setText(response.getString("skill_level"));
                     } catch (JSONException e) {
@@ -116,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateUI(GoogleSignInAccount account) {
         if (account != null){
-            textViewUserName.setText(userInfo.get("first_name") + " " + userInfo.get("last_name"));
+            editTextUserName.setText(userInfo.get("first_name") + " " + userInfo.get("last_name"));
             textViewUserEmail.setText(userInfo.get("email"));
             textViewUserSkillLevel.setText(userInfo.get("skill_level"));
 
