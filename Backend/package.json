@@ -1,0 +1,13 @@
+{
+    "name": "m5backend",
+    "version": "1.0.0",
+    "dependencies": {
+        "express": "^4.17.1",
+        "firebase-admin": "^9.3.0",
+        "google-auth-library": "^6.1.2",
+        "mysql": "^2.18.1"
+    },
+        "scripts": {
+            "test": "jest"
+        }
+}
