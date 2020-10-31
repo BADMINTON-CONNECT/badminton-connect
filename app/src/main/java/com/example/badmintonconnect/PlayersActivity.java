@@ -31,9 +31,9 @@ public class PlayersActivity extends Activity {
         setContentView(R.layout.activity_players);
         queue = Volley.newRequestQueue(this);
 
-        playerName1 = (TextView) findViewById(R.id.player_match_name1);
-        playerName2 = (TextView) findViewById(R.id.player_match_name2);
-        playerName3 = (TextView) findViewById(R.id.player_match_name3);
+        playerName1 = (TextView) findViewById(R.id.player1_name);
+        playerName2 = (TextView) findViewById(R.id.player2_name);
+        playerName3 = (TextView) findViewById(R.id.player3_name);
 
         getPlayers();
 
