@@ -18,5 +18,18 @@
     <string name="NoBookingsMade">No bookings made</string>
     <string name="PlayerPageHeader">Here are some players in your area,
                                     Would you like to connect?</string>
+
+    <string-array name="skillLevel">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
     <string name="NoPlayerMatch">No player matches available</string>
 </resources>
