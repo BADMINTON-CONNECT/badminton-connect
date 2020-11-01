@@ -130,8 +130,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_width="417dp"
+        android:layout_height="211dp"
         android:layout_marginTop="304dp"
         android:background="#ffffff"
         android:orientation="vertical"
@@ -176,10 +176,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="50dp"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:singleLine="true"
                     android:enabled="false"
+                    android:gravity="center"
                     android:hint="Monday"
+                    android:singleLine="true"
                     android:textSize="15dp"
                     android:textStyle="bold" />
 
@@ -189,10 +189,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="50dp"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:singleLine="true"
                     android:enabled="false"
+                    android:gravity="center"
                     android:hint="9"
+                    android:singleLine="true"
                     android:textSize="15dp"
                     android:textStyle="bold" />
 
@@ -210,10 +210,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="50dp"
                     android:layout_weight="2"
-                    android:gravity="center"
-                    android:singleLine="true"
                     android:enabled="false"
+                    android:gravity="center"
                     android:hint="16"
+                    android:singleLine="true"
                     android:textSize="15dp"
                     android:textStyle="bold" />
             </TableRow>

@@ -1,6 +1,13 @@
+/*
+
+THIS IS TIME INDEX
+
+*/
+
 const express = require('express')
 const router = express.Router()
 const db = require('../../database/mysql')
+const admin = require("../../firebase/notification");
 
 router.get('/', (req, res) => {
 	// Send a message to the device corresponding to the provided
