@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
 	const sql = 'INSERT INTO bookings (user_id, Year, Month, Date, time_slot1, time_slot2, time_slot3, time_slot4) values (?, ?, ?, ?, ?, ?, ?, ?)';
     db.query(sql, [body.user_id, body.Year, body.Month, body.Date, body.time_slot1, body.time_slot2, body.time_slot3, body.time_slot4], (err, result) => {
         if (err) throw err;
-        res.send("" + result.insertId)
+        res.send(result)
     })
 });
 
