@@ -218,6 +218,20 @@ public class BookingActivityCourts extends Activity {
         builder.setTitle("Confirm Booking");
         builder.setMessage("Would you like to book for: " + bookingText);
 
+        JSONObject objectBooking = new JSONObject();
+        try {
+            objectBooking.put("user_id", UserInfo.getUserId());
+            objectBooking.put("Year", bookingDetails.get("year"));
+            objectBooking.put("Month", bookingDetails.get("month"));
+            objectBooking.put("Date", bookingDetails.get("day"));
+            objectBooking.put("time_slot1", bookingDetails.get("time_slot1"));
+            objectBooking.put("time_slot2", bookingDetails.get("time_slot2"));
+            objectBooking.put("time_slot3", bookingDetails.get("time_slot3"));
+            objectBooking.put("time_slot4", bookingDetails.get("time_slot4"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -241,6 +255,7 @@ public class BookingActivityCourts extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 // Updating court availability
                 JsonObjectRequest jsonObjectRequestCourts = new JsonObjectRequest(Request.Method.PUT, urlCourts, object,
                         new Response.Listener<JSONObject>() {
@@ -256,17 +271,8 @@ public class BookingActivityCourts extends Activity {
                 });
                 queue.add(jsonObjectRequestCourts);
 
-                try {
-                    object.put("user_id", UserInfo.getUserId());
-                    object.put("Year", bookingDetails.get("year"));
-                    object.put("Month", bookingDetails.get("month"));
-                    object.put("Date", bookingDetails.get("day"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
                 //Updating user booking
-                JsonObjectRequest jsonObjectRequestBookings = new JsonObjectRequest(Request.Method.POST, urlBookings, object,
+                JsonObjectRequest jsonObjectRequestBookings = new JsonObjectRequest(Request.Method.POST, urlBookings, objectBooking,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -276,7 +282,6 @@ public class BookingActivityCourts extends Activity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        goToConfirmation();
                         Log.d(TAG, error.toString());
                     }
                 });

@@ -27,9 +27,9 @@ public class BookingActivityConfirmation extends Activity {
         Bundle extras = getIntent().getExtras();
 
         if(extras != null){
-            String bookingConfirmationText = "Date: " + extras.getString("month") + "/" +
+            String bookingConfirmationText = "Booking made for \n Date: " + extras.getString("month") + "/" +
                     extras.getString("day") + "/" + extras.getString("year") +
-                    " At the following time slots:" + "\n Time Slot 1: " + extras.get("time_slot1") +
+                    "\n At the following time slots:" + "\n Time Slot 1: " + extras.get("time_slot1") +
                     "\n Time Slot 2: " + extras.get("time_slot2") +
                     "\n Time Slot 3: " + extras.get("time_slot3") +
                     "\n Time Slot 4: " + extras.get("time_slot4");
