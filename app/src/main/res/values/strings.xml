@@ -7,7 +7,7 @@
     <string name="PlayersActivity">PlayersActivity</string>
     <string name="ProfileActivity">ProfileActivity</string>
     <string name="MakeABooking">Make a Booking!</string>
-    <string name="PickADate">1. Pick a date to check availability</string>
+    <string name="PickADate">Pick a date to check availability</string>
     <string name="CheckDate"> Check Availability of Date!</string>
     <string name="TimeSlot1">Time Slot 1</string>
     <string name="TimeSlot2">Time Slot 2</string>
@@ -32,4 +32,9 @@
         <item>10</item>
     </string-array>
     <string name="NoPlayerMatch">No player matches available</string>
+    <string name="CourtAvailability">Showing available courts for: </string>
+    <string name ="BookingConfirmation1">You are all set!</string>
+    <string name="BookingConfirmation2">A bookings has been made for: </string>
+    <string name="ReturnHome">Return Home</string>
+    <string name="CheckOtherDate">Check Another Date</string>
 </resources>
