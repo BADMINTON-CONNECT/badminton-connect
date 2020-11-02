@@ -37,4 +37,5 @@
     <string name="BookingConfirmation2">A bookings has been made for: </string>
     <string name="ReturnHome">Return Home</string>
     <string name="CheckOtherDate">Check Another Date</string>
+    <string name="FindPlayers">Find Players Near You</string>
 </resources>
