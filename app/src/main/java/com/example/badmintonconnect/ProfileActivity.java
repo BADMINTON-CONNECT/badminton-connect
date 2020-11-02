@@ -1,12 +1,7 @@
 package com.example.badmintonconnect;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.text.Layout;
 import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,19 +31,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.*;
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,14 +70,26 @@ public class ProfileActivity extends AppCompatActivity {
         TableLayout availabilityTable = (TableLayout) findViewById(R.id.TableLayoutAvailability);
 
         availableWeekday = (EditText) findViewById(R.id.availableWeekday);
+        availableWeekday.setTag(availableWeekday.getKeyListener());
+        availableWeekday.setKeyListener(null);
         availableFrom = (EditText) findViewById(R.id.availableFrom);
+        availableFrom.setTag(availableFrom.getKeyListener());
+        availableFrom.setKeyListener(null);
         availableTo = (EditText) findViewById(R.id.availableTo);
+        availableTo.setTag(availableTo.getKeyListener());
+        availableTo.setKeyListener(null);
 
         buttonAddRow = (Button) findViewById(R.id.buttonAddRow);
         buttonAddRow.setOnClickListener(v -> {
             Log.d(TAG, "add Row button clicked");
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.activity_addtablerow, availabilityTable);
+            availableWeekday.setEnabled(true);
+            availableFrom.setEnabled(true);
+            availableTo.setEnabled(true);
+            availableWeekday.setFocusable(true);
+            availableFrom.setFocusable(true);
+            availableTo.setFocusable(true);
         });
 
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
@@ -118,42 +123,37 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        buttonEdit = (ImageButton) findViewById(R.id.imageButtonSettings);
+        buttonEdit = (ImageButton) findViewById(R.id.imageButtonEdit);
         buttonEdit.setOnClickListener(v -> {
             Log.d(TAG, "Clicked settings button");
             editTextUserName.setKeyListener((KeyListener) editTextUserName.getTag());
             editTextUserEmail.setKeyListener((KeyListener) editTextUserEmail.getTag());
-            availableWeekday.setEnabled(true);
-            availableFrom.setEnabled(true);
-            availableTo.setEnabled(true);
-            availableWeekday.setFocusable(true);
-            availableFrom.setFocusable(true);
-            availableTo.setFocusable(true);
-//            availableWeekday.setKeyListener((KeyListener) availableWeekday.getTag());
-//            availableFrom.setKeyListener((KeyListener) availableFrom.getTag());
-//            availableTo.setKeyListener((KeyListener) availableTo.getTag());
+            availableWeekday.setKeyListener((KeyListener) availableWeekday.getTag());
+            availableFrom.setKeyListener((KeyListener) availableFrom.getTag());
+            availableTo.setKeyListener((KeyListener) availableTo.getTag());
             spinnerUserSkillLevel.setEnabled(true);
             spinnerUserSkillLevel.setClickable(true);
-            buttonSave.setAlpha(1);
             buttonAddRow.setAlpha(1);
+            buttonSave.setAlpha(1);
         });
         buttonSave = (Button) findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(v -> {
-            valid = sendUserInfoToBackend(UserInfo.getUserId());
+            try {
+                valid = sendUserInfoToBackend(UserInfo.getUserId()) && sendUserAvailabilityToBackend(UserInfo.getUserId());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
             if(valid) {
                 Log.d(TAG, "Clicked Save Button");
-                editTextUserName.setFocusable(false);
-                editTextUserEmail.setFocusable(false);
-                availableWeekday.setEnabled(false);
-                availableFrom.setEnabled(false);
-                availableTo.setEnabled(false);
-                availableWeekday.setFocusable(false);
-                availableFrom.setFocusable(false);
-                availableTo.setFocusable(false);
+                editTextUserName.setKeyListener(null);
+                editTextUserEmail.setKeyListener(null);
+                availableWeekday.setKeyListener(null);
+                availableFrom.setKeyListener(null);
+                availableTo.setKeyListener(null);
                 spinnerUserSkillLevel.setEnabled(false);
                 spinnerUserSkillLevel.setClickable(false);
-                buttonSave.setAlpha(0);
                 buttonAddRow.setAlpha(0);
+                buttonSave.setAlpha(0);
             }
         });
 
@@ -163,11 +163,70 @@ public class ProfileActivity extends AppCompatActivity {
         updateUI(account);
     }
 
-    private void getTableContent() {
+    private String analyzeTable(ArrayList<hours_available> availabilities) throws JsonProcessingException {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         TableLayout availabilityTable = (TableLayout) findViewById(R.id.TableLayoutAvailability);
-        for(int i = 0, j = availabilityTable.getChildCount(); i < j; i++){
-
+        for(int i = 1, j = availabilityTable.getChildCount(); i < j; i++){
+            View view = availabilityTable.getChildAt(i);
+            if(view instanceof TableRow){
+                ArrayList<Integer> example = new ArrayList<>();
+                hours_available oHoursAvail = new hours_available(1, example);
+                int rowChildCount = ((TableRow) view).getChildCount();
+                int from = 0;
+                int to = 0;
+                String weekday = "";
+                boolean validFrom = false;
+                boolean validWeekday = false;
+                for(int k = 0; k < rowChildCount; k++) {
+                    View viewChild = ((TableRow) view).getChildAt(k);
+                    try {
+                        String widgetId = viewChild.getResources().getResourceEntryName(viewChild.getId());
+                        EditText editText = (EditText) viewChild;
+                        switch(widgetId) {
+                        case "availableWeekday":
+                            weekday += editText.getText().toString();
+                            break;
+                        case "availableFrom":
+                            if(editText.getText().toString() != ""){
+                                from = Integer.parseInt(editText.getText().toString());
+                                validFrom = true;
+                            }
+                            else {
+                                from = -1;
+                                sendToast("VALIDFROMTO");
+                                return "";
+                            }
+                            break;
+                        case "availableTo":
+                            if(editText.getText().toString() != "" && validFrom){
+                                to = Integer.parseInt(editText.getText().toString());
+                                oHoursAvail.setHour(from, to);
+                                validWeekday = oHoursAvail.setDay(weekday);
+                                if(!validWeekday) {
+                                    sendToast("VALIDWEEKDAY");
+                                    return "";
+                                }
+                                else{
+                                    availabilities.add(oHoursAvail);
+                                }
+                            }
+                            else {
+                                from = -1;
+                                sendToast("VALIDFROMTO");
+                                return "";
+                            }
+                            break;
+                        default:
+                            Log.d(TAG, widgetId);
+                        }
+                    } catch (Exception e){
+                        Log.d(TAG, "error finding resource id");
+                    }
+                }
+            }
         }
+        String json = ow.writeValueAsString(availabilities);
+        return json;
     }
 
     private boolean checkEmptyEditText() {
@@ -213,6 +272,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private boolean sendUserInfoToBackend(String user_ID) {
         try {
+            String json = "";
             editTextUserName = (EditText) findViewById(R.id.editTextUserName);
             editTextUserEmail = (EditText) findViewById(R.id.textViewUserEmail);
             spinnerUserSkillLevel = (Spinner) findViewById(R.id.spinnerUserSkillLevel);
@@ -227,7 +287,7 @@ public class ProfileActivity extends AppCompatActivity {
             for (index = 0; editTextUserName.getText().charAt(index) != ' '; index++) {
                 firstName += editTextUserName.getText().charAt(index);
             }
-            lastName += editTextUserName.getText().toString().substring(index, editTextUserName.getText().length());
+            lastName += editTextUserName.getText().toString().substring(index+1, editTextUserName.getText().length());
 
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             String URL = "http://40.88.38.140:8080/users/" + user_ID;
@@ -286,11 +346,59 @@ public class ProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    private boolean sendUserAvailabilityToBackend(String user_ID) throws JsonProcessingException{
+        ArrayList<hours_available> availabilities = new ArrayList<>();
+        String json = "";
+        Log.d(TAG, "this is the table before!!! " + availabilities.toString());
+        json += analyzeTable(availabilities);
+        if (json == "") {
+            return false;
+        }
+        JSONObject object1 = new JSONObject();
+        JSONArray array = new JSONArray();
+        JSONArray ja = new JSONArray();
+        JSONObject object2 = new JSONObject();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String URL = "http://40.88.38.140:8080/availability/" + user_ID;
+        JSONObject userInfo = new JSONObject();
+        try {
+            userInfo.put("hours_available", json);
+
+            array.put("1");
+            array.put("2");
+
+            object1.put("day", 1);
+            object1.put("hour", array);
+
+            ja.put(object1);
+            object2.put("available_hours", ja);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequestAvailability = new JsonObjectRequest(Request.Method.POST, URL, object2,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("JSON", String.valueOf(response));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+        requestQueue.add(jsonObjectRequestAvailability);
+        return true;
+    }
+
     private void getUserInfoFromBackend(String user_ID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL = "http://40.88.38.140:8080/users/" + user_ID;
-        Log.d(TAG, URL);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+        String usersURL = "http://40.88.38.140:8080/users/" + user_ID;
+        String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
+
+        Log.d(TAG, usersURL);
+        JsonObjectRequest usersJsonObjectRequest = new JsonObjectRequest(Request.Method.GET, usersURL, null, new Response.Listener<JSONObject>() {
             public void onResponse(JSONObject response) {
                 Log.d(TAG, "successfully received user information");
                 // parse user info
@@ -322,7 +430,41 @@ public class ProfileActivity extends AppCompatActivity {
             }
         };
 
-        requestQueue.add(jsonObjectRequest);
+//        JsonObjectRequest availabilityJsonObjectRequest = new JsonObjectRequest(Request.Method.GET, availabilityURL, null, new Response.Listener<JSONObject>() {
+//            public void onResponse(JSONObject response) {
+//                Log.d(TAG, "successfully received user information");
+//                // parse user info
+//                try {
+//                    if (user_ID == null) {
+//                        Log.d(TAG, "ERROR - userID null");
+//                    }
+//                    if(response.getString("day") == "" || response.getString("hour") == "") {
+//                        sendToast("ERROR");
+//                    }
+//                    // TODO
+//                    editTextUserName.setText(response.getString("first_name") + " " + response.getString("last_name"));
+//                    editTextUserEmail.setText(response.getString("email"));
+//                    spinnerUserSkillLevel.setSelection(response.getInt("skill"));
+//                } catch (JSONException e) {
+//                    Log.d(TAG, "user JSON Object incorrectly loaded. Check stacktrace for more information");
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d(TAG, "Unable to retrieve user information see log below for details: ");
+//                Log.d(TAG, error.toString());
+//            }
+//        }) {
+//            @Override
+//            public String getBodyContentType() {
+//                return "application/json; charset=utf-8";
+//            }
+//        };
+
+        requestQueue.add(usersJsonObjectRequest);
+//        requestQueue.add(availabilityJsonObjectRequest);
     }
 
     private void updateUI(GoogleSignInAccount account) {
@@ -348,6 +490,12 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             case "VALIDEMAIL":
                 Toast.makeText(this, "Please enter a valid email.", Toast.LENGTH_SHORT).show();
+                break;
+            case "VALIDWEEKDAY":
+                Toast.makeText(this, "Please enter a valid weekday.\nFormat should be e.g. Monday, Tuesday, Wednesday, etc.", Toast.LENGTH_SHORT).show();
+                break;
+            case "VALIDFROMTO":
+                Toast.makeText(this, "Please enter a valid availability time range.\nFormat should be in 24-hour format.", Toast.LENGTH_SHORT).show();
                 break;
             case "SAVED":
                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
