@@ -1,9 +1,11 @@
 package com.example.badmintonconnect;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -54,8 +56,45 @@ public class PlayersActivity extends Activity {
         playerEmail2 = (TextView) findViewById(R.id.player2_email);
         playerEmail3 = (TextView) findViewById(R.id.player3_email);
 
-        getPlayerIds();
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            setPlayerLocation(UserInfo.getUserId(), extras.getDouble("longitude"), extras.getDouble("latitude"));
+        }
+        else{
+            Toast.makeText(this, "An Error has Occurred", Toast.LENGTH_SHORT).show();
+            Intent homePageIntent = new Intent(PlayersActivity.this, HomePageActivity.class);
+            startActivity(homePageIntent);
+        }
 
+    }
+
+    private void setPlayerLocation(String user_ID, Double x, Double y){
+        String URL = "http://40.88.38.140:8080/users/" + user_ID;
+        JSONObject userInfo = new JSONObject();
+        // this is the json body that backend would use to get information
+        try {
+            userInfo.put("user_ID", user_ID);
+            userInfo.put("x", x);
+            userInfo.put("y", y);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, URL, userInfo, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                // Display the result (what is send from server using res.send)
+                Log.d(TAG, response.toString());
+                getPlayerIds();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
     }
 
     private void getPlayerIds(){

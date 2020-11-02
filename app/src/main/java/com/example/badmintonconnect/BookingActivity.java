@@ -84,7 +84,16 @@ public class BookingActivity extends Activity {
         Integer day = datePicker.getDayOfMonth();
         Integer month = datePicker.getMonth() + 1;
         Integer year = datePicker.getYear();
-        String date = year + "-" + month + "-" + day;
+        String dayString = day.toString();
+        String monthString = month.toString();
+        if(day < 10){
+            dayString = "0" + day;
+        }
+        if(month < 10){
+            monthString = "0" + month;
+        }
+
+        String date = year + "-" + monthString + "-" + dayString;
         LocalDate bookingDate = LocalDate.parse(date);
         LocalDate today = java.time.LocalDate.now();
 

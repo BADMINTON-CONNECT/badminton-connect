@@ -40,7 +40,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
     private LocationManager locationManager;
     private RequestQueue queue;
     private final int REQUEST_PERMISSION_LOCATION=1;
-    private Map<String, String> locationDetails;
+    private Map<String, Double> locationDetails;
     final static String TAG = "Player Location Activity";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +71,8 @@ public class PlayersLocationActivity extends Activity implements LocationListene
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        locationDetails.put("longitude", String.valueOf(location.getLongitude()));
-        locationDetails.put("latitude", String.valueOf(location.getLatitude()));
-        Log.d(TAG, locationDetails.get("longitude"));
+        locationDetails.put("longitude", location.getLongitude());
+        locationDetails.put("latitude", location.getLatitude());
     }
 
     @Override
