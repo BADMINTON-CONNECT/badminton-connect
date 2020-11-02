@@ -64,7 +64,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         findPlayersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPlayerFields("17");
+                checkPlayerFields(UserInfo.getUserId());
             }
         });
     }
@@ -119,16 +119,21 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
             public void onResponse(JSONObject response) {
                 Log.d(TAG, "successfully received user information");
+                Log.d(TAG, response.toString());
                 // parse user info
                 if (user_ID == null) {
                     Log.d(TAG, "ERROR - userID null");
                 }
-                if (response.isNull("first_name") || response.isNull("last_name") ||
-                        response.isNull("skill_level") || response.isNull("distance_preference")) {
-                    goToProfilePage();
-                }
-                else{
-                    checkPlayerAvailability(user_ID);
+                try {
+                    if (response.isNull("first_name") || response.isNull("last_name") ||
+                            response.getInt("skill_level") == 0 || response.getInt("distance_preference") == 0) {
+                        goToProfilePage();
+                    }
+                    else{
+                        checkPlayerAvailability(user_ID);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -153,6 +158,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
             public void onResponse(JSONArray response) {
                 Log.d(TAG, "successfully received availability information");
+                Log.d(TAG, response.toString());
                 // parse user info
                 if (user_ID == null) {
                     Log.d(TAG, "ERROR - userID null");
@@ -161,6 +167,14 @@ public class PlayersLocationActivity extends Activity implements LocationListene
                     goToProfilePage();
                 }
                 else{
+                    try {
+                        JSONObject obj = (JSONObject) response.get(0);
+                        if (obj.getInt("day") == -1){
+                            goToProfilePage();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     Intent findPlayersIntent = new Intent(PlayersLocationActivity.this, PlayersActivity.class);
                     findPlayersIntent.putExtra("longitude", locationDetails.get("longitude"));
                     findPlayersIntent.putExtra("latitude", locationDetails.get("latitude"));

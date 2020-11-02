@@ -69,13 +69,13 @@ public class PlayersActivity extends Activity {
     }
 
     private void setPlayerLocation(String user_ID, Double x, Double y){
-        String URL = "http://40.88.38.140:8080/users/" + user_ID;
+        String URL = "http://40.88.38.140:8080/users/location/" + user_ID;
         JSONObject userInfo = new JSONObject();
         // this is the json body that backend would use to get information
         try {
-            userInfo.put("user_ID", user_ID);
-            userInfo.put("x", x);
-            userInfo.put("y", y);
+            Log.d(TAG, String.valueOf(x));
+            userInfo.put("location_x", x);
+            userInfo.put("location_y", y);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -98,7 +98,7 @@ public class PlayersActivity extends Activity {
     }
 
     private void getPlayerIds(){
-        String url = "http://40.88.38.140:8080/availability/top10/17";
+        String url = "http://40.88.38.140:8080/availability/top10/" + UserInfo.getUserId();
         Log.d(TAG, url);
 
         // Request a json array response from the provided URL.
@@ -163,16 +163,19 @@ public class PlayersActivity extends Activity {
                 playerName1.setText(player.get("first_name").toString() + " " + player.get("last_name").toString());
                 playerEmail1.setText("Email: " + player.get("email").toString());
                 playerSkill1.setText("Skill level: " + player.get("skill_level").toString());
+                break;
             case 2:
                 playerName2.setText(player.get("first_name").toString() + " " + player.get("last_name").toString());
                 playerEmail2.setText("Email: " + player.get("email").toString());
                 playerSkill2.setText("Skill level: " + player.get("skill_level").toString());
+                break;
             case 3:
                 playerName3.setText(player.get("first_name").toString() + " " + player.get("last_name").toString());
                 playerEmail3.setText("Email: " + player.get("email").toString());
                 playerSkill3.setText("Skill level: " + player.get("skill_level").toString());
+                break;
         }
 
-
     }
+
 }
