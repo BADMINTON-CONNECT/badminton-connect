@@ -34,6 +34,16 @@ function get_all_users(req, res) {
 	*/
 }
 
+function get_userid_by_email(req, res) {
+	const sql = 'select user_id from users where email = ?';
+
+	//console.log(req.query.email)
+	return db.query(sql, [req.query.email], (err, result) => {
+	  if (err) throw err;
+	  res.send(result);
+	});
+}
+
 function get_specific_user(req, res) {
 	const sql = 'SELECT * FROM users WHERE user_id = ?';
 
@@ -42,6 +52,7 @@ function get_specific_user(req, res) {
 		res.send(row[0]);
 	  });
 }
+
 
 function delete_specific_user(req, res) {
 	const sql = 'DELETE FROM users WHERE user_id = ?';
@@ -95,6 +106,7 @@ function update_user_token(req, res) {
 	})
 }
 
+router.get('/email', get_userid_by_email);
 router.get('/', get_all_users);
 router.get('/:id', get_specific_user);
 router.delete('/:id', delete_specific_user);
@@ -104,7 +116,6 @@ router.put('/RegistrationToken/:id', update_user_token);
 
 
 module.exports = router
-module.exports.get_all_users = get_all_users
 
 // get all users
 /*
