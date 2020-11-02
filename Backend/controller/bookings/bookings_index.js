@@ -40,9 +40,19 @@ router.post('/', (req, res) => {
     })
 });
 
+// delete(cancel) an booking
+router.delete('/:id', (req, res) => {
+	const sql = 'DELETE FROM bookings WHERE booking_id = ?';
+  
+	db.query(sql, [req.params.id], (err, result) => {
+	  if (err) throw err;
+	  res.send("Deleted succesfully");
+	});
+});
 
 
-function check_bookings_near() {
+
+function notify_bookings_near() {
 	date = new Date();
 	//console.log(date.toString());
 	const current_year = date.getFullYear();
@@ -66,6 +76,8 @@ function check_bookings_near() {
 
 
 //setInterval(check_bookings_near, 1500); // this is in ms
-check_bookings_near();
+// how often do i need to call this??
+// how to prevent from users already notified to get notify again? 
+notify_bookings_near();
 
 module.exports = router
