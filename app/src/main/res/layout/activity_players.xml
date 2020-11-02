@@ -7,76 +7,8 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/player_match_name3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="David Kang"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.143"
-        app:layout_constraintStart_toEndOf="@+id/player_match_profile3"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_avail2" />
-
-    <TextView
-        android:id="@+id/player_match_avail3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Availability: Weekday Afternoons"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.578"
-        app:layout_constraintStart_toEndOf="@+id/player_match_profile3"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_skill3" />
-
-    <TextView
-        android:id="@+id/player_match_skill3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Skill Level: Advanced"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.625"
-        app:layout_constraintStart_toStartOf="@+id/player_match_profile3"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_name3" />
-
-    <TextView
-        android:id="@+id/player_match_name2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:text="Naomi Chen"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.551"
-        app:layout_constraintStart_toStartOf="@+id/player_match_profile2"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-    <TextView
-        android:id="@+id/player_match_skill2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Skill Level: Advanced"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.196"
-        app:layout_constraintStart_toEndOf="@+id/player_match_profile2"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_name2" />
-
-    <TextView
-        android:id="@+id/player_match_avail2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Availability: Weekends All-Day"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.81"
-        app:layout_constraintStart_toStartOf="@+id/player_match_profile2"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_skill2" />
-
-    <TextView
         android:id="@+id/PlayerPageTitle"
-        android:layout_width="332dp"
+        android:layout_width="339dp"
         android:layout_height="96dp"
         android:layout_marginTop="64dp"
         android:text="@string/PlayerPageHeader"
@@ -86,72 +18,218 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/player_match_profile1"
-        android:layout_width="126dp"
-        android:layout_height="128dp"
-        android:layout_marginTop="40dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/player1"
+        android:layout_width="339dp"
+        android:layout_height="130dp"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.141"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PlayerPageTitle"
-        tools:src="@drawable/placeholder_profile" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.315">
+        <!-- Main Content View -->
 
-    <ImageView
-        android:id="@+id/player_match_profile2"
-        android:layout_width="126dp"
-        android:layout_height="127dp"
-        android:layout_marginTop="28dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/player1_icon"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/defaultprofilepicture" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/player1_name"
+                    android:layout_width="189dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/NoPlayerMatch"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/player1_skill"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+
+                <TextView
+                    android:id="@+id/player1_availability"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+
+                <TextView
+                    android:id="@+id/player1_email"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/player2"
+        android:layout_width="339dp"
+        android:layout_height="130dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="283dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.141"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_profile1"
-        tools:src="@drawable/placeholder_profile" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2">
+        <!-- Main Content View -->
 
-    <ImageView
-        android:id="@+id/player_match_profile3"
-        android:layout_width="126dp"
-        android:layout_height="98dp"
-        android:layout_marginTop="36dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/player2_icon"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/defaultprofilepicture" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/player2_name"
+                    android:layout_width="189dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/NoPlayerMatch"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/player2_skill"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+
+                <TextView
+                    android:id="@+id/player2_availability"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+
+                <TextView
+                    android:id="@+id/player2_email"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/player3"
+        android:layout_width="339dp"
+        android:layout_height="130dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_profile2"
-        tools:src="@drawable/placeholder_profile" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8">
+        <!-- Main Content View -->
 
-    <TextView
-        android:id="@+id/player_match_name1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="Neo Tsai"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.129"
-        app:layout_constraintStart_toEndOf="@+id/player_match_profile1"
-        app:layout_constraintTop_toBottomOf="@+id/PlayerPageTitle" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:gravity="center">
 
-    <TextView
-        android:id="@+id/player_match_skill1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Skill Level: Advanced"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.196"
-        app:layout_constraintStart_toEndOf="@+id/player_match_profile1"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_name1" />
+            <ImageView
+                android:id="@+id/player3_icon"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/defaultprofilepicture" />
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="16dp"
-        android:text="Availability: Weekday Evenings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/player_match_profile1"
-        app:layout_constraintTop_toBottomOf="@+id/player_match_skill1" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/player3_name"
+                    android:layout_width="189dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/NoPlayerMatch"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/player3_skill"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+
+                <TextView
+                    android:id="@+id/player3_availability"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+
+                <TextView
+                    android:id="@+id/player3_email"
+                    android:layout_width="202dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="@string/NoPlayerMatch" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
