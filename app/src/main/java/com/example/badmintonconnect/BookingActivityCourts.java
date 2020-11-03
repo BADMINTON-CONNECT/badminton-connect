@@ -157,6 +157,9 @@ public class BookingActivityCourts extends Activity {
 
     }
 
+    /*
+    * @desc: this function sets the time slot spinners with the appropriate availability
+    * */
     private void setSpinners(Integer time_slot1_avail, Integer time_slot2_avail, Integer time_slot3_avail, Integer time_slot4_avail) {
         List<String> time_slot1_avail_array = new ArrayList<>();
         List<String> time_slot2_avail_array = new ArrayList<>();
@@ -199,6 +202,12 @@ public class BookingActivityCourts extends Activity {
 
     }
 
+    /*
+     * @desc: this function creates a confirmation dialogue for making a booking
+     * It checks that the booking is valid (ie. not all zeroes).
+     * Upon confirmation it calls a post request to make the booking and moves to the confirmation page.
+     * Upon cancellation it dismisses the dialogue.
+     * */
     private void makeBooking(){
         if(bookingDetails.get("time_slot1").equals("0") && bookingDetails.get("time_slot2").equals("0")
                 && bookingDetails.get("time_slot3").equals("0") && bookingDetails.get("time_slot4").equals("0")){
@@ -302,6 +311,10 @@ public class BookingActivityCourts extends Activity {
 
     }
 
+    /*
+     * @desc: This function creates an intent to go to the confirmation page and populates the
+     * booking details in the intent, so that the next page will have access to them.
+     * */
     private void goToConfirmation(){
         Intent bookingConfirmationIntent =
                 new Intent(BookingActivityCourts.this, BookingActivityConfirmation.class);
@@ -316,6 +329,9 @@ public class BookingActivityCourts extends Activity {
         startActivity(bookingConfirmationIntent);
     }
 
+    /*
+     * @desc: this function sets the time slot availability text with the appropriate availability
+     * */
     private void SetAvailabilityText(String time_slot1, String time_slot2, String time_slot3, String time_slot4){
         avail1.setText("Courts available: " + time_slot1);
         avail2.setText("Courts available: " + time_slot2);

@@ -71,12 +71,20 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         });
     }
 
+    /*
+     * @desc: this function sets the local location variables with the correct coordinates whenever
+     * location has been changed.
+     * */
     @Override
     public void onLocationChanged(@NonNull Location location) {
         locationDetails.put("longitude", location.getLongitude());
         locationDetails.put("latitude", location.getLatitude());
     }
 
+    /*
+     * @desc: this function is called after permissions have been granted. It shows toasts based
+     * on what has happened.
+     * */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -90,6 +98,10 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         }
     }
 
+    /*
+     * @desc: this function will show an explanation of why we need location permissions on this device.
+     * Upon yes it will attempt to ask for permissions, and upon no it will return the user to the home page.
+     * */
     private void showExplanation(String title, String message, String[] permissions, final int permissionCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
@@ -110,11 +122,20 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         builder.create().show();
     }
 
+    /*
+     * @desc: this function requests the location permissions from the user.
+     * */
     private void requestPermission(String[] permissions, int permissionRequestCode) {
         ActivityCompat.requestPermissions(this,
                 permissions, permissionRequestCode);
     }
 
+    /*
+     * @desc: this function checks that the player has skill level and distance preference set
+     * in their profile. In order to use the match players functionality the user must have filled these out.
+     * If these are not filled out the user is redirected to the profile page to fill them out.
+     * If they are we then check the user availability.
+     * */
     private void checkPlayerFields(String user_ID) {
         String URL = "http://40.88.38.140:8080/users/" + user_ID;
         Log.d(TAG, URL);
@@ -154,6 +175,12 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         queue.add(jsonObjectRequest);
     }
 
+    /*
+     * @desc: this function checks that the player has availability set
+     * in their profile. In order to use the match players functionality the user must have filled these out.
+     * If these are not filled out the user is redirected to the profile page to fill them out.
+     * If they are we then go to the match players page.
+     * */
     private void checkPlayerAvailability(String user_ID){
         String URL = "http://40.88.38.140:8080/availability/" + user_ID;
         Log.d(TAG, URL);
@@ -198,6 +225,10 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         queue.add(jsonArrayRequest);
     }
 
+    /*
+     * @desc: This function creates an intent to go to the profile page so that the user can
+     * correctly fill out their availability, skill level, and distance preference.
+     * */
     private void goToProfilePage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Profile Fields not set")
