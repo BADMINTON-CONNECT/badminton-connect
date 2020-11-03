@@ -37,7 +37,6 @@ import java.util.Map;
 import static android.location.LocationManager.GPS_PROVIDER;
 
 public class PlayersLocationActivity extends Activity implements LocationListener {
-    private LocationManager locationManager;
     private RequestQueue queue;
     private final int REQUEST_PERMISSION_LOCATION=1;
     private Map<String, Double> locationDetails;
@@ -51,7 +50,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         queue = Volley.newRequestQueue(this);
         findPlayersIntent = new Intent(PlayersLocationActivity.this, PlayersActivity.class);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             showExplanation("Allow location access?", "In order to use the find players"  +
