@@ -82,6 +82,17 @@ public class HomePageActivity extends AppCompatActivity{
             }
         });
 
+        ImageButton imageButtonSeeBooking = (ImageButton) findViewById(R.id.imageButtonSeeBooking);
+        imageButtonSeeBooking.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Trying to open See Bookings Page via imageButton");
+
+                Intent SeeBookingsActivity = new Intent(HomePageActivity.this, SeeBookingsActivity.class);
+                startActivity(SeeBookingsActivity);
+            }
+        });
+
         ImageButton imageButtonPlayers = (ImageButton) findViewById(R.id.imageButtonPlayers);
         imageButtonPlayers.setOnClickListener(new OnClickListener() {
             @Override
@@ -93,8 +104,8 @@ public class HomePageActivity extends AppCompatActivity{
             }
         });
 
-        ImageButton signOutbutton = (ImageButton) findViewById(R.id.logoutButton);
-        signOutbutton.setOnClickListener(new View.OnClickListener() {
+        ImageButton signOutButton = (ImageButton) findViewById(R.id.logoutButton);
+        signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mGoogleSignInClient.signOut().addOnCompleteListener(HomePageActivity.this, new OnCompleteListener<Void>() {
@@ -107,8 +118,6 @@ public class HomePageActivity extends AppCompatActivity{
                 startActivity(loginIntent);
             }
         });
-
-
     }
 
     private void sendUserToken(String token, String userId){
@@ -116,7 +125,6 @@ public class HomePageActivity extends AppCompatActivity{
         Log.d(TAG, token);
         Log.d(TAG, userId);
         String url = "http://40.88.38.140:8080/users/RegistrationToken/" + userId;
-
 
         JSONObject object = new JSONObject();
         try {
