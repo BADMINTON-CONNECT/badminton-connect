@@ -56,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText availableTo;
     private EditText availableWeekday;
     private Spinner spinnerUserSkillLevel;
+    private Spinner spinnerUserDistancePref;
     private Button buttonAddRow;
     private Button buttonSave;
     private String TAG = "LoginActivity";
@@ -79,6 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         availableTo.setKeyListener(null);
 
         buttonAddRow = (Button) findViewById(R.id.buttonAddRow);
+        buttonAddRow.setEnabled(false);
         buttonAddRow.setOnClickListener(v -> {
             Log.d(TAG, "add Row button clicked");
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -89,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
+
         // create email text and disable editing
         editTextUserEmail = (EditText) findViewById(R.id.textViewUserEmail);
         editTextUserEmail.setTag(editTextUserEmail.getKeyListener());
@@ -99,25 +102,31 @@ public class ProfileActivity extends AppCompatActivity {
         editTextUserName.setTag(editTextUserName.getKeyListener());
         editTextUserName.setKeyListener(null);
 
-        // create user skill level text and disable editing
+        // create spinner for user skill level
         spinnerUserSkillLevel = (Spinner) findViewById(R.id.spinnerUserSkillLevel);
         spinnerUserSkillLevel.setEnabled(false);
         spinnerUserSkillLevel.setClickable(false);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.skillLevel, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerUserSkillLevel.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        spinnerUserSkillLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String text = parent.getItemAtPosition(position).toString();
-            }
+        ArrayAdapter<CharSequence> adapterUserSkillLevel = ArrayAdapter.createFromResource(this, R.array.skillLevel, android.R.layout.simple_spinner_item);
+        adapterUserSkillLevel.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerUserSkillLevel.setAdapter(
+                new NothingSelectedSpinnerAdapter(
+                        adapterUserSkillLevel,
+                        R.layout.contact_spinner_row_nothing_selected,
+                        this));
+        adapterUserSkillLevel.notifyDataSetChanged();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        // create spinner for distance pref
+        spinnerUserDistancePref = (Spinner) findViewById(R.id.spinnerUserDistancePreference);
+        spinnerUserDistancePref.setEnabled(false);
+        spinnerUserDistancePref.setClickable(false);
+        ArrayAdapter<CharSequence> adapterUserDistancePref = ArrayAdapter.createFromResource(this, R.array.distancePref, android.R.layout.simple_spinner_item);
+        adapterUserDistancePref.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerUserDistancePref.setAdapter(
+                new NothingSelectedSpinnerAdapter(
+                        adapterUserDistancePref,
+                        R.layout.contact_spinner_row_nothing_selected,
+                        this));
+        adapterUserDistancePref.notifyDataSetChanged();
 
         buttonEdit = (ImageButton) findViewById(R.id.imageButtonEdit);
         buttonEdit.setOnClickListener(v -> {
@@ -125,15 +134,17 @@ public class ProfileActivity extends AppCompatActivity {
             enableTableEdit(true);
             editTextUserName.setKeyListener((KeyListener) editTextUserName.getTag());
             editTextUserEmail.setKeyListener((KeyListener) editTextUserEmail.getTag());
-            availableWeekday.setKeyListener((KeyListener) availableWeekday.getTag());
-            availableFrom.setKeyListener((KeyListener) availableFrom.getTag());
-            availableTo.setKeyListener((KeyListener) availableTo.getTag());
             spinnerUserSkillLevel.setEnabled(true);
             spinnerUserSkillLevel.setClickable(true);
+            spinnerUserDistancePref.setEnabled(true);
+            spinnerUserDistancePref.setClickable(true);
             buttonAddRow.setAlpha(1);
+            buttonAddRow.setEnabled(true);
             buttonSave.setAlpha(1);
+            buttonSave.setEnabled(true);
         });
         buttonSave = (Button) findViewById(R.id.buttonSave);
+        buttonSave.setEnabled(false);
         buttonSave.setOnClickListener(v -> {
             try {
                 valid = sendUserInfoToBackend(UserInfo.getUserId()) && sendUserAvailabilityToBackend(UserInfo.getUserId());
@@ -142,7 +153,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             if(valid) {
                 sendToast("SAVED");
-                Log.d(TAG, "Clicked Save Button");
+                enableTableEdit(false);
                 editTextUserName.setKeyListener(null);
                 editTextUserEmail.setKeyListener(null);
                 availableWeekday.setKeyListener(null);
@@ -150,8 +161,12 @@ public class ProfileActivity extends AppCompatActivity {
                 availableTo.setKeyListener(null);
                 spinnerUserSkillLevel.setEnabled(false);
                 spinnerUserSkillLevel.setClickable(false);
+                spinnerUserDistancePref.setEnabled(false);
+                spinnerUserDistancePref.setClickable(false);
                 buttonAddRow.setAlpha(0);
+                buttonAddRow.setEnabled(false);
                 buttonSave.setAlpha(0);
+                buttonSave.setEnabled(false);
             }
         });
 
@@ -176,7 +191,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 case "availableWeekday":
                                 case "availableFrom":
                                 case "availableTo":
-                                    viewChild.setOnKeyListener((View.OnKeyListener) availableWeekday.getTag());
+                                    EditText editext = (EditText) viewChild;
+                                    editext.setKeyListener((KeyListener) editTextUserEmail.getTag());
                                     break;
                                 default:
                                     Log.d(TAG, widgetId);
@@ -201,8 +217,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 case "availableWeekday":
                                 case "availableFrom":
                                 case "availableTo":
-                                    viewChild.setEnabled(false);
-                                    viewChild.setFocusable(false);
+                                    EditText editext = (EditText) viewChild;
+                                    editext.setKeyListener(null);
                                     break;
                                 default:
                                     Log.d(TAG, widgetId);
@@ -233,6 +249,23 @@ public class ProfileActivity extends AppCompatActivity {
                 boolean validFrom = false;
                 boolean validTo = false;
                 boolean validWeekday = false;
+
+                // check if row is empty:
+                View availableWeekdayViewChild = ((TableRow) view).getChildAt(0);
+                View availableFromViewChild = ((TableRow) view).getChildAt(1);
+                View availableToViewChild = ((TableRow) view).getChildAt(3);
+                EditText availableWeekdayEditText = (EditText) availableWeekdayViewChild;
+                EditText availableFromEditText = (EditText) availableFromViewChild;
+                EditText availableToEditText = (EditText) availableToViewChild;
+                Log.d(TAG, "available weekday edit text: " + availableWeekdayEditText.getText().toString().isEmpty());
+                Log.d(TAG, "available From edit text: " + availableFromEditText.getText().toString().isEmpty());
+                Log.d(TAG, "available To edit text: " + availableToEditText.getText().toString().isEmpty());
+                if(availableWeekdayEditText.getText().toString().isEmpty() && availableFromEditText.getText().toString().isEmpty() && availableToEditText.getText().toString().isEmpty()) {
+                    // delete that row:
+                    availabilityTable.removeView((TableRow) view);
+                    continue;
+                }
+
                 for(int k = 0; k < rowChildCount; k++) {
                     View viewChild = ((TableRow) view).getChildAt(k);
                     try {
@@ -275,13 +308,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                             }
                             else {
-                                if(!validWeekday && !validFrom && !validTo) {
-                                    // delete that row:
-                                    availabilityTable.removeView(view);
-                                }
-                                from = -1;
                                 sendToast("VALIDFROMTO");
-                                return null;
                             }
                             break;
                         default:
@@ -297,6 +324,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void populateAvailabilityTable(JSONArray dbTable) {
+        Log.d(TAG, "dbTable: " + dbTable);
+        Log.d(TAG, "dbTable.Length: " + dbTable.length());
+
         if(dbTable.length() == 0) {
             sendToast("AVAILEMPTY");
             return;
@@ -330,14 +360,25 @@ public class ProfileActivity extends AppCompatActivity {
                         EditText editText = (EditText) viewChild;
                         switch(widgetId) {
                             case "availableWeekday":
+                                editText.setKeyListener(null);
                                 editText.setText(getWeekday(obj.getInt("day")));
                                 Log.d(TAG, "avaialbleWeekday: " + getWeekday(obj.getInt("day")));
                                 break;
                             case "availableFrom":
+                                if(array.length() == 0 || array == null){
+                                    sendToast("VALIDFROMTO");
+                                    break;
+                                }
+                                editText.setKeyListener(null);
                                 editText.setText(array.get(0).toString());
                                 Log.d(TAG, "available From: " + array.get(0).toString());
                                 break;
                             case "availableTo":
+                                if(array.length() == 0 || array == null){
+                                    sendToast("VALIDFROMTO");
+                                    break;
+                                }
+                                editText.setKeyListener(null);
                                 editText.setText(array.get(array.length()-1).toString());
                                 Log.d(TAG, "avaialble to: " + array.get(array.length()-1).toString());
                                 break;
@@ -452,6 +493,7 @@ public class ProfileActivity extends AppCompatActivity {
             userInfo.put("last_name", lastName);
             userInfo.put("email", editTextUserEmail.getText().toString());
             userInfo.put("skill_level", spinnerUserSkillLevel.getSelectedItem());
+            userInfo.put("distance_preference", spinnerUserDistancePref.getSelectedItem());
             final String mRequestBody = userInfo.toString();
 
             StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL, new Response.Listener<String>() {
@@ -535,7 +577,6 @@ public class ProfileActivity extends AppCompatActivity {
         String usersURL = "http://40.88.38.140:8080/users/" + user_ID;
         String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
 
-        Log.d(TAG, usersURL);
         JsonObjectRequest usersJsonObjectRequest = new JsonObjectRequest(Request.Method.GET, usersURL, null, new Response.Listener<JSONObject>() {
             public void onResponse(JSONObject response) {
                 Log.d(TAG, "successfully received user information");
@@ -550,6 +591,8 @@ public class ProfileActivity extends AppCompatActivity {
                     editTextUserName.setText(response.getString("first_name") + " " + response.getString("last_name"));
                     editTextUserEmail.setText(response.getString("email"));
                     spinnerUserSkillLevel.setSelection(response.getInt("skill_level"));
+                    spinnerUserDistancePref.setSelection(response.getInt("distance_preference"));
+
                 } catch (JSONException e) {
                     Log.d(TAG, "user JSON Object incorrectly loaded. Check stacktrace for more information");
                     e.printStackTrace();
