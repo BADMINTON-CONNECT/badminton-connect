@@ -39,22 +39,23 @@ router.get("/:id", (req, res) => {
 		}
 
 		for (var entry in result) {
-
-			// The first entry does not need to be compared to anything
-			if (entry === 0) {
-				day = result[entry].day;
-				hours.push(result[entry].hour);
-			} 
-			// If the current day is the same as the last, add the hour to the array
-			else if (day === result[entry].day) {
-				hours.push(result[entry].hour);
-			} 
-			// If the current day is different to the last, add the array of the last day and reset
-			else {
-				day_of_week.push({"day": day, "hours": hours});
-				hours = [result[entry].hour];
-				// hours.push(result[entry].hour);
-				day = result[entry].day;
+			if (Object.prototype.hasOwnProperty.call(result, entry)) {
+				// The first entry does not need to be compared to anything
+				if (entry === 0) {
+					day = result[entry].day;
+					hours.push(result[entry].hour);
+				} 
+				// If the current day is the same as the last, add the hour to the array
+				else if (day === result[entry].day) {
+					hours.push(result[entry].hour);
+				} 
+				// If the current day is different to the last, add the array of the last day and reset
+				else {
+					day_of_week.push({"day": day, "hours": hours});
+					hours = [result[entry].hour];
+					// hours.push(result[entry].hour);
+					day = result[entry].day;
+				}
 			}
 		}
 
@@ -95,15 +96,20 @@ router.post("/:id", (req, res) => {
 
 			// For each hour given, make an entry into the database
 			for(var day in body.hours_available) {
-				for(var hour in body.hours_available[day].hour) {
+				if (Object.prototype.hasOwnProperty.call(body.hours_available, day)) {
+					
+					for(var hour in body.hours_available[day].hour) {
+						if (Object.prototype.hasOwnProperty.call(body.hours_available[day].hour, hour)) {
 
-					db.query(sql_ins, [req.params.id, body.hours_available[day].day,
-						body.hours_available[day].hour[hour], row[0].skill_level, row[0].location_x,
-						row[0].location_y, row[0].distance_preference], (err, result) => {
-						if (err) {
-							throw err;
+							db.query(sql_ins, [req.params.id, body.hours_available[day].day,
+								body.hours_available[day].hour[hour], row[0].skill_level, row[0].location_x,
+								row[0].location_y, row[0].distance_preference], (err, result) => {
+								if (err) {
+									throw err;
+								}
+							});
 						}
-					});
+					}
 				}
 			}
 		});
@@ -175,39 +181,41 @@ router.get("/top10/:id", (req, res) => {
 		}
 
 		for(var entry in result) {
+			if (Object.prototype.hasOwnProperty.call(result, entry)) {
 
-			// Skip calculations on the first entry
-			if (entry === 0) {
-				// Set the first user up on the match_points array, which will be used to find the top 10 scores
-				// skill_muliplier will get their multiplier based on how different their skill levels are
-				match_points.push({"id": result[0].matched_player, "score": skill_multiplier(result[0].skill_diff)});
-				last_user = result[0].matched_player;
-				index++;
-				consecutive = 1;
-			} 
-			// Check for when the current user is different, then calculate their score
-			else if (result[entry].matched_player !== last_user) {
-				// Multiply the total points from all matching hours, and multiply it to the skill multiplier
-				match_points[index].score *= (points_total + consec_score(consecutive));
-				// Reset points and consecutive hours
-				points_total = 0;
-				consecutive = 1;
-				// Add the next user to match_points and increment index for that array
-				match_points.push({"id": result[entry].matched_player, "score": skill_multiplier(result[entry].skill_diff)});
-				last_user = result[entry].matched_player;
-				index++;
-			} 
-			else {
-				
-				// Check if the day has changed or the hours are no longer consecutive
-				if (result[entry-1].day !== result[entry].day || (result[entry-1].hour + 1) != result[entry].hour) {
-					// Calculate the score for that number of consecutive hours and reset consecutive
-					points_total += consec_score(consecutive);
+				// Skip calculations on the first entry
+				if (entry === 0) {
+					// Set the first user up on the match_points array, which will be used to find the top 10 scores
+					// skill_muliplier will get their multiplier based on how different their skill levels are
+					match_points.push({"id": result[0].matched_player, "score": skill_multiplier(result[0].skill_diff)});
+					last_user = result[0].matched_player;
+					index++;
 					consecutive = 1;
 				} 
-				// If we got here, that means the hours were consecutive
+				// Check for when the current user is different, then calculate their score
+				else if (result[entry].matched_player !== last_user) {
+					// Multiply the total points from all matching hours, and multiply it to the skill multiplier
+					match_points[index].score *= (points_total + consec_score(consecutive));
+					// Reset points and consecutive hours
+					points_total = 0;
+					consecutive = 1;
+					// Add the next user to match_points and increment index for that array
+					match_points.push({"id": result[entry].matched_player, "score": skill_multiplier(result[entry].skill_diff)});
+					last_user = result[entry].matched_player;
+					index++;
+				} 
 				else {
-					consecutive++;
+					
+					// Check if the day has changed or the hours are no longer consecutive
+					if (result[entry-1].day !== result[entry].day || (result[entry-1].hour + 1) !== result[entry].hour) {
+						// Calculate the score for that number of consecutive hours and reset consecutive
+						points_total += consec_score(consecutive);
+						consecutive = 1;
+					} 
+					// If we got here, that means the hours were consecutive
+					else {
+						consecutive++;
+					}
 				}
 			}
 		}
