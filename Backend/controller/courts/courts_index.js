@@ -44,39 +44,54 @@ router.put('/', (req, res) => {
 
 // set up court stats a week in advance 
 function add_court_date() {
-	const sql = 'INSERT INTO courts (year, month, date, time_slot1, time_slot2, time_slot3, time_slot4) VALUES (?, ?, ?, 10, 10, 10, 10)'
+	const sql = 'INSERT IGNORE INTO courts (year, month, date, time_slot1, time_slot2, time_slot3, time_slot4) VALUES (?, ?, ?, 10, 10, 10, 10)'
 
-	date = new Date();
-	date.setDate(d.getDate() + 7);
+	var date = new Date();
+	date.setDate(date.getDate() + 7);
+
 	const current_year = date.getFullYear();
 	const current_month = date.getMonth(); // month is 0 indexed
 	const current_date = date.getDate();
 
-	db.query(sql, [current_year, current_month+1, current_date], (err, row) => {
+	db.query(sql, [current_year, current_month+1, current_date], (err, result) => {
 		if (err) throw err;
-		console.log("Inserted court for: " + date.toString());
+
+		if (result.affectedRows == 0 && result.warningCount == 1) {
+			console.log("Court for " + date.toString() + " already exists");
+		}
+		else {
+			console.log("Inserted court for: " + date.toString());
+		}
+		
 	})
+
 }
 
-// setInterval(add_court_date, DAILY); 
+setInterval(add_court_date, DAILY);
 
 
-// delete court that's a week old? 
+// delete court that's 2 weeks old
 function delete_court() {
 	const sql = 'DELETE FROM courts WHERE year = ? AND month = ? AND date = ?';
 
-	date = new Date();
-	date.setDate(d.getDate() - 7);
+	var date = new Date();
+	date.setDate(date.getDate() - 14);
 	const current_year = date.getFullYear();
 	const current_month = date.getMonth(); // month is 0 indexed
 	const current_date = date.getDate();
 
-	db.query(sql, [current_year, current_month+1, current_date], (err, row) => {
+	db.query(sql, [current_year, current_month+1, current_date], (err, result) => {
 		if (err) throw err;
-		console.log("Deleted court for: " + date.toString());
+
+		if (result.affectedRows == 0) {
+			console.log("Court for: " + date.toString() + " does not exist");
+		}
+		else {
+			console.log("Deleted court for: " + date.toString());
+		}
 	})
 }
 
-// setInterval(add_court_date, DAILY); 
+setInterval(delete_court, DAILY);
 
 module.exports = router
