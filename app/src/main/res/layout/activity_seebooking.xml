@@ -1,20 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/court" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="355dp"
+        android:layout_height="503dp"
+        android:alpha="0.9"
+        android:background="#ffffff"
         android:orientation="vertical"
-        android:layout_marginTop="500dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="match_parent"
             android:fillViewport="true">
 
             <LinearLayout
@@ -24,76 +42,120 @@
 
                 <TableLayout
                     android:id="@+id/TableLayoutAvailability"
-                    android:layout_width="wrap_content"
+                    android:layout_width="342dp"
                     android:layout_height="wrap_content">
 
-                    <TableRow android:layout_width="match_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="50dp"
-                            android:layout_marginRight="50dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Weekday"
-                            android:textStyle="bold" />
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
-                            android:layout_marginRight="50dp"
-                            android:layout_weight="2"
-                            android:gravity="center"
-                            android:text="Available Times"
-                            android:textStyle="bold" />
-                    </TableRow>
-
-                    <TableRow>
-
-                        <EditText
-                            android:id="@+id/availableWeekday"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="50dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_weight="1.5"
-                            android:gravity="center"
-                            android:hint="Monday"
-                            android:singleLine="true"
-                            android:textSize="15dp"
-                            android:textStyle="bold" />
-
-                        <EditText
-                            android:id="@+id/availableFrom"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_marginRight="20dp"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:hint="9"
-                            android:singleLine="true"
-                            android:textSize="15dp"
+                            android:paddingLeft="30dp"
+                            android:paddingRight="30dp"
+                            android:text="Date"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/to"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="2"
                             android:gravity="center"
-                            android:text="to"
+                            android:text="Slot 1"
                             android:textStyle="bold" />
 
-                        <EditText
-                            android:id="@+id/availableTo"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:text="Slot 2"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:text="Slot 3"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:text="Slot 4"
+                            android:textStyle="bold" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp">
+
+                        <TextView
+                            android:id="@+id/date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:hint="16"
-                            android:singleLine="true"
-                            android:textSize="15dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/slot1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/slot2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/slot3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/slot4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
                             android:textStyle="bold" />
                     </TableRow>
                 </TableLayout>
@@ -104,5 +166,28 @@
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewEmptyTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="350dp"
+        android:gravity="center"
+        android:text="No Courts Booked\n(You book courts on the Bookings Page)"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewEmptyTable"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/nocourts"
+        app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

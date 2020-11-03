@@ -482,7 +482,6 @@ public class ProfileActivity extends AppCompatActivity {
             boolean validEntry = checkEmptyEditText();
 
             editTextUserName = (EditText) findViewById(R.id.editTextUserName);
-            editTextUserEmail = (EditText) findViewById(R.id.textViewUserEmail);
             spinnerUserSkillLevel = (Spinner) findViewById(R.id.spinnerUserSkillLevel);
 
             RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -502,7 +501,6 @@ public class ProfileActivity extends AppCompatActivity {
             userInfo.put("user_ID", user_ID);
             userInfo.put("first_name", firstName);
             userInfo.put("last_name", lastName);
-            userInfo.put("email", editTextUserEmail.getText().toString());
             userInfo.put("skill_level", spinnerUserSkillLevel.getSelectedItem());
             userInfo.put("distance_preference", spinnerUserDistancePref.getSelectedItem());
             final String mRequestBody = userInfo.toString();
