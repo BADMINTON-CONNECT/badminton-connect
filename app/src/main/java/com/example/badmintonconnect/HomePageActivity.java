@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -29,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -86,7 +88,7 @@ public class HomePageActivity extends AppCompatActivity{
             public void onClick(View v) {
                 Log.d(TAG, "Trying to open Players via imageButton");
 
-                Intent playersIntent = new Intent(HomePageActivity.this, PlayersActivity.class);
+                Intent playersIntent = new Intent(HomePageActivity.this, PlayersLocationActivity.class);
                 startActivity(playersIntent);
             }
         });
@@ -140,75 +142,56 @@ public class HomePageActivity extends AppCompatActivity{
     }
 
     private void fetchUserId(GoogleSignInAccount account) {
-        try {
-            String URL = "http://40.88.38.140:8080/users";
-            JSONObject userInfo = new JSONObject();
-            Log.d(TAG, account.getEmail());
-            userInfo.put("email", account.getEmail());
-            final String mRequestBody = userInfo.toString();
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d(TAG, "successfully retrieved userID");
-                    UserInfo.setUserId(response);
-                    //get firebase id
-                    FirebaseMessaging.getInstance().getToken()
-                            .addOnCompleteListener(new OnCompleteListener<String>() {
-                                @Override
-                                public void onComplete(@NonNull Task<String> task) {
-                                    if (!task.isSuccessful()) {
-                                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                                        return;
-                                    }
+        Log.d(TAG, account.getEmail());
 
-                                    // Get new FCM registration token
-                                    String token = task.getResult();
+        String URL = "http://40.88.38.140:8080/users/email?email=" + account.getEmail();
 
-                                    // Log and toast
-                                    Log.d(TAG, token);
-                                    sendUserToken(token, UserInfo.getUserId());
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.d(TAG, "successfully retrieved userID");
+                try {
+                    JSONObject obj = (JSONObject) response.get(0);
+                    Log.d(TAG, obj.get("user_id").toString());
+                    UserInfo.setUserId(obj.get("user_id").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //get firebase id
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                                    return;
                                 }
-                            });
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, error.toString());
-                }
-            }) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
 
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    try {
-                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                    } catch (UnsupportedEncodingException uee) {
-                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                        return null;
-                    }
-                }
+                                // Get new FCM registration token
+                                String token = task.getResult();
 
-                @Override
-                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                    String responseString = "";
-                    if (response != null) {
-                        //responseString = String.valueOf(response.statusCode);
-                        return super.parseNetworkResponse(response);
-                    }
-                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                }
-            };
+                                // Log and toast
+                                Log.d(TAG, token);
+                                sendUserToken(token, UserInfo.getUserId());
+                            }
+                        });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
 
-            queue.add(stringRequest);
+        };
 
-        } catch (JSONException e) {
-            Log.d(TAG, "error");
-            e.printStackTrace();
-        }
+        queue.add(jsonArrayRequest);
+
 
     }
 }

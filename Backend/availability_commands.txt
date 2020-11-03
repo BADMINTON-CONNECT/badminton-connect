@@ -7,17 +7,16 @@ FROM (
     us2.user_id as user2,
     us1.day,
     us2.hour,
-    abs(us1.skill - us2.skill) AS skill_diff,
-    location formula AS distance
+    abs(us1.skill - us2.skill) AS skill_diff
     FROM availability us1
     JOIN availability us2
-        on us2.user_id != us2.user_id
+        on us1.user_id != us2.user_id
         AND us1.day = us2.day
         AND us1.hour = us2.hour
-    where user1 = ?
-        AND (distance <= us1.max_dist AND distance <= us2.max_dist)
-        ORDER BY user_id asc, day asc, hour asc
-);
+    where us1.user_id = 46
+        AND (2 <= us1.max_dist AND 2 <= us2.max_dist)
+        ORDER BY us2.user_id asc, day asc, hour asc
+) as matches;
 
 // No distance yet
 
@@ -37,33 +36,132 @@ FROM (
         ON us1.user_id != us2.user_id
         AND us1.day = us2.day
         AND us1.hour = us2.hour
-    WHERE availability.user_id = 1
+    WHERE us1.user_id = 46
         AND (2 <= us1.max_dist AND 2 <= us2.max_dist)
-        ORDER BY user_id asc, day asc, hour asc
+        ORDER BY us2.user_id asc, day asc, hour asc
 ) AS Matches;
 
 //No odering or user select yet
 
-SELECT user1,
+SELECT user1, user2, day, hour, skill_diff
+FROM (
+    SELECT user1,
     user2,
     day,
     hour,
-    skill_diff
+    skill,
+    (MY Formula) as dist_diff,
+    FROM (
+        SELECT us1.user_id as user1,
+        us2.user_id as user2,
+        us1.day,
+        us1.hour,
+        us1.skill,
+        us2.location_x,
+        us2.location_y,
+        us2.max_dist,
+        FROM availability us1
+        JOIN availability us2
+        ON us1.user_id != us2.user_id
+        AND us1.day = us2.day
+        AND us1.hour = us2.hour
+        WHERE us1.user_id = 46
+        ORDER BY us2.user_id asc, day asc, hour asc
+    )
+    WHERE (dist_diff <= us1.max_dist AND dist_diff <= us2.max_dist)
+    )  
+) AS Matches;
+
+SELECT us1.user_id as user1,
+us2.user_id as user2,
+us1.day,
+us1.hour,
+(us1.skill - us2.skill) as skill_diff,
+us1.location_x as lon1,
+us1.location_y as lat1,
+us1.max_dist as d1,
+us2.location_x as lon2,
+us2.location_y as lat2,
+us2.max_dist as d2
+FROM availability us1
+JOIN availability us2
+ON us1.user_id != us2.user_id
+AND us1.day = us2.day
+AND us1.hour = us2.hour
+WHERE us1.user_id = 46
+ORDER BY us2.user_id asc, day asc, hour asc
+
+SELECT user1,
+user2,
+day,
+hour,
+skill_diff,
+(NVL(6387.7,0) * ACOS((sin(NVL(lat1,0) / 57.29577951) * SIN(NVL(lat2,0) / 57.29577951)) +
+    (COS(NVL(lat1,0) / 57.29577951) * COS(NVL(lat2,0) / 57.29577951) *
+    COS(NVL(lon2,0) / 57.29577951 - NVL(lon1,0)/ 57.29577951)))) as dist_diff
+FROM (Previous Call)
+WHERE (dist_diff <= d1 AND dist_diff <= d2)
+
+SELECT user1,
+user2,
+day,
+hour,
+skill_diff,
+(6387.7 * ACOS((sin(lat1 / 57.29577951) * SIN(lat2 / 57.29577951)) +
+    (COS(lat1 / 57.29577951) * COS(lat2 / 57.29577951) *
+    COS(lon2 / 57.29577951 - lon1/ 57.29577951)))) as dist_diff
 FROM (
     SELECT us1.user_id as user1,
     us2.user_id as user2,
     us1.day,
-    us2.hour,
-    abs(us1.skill - us2.skill) AS skill_diff
+    us1.hour,
+    (us1.skill - us2.skill) as skill_diff,
+    us1.location_x as lon1,
+    us1.location_y as lat1,
+    us1.max_dist as d1,
+    us2.location_x as lon2,
+    us2.location_y as lat2,
+    us2.max_dist as d2
     FROM availability us1
     JOIN availability us2
-        ON us1.user_id != us2.user_id
-        AND us1.day = us2.day
-        AND us1.hour = us2.hour
-    WHERE us1.user_id = 17
-    AND (2 <= us1.max_dist AND 2 <= us2.max_dist)
+    ON us1.user_id != us2.user_id
+    AND us1.day = us2.day
+    AND us1.hour = us2.hour
+    WHERE us1.user_id = 46
     ORDER BY us2.user_id asc, day asc, hour asc
-) AS Matches;
+) as Matches
+WHERE (dist_diff <= d1 AND dist_diff <= d2);
+
+SELECT user2 as matched_player,
+day,
+hour,
+skill_diff
+FROM (
+    SELECT us1.user_id as user1,
+    us2.user_id as user2,
+    us1.day,
+    us1.hour,
+    us1.max_dist as d1,
+    us2.max_dist as d2,
+    (us1.skill - us2.skill) as skill_diff,
+    (6387.7 * ACOS((sin(us1.location_y / 57.29577951) * SIN(us2.location_y / 57.29577951)) +
+    (COS(us1.location_y / 57.29577951) * COS(us2.location_y / 57.29577951) *
+    COS(us2.location_x / 57.29577951 - us1.location_x/ 57.29577951)))) as dist_diff
+    FROM availability us1
+    JOIN availability us2
+    ON us1.user_id != us2.user_id
+    AND us1.day = us2.day
+    AND us1.hour = us2.hour
+    WHERE us1.user_id = 46
+    ORDER BY us2.user_id asc, day asc, hour asc
+) as Matches
+WHERE (dist_diff <= d1 AND dist_diff <= d2);
+
+(Radians(x2 - x1)) as dlon,
+(Radians(y2 - y1)) as dlat,
+(Math.Sin(dlat / 2) * Math.Sin(dlat / 2)) + Math.Cos(Radians(y1)) * Math.Cos(Radians(y2)) * (Math.Sin(dlon/2) * Math.Sin(dlon /2))) as suba,
+(2 * Math.Atan2(Math.Sqrt(a), Math.Srt(1-a))) as angle,
+(angle * 6378.16) as dist_diff,
 
 
 app.get('/users', (req, res) => {
@@ -142,3 +240,23 @@ app.post('/availability', (req, res) => {
     "user_id" : ["number"]
     "hours_available": {"Monday":["1","7","14"],"Tuesday":["3"],"Wednesday":["6","7","8"],"Thursday":["14","18"]}
 }
+
+CREATE OR REPLACE FUNCTION distance (Lat1 IN NUMBER,
+                                     Lon1 IN NUMBER,
+                                     Lat2 IN NUMBER,
+                                     Lon2 IN NUMBER) RETURN NUMBER IS
+ -- Convert degrees to radians
+ 57.29577951 NUMBER := 57.29577951;
+
+BEGIN
+  RETURN(NVL(6387.7,0) * ACOS((sin(NVL(Lat1,0) / 57.29577951) * SIN(NVL(Lat2,0) / 57.29577951)) +
+        (COS(NVL(Lat1,0) / 57.29577951) * COS(NVL(Lat2,0) / 57.29577951) *
+         COS(NVL(Lon2,0) / 57.29577951 - NVL(Lon1,0)/ 57.29577951))));
+END;
+
+CREATE OR REPLACE FUNCTION distance (Lat1 DOUBLE, Lon1 DOUBLE, Lat2 DOUBLE, Lon2 DOUBLE)
+RETURN DOUBLE DETERMINISTIC
+
+RETURN(NVL(6387.7,0) * ACOS((sin(NVL(Lat1,0) / 57.29577951) * SIN(NVL(Lat2,0) / 57.29577951)) +
+(COS(NVL(Lat1,0) / 57.29577951) * COS(NVL(Lat2,0) / 57.29577951) *
+COS(NVL(Lon2,0) / 57.29577951 - NVL(Lon1,0)/ 57.29577951))));
