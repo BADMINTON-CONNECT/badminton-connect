@@ -37,14 +37,14 @@ function get_specific_user(id) {
 	return new Promise( (resolve, reject) => {
         console.log(users_db[17].first_name);
         resolve(users_db[id]);
-    })
+    });
 }
 
 function delete_specific_user(id) {
 	return new Promise( (resolve, reject) => {
         // maybe splice it? 
         resolve("Deleted succesfully");
-    })
+    });
 }
 
 module.exports = users;

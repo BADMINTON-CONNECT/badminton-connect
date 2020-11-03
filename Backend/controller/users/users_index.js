@@ -55,7 +55,8 @@ function delete_specific_user(req, res) {
 	const sql = "DELETE FROM users WHERE user_id = ?";
 
 	return db.query(sql, [req.params.id], (err, result) => {
-		if (err) throw err;
+		if (err) {throw err;
+		}
 		res.send("Deleted succesfully");
 	});
 }
@@ -79,7 +80,7 @@ function insert_user(req, res) {
 					if (err) throw err;
 					console.log("user already exist at user id: " + row[0].user_id);
 					res.send("" + row[0].user_id);
-				})
+				});
 			}
 			else {
 				// if not already exists, insert and return the user_id
@@ -97,7 +98,7 @@ function update_user_info(req, res) {
     return db.query(sql, [body.first_name, body.last_name, body.email, body.skill_level, body.distance_preference, req.params.id], (err, result) => {
         if (err) throw err;
         res.send(result);
-    })
+    });
 }
 
 function update_user_location(req, res) {
@@ -107,7 +108,7 @@ function update_user_location(req, res) {
     return db.query(sql, [body.location_x, body.location_y, req.params.id], (err, result) => {
         if (err) throw err;
         res.send(result);
-    })
+    });
 }
 
 function update_user_token(req, res) {
@@ -117,7 +118,7 @@ function update_user_token(req, res) {
 	return db.query(sql, [body.Registration_Token, req.params.id], (err, result) => {
 		if (err) throw err;
 		res.send(result);
-	})
+	});
 }
 
 router.get("/email", get_userid_by_email);

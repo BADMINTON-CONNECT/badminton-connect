@@ -1,5 +1,4 @@
 const dut = require("../users_index");
-//const db = require("../../../database/mysql")
 jest.mock("../users_index");
 
 
@@ -39,7 +38,7 @@ const all_users = {
         skill_level: 6,
         distance_preference: 20
     }
-}
+};
 
 /*
 beforeAll(async() => {
@@ -58,7 +57,7 @@ test("Testing get all request", () => {
     expect.assertions(1);
     return dut.get_all_users(req, res).then( (data) => {
         expect(data).toEqual(all_users);
-    })
+    });
     
 });
 
