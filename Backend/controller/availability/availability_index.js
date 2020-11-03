@@ -4,19 +4,21 @@ THIS IS AVAILABILITY INDEX
 
 */
 
-const express = require('express')
-const router = express.Router()
-const db = require('../../database/mysql')
+const express = require("express");
+const router = express.Router();
+const db = require("../../database/mysql");
 
 // Simple request to see the database
-router.get('/', (req, res) => {
-	const sql = 'SELECT DISTINCT * FROM availability ORDER BY day asc, hour asc';
+router.get("/", (req, res) => {
+	const sql = "SELECT DISTINCT * FROM availability ORDER BY day asc, hour asc";
 
 	db.query(sql, (err, result) => {
-		if (err) throw err;
+		if (err) {
+			throw err;
+		}
 		res.send(result);
-	})
-})
+	});
+});
 
 /*
 	Request to see the availability from a select user.
@@ -25,24 +27,26 @@ router.get('/', (req, res) => {
 	Front end also requested the response be formated the same as how it's given
 	so here the data is formated into a "jason" array
 */
-router.get('/:id', (req, res) => {
-	const sql = 'SELECT DISTINCT day, hour FROM availability WHERE user_id = ? ORDER BY day asc, hour asc';
+router.get("/:id", (req, res) => {
+	const sql = "SELECT DISTINCT day, hour FROM availability WHERE user_id = ? ORDER BY day asc, hour asc";
 	var day_of_week = [];
 	var hours = [];
 	var day = -1;
 
 	db.query(sql, [req.params.id], (err, result) => {
-		if (err) throw err;
+		if (err) {
+			throw err;
+		}
 
 		for (var entry in result) {
 
 			// The first entry does not need to be compared to anything
-			if (entry == 0) {
+			if (entry === 0) {
 				day = result[entry].day;
 				hours.push(result[entry].hour);
 			} 
 			// If the current day is the same as the last, add the hour to the array
-			else if (day == result[entry].day) {
+			else if (day === result[entry].day) {
 				hours.push(result[entry].hour);
 			} 
 			// If the current day is different to the last, add the array of the last day and reset
@@ -64,26 +68,30 @@ router.get('/:id', (req, res) => {
 			res.send(day_of_week);
 		}
 	})
-})
+});
 
 /*
 	Post request to update user availability. It is expensive to compare their new
 	schedule to their old schedule, so instead of doing that we delete the old schedule
 	and insert the new one.
 */
-router.post('/:id', (req, res) => {
-	const sql_get = 'SELECT * FROM users WHERE user_id = ?';
-	const sql_ins = 'INSERT INTO availability (user_id,day,hour,skill,location_x,location_y,max_dist) VALUES (?,?,?,?,?,?,?)';
-	const sql_del = 'DELETE FROM availability WHERE user_id = ?';
+router.post("/:id", (req, res) => {
+	const sql_get = "SELECT * FROM users WHERE user_id = ?";
+	const sql_ins = "INSERT INTO availability (user_id,day,hour,skill,location_x,location_y,max_dist) VALUES (?,?,?,?,?,?,?)";
+	const sql_del = "DELETE FROM availability WHERE user_id = ?";
 	var body = req.body;
 
 	// Get the information for the user from the users database
 	db.query(sql_get, [req.params.id], (err, row) => {
-		if (err) throw err;
+		if (err) {
+			throw err;
+		}
 
 		// Delete the old schedule of the user
 		db.query(sql_del, [req.params.id], (err, result) => {
-			if (err) throw err;
+			if (err) {
+				throw err;
+			}
 
 			// For each hour given, make an entry into the database
 			for(var day in body.hours_available) {
@@ -92,7 +100,9 @@ router.post('/:id', (req, res) => {
 					db.query(sql_ins, [req.params.id, body.hours_available[day].day,
 						body.hours_available[day].hour[hour], row[0].skill_level, row[0].location_x,
 						row[0].location_y, row[0].distance_preference], (err, result) => {
-						if (err) throw err;
+						if (err) {
+							throw err;
+						}
 					});
 				}
 			}
@@ -103,23 +113,23 @@ router.post('/:id', (req, res) => {
 });
 
 // From all players find the 10 (currently top 3) players that are the most compatible with the user
-router.get('/top10/:id', (req, res) => {
+router.get("/top10/:id", (req, res) => {
 
 	// SQL call which grabs all users that have an overlaping time with a given user
 	// From all those users, only return the users who are within each other user's max distance
-	sql_get = 'SELECT DISTINCT user2 as matched_player, day, hour, skill_diff ' 
-	+ 'FROM ('
-	+ 'SELECT us1.user_id as user1, us2.user_id as user2, us1.day, us1.hour, '
-	+ 'us1.max_dist as d1, us2.max_dist as d2, (us1.skill - us2.skill) as skill_diff, '
-	+ '(6387.7 * ACOS((sin(us1.location_y / 57.29577951) * SIN(us2.location_y / 57.29577951)) + '
-    + '(COS(us1.location_y / 57.29577951) * COS(us2.location_y / 57.29577951) * '
-	+ 'COS(us2.location_x / 57.29577951 - us1.location_x/ 57.29577951)))) as dist_diff '
-	+ 'FROM availability us1 JOIN availability us2 ON us1.user_id != us2.user_id '
-	+ 'AND us1.day = us2.day AND us1.hour = us2.hour '
-	+ 'WHERE us1.user_id = ? '
-	+ 'ORDER BY us2.user_id asc, day asc, hour asc '
-	+ ') as Matches '
-	+ 'WHERE (dist_diff <= d1 AND dist_diff <= d2)';
+	sql_get = "SELECT DISTINCT user2 as matched_player, day, hour, skill_diff " 
+	+ "FROM ("
+	+ "SELECT us1.user_id as user1, us2.user_id as user2, us1.day, us1.hour, "
+	+ "us1.max_dist as d1, us2.max_dist as d2, (us1.skill - us2.skill) as skill_diff, "
+	+ "(6387.7 * ACOS((sin(us1.location_y / 57.29577951) * SIN(us2.location_y / 57.29577951)) + "
+    + "(COS(us1.location_y / 57.29577951) * COS(us2.location_y / 57.29577951) * "
+	+ "COS(us2.location_x / 57.29577951 - us1.location_x/ 57.29577951)))) as dist_diff "
+	+ "FROM availability us1 JOIN availability us2 ON us1.user_id != us2.user_id "
+	+ "AND us1.day = us2.day AND us1.hour = us2.hour "
+	+ "WHERE us1.user_id = ? "
+	+ "ORDER BY us2.user_id asc, day asc, hour asc "
+	+ ") as Matches "
+	+ "WHERE (dist_diff <= d1 AND dist_diff <= d2)";
 	
 	var last_user = -1;
 	var index = -1;
@@ -129,12 +139,14 @@ router.get('/top10/:id', (req, res) => {
 
 	// Grab all of the compatible users from the availability db
 	db.query(sql_get, [req.params.id], (err, result) => {
-		if (err) throw err;
+		if (err) {
+			throw err;
+		}
 
 		for(var entry in result) {
 
 			// Skip calculations on the first entry
-			if (entry == 0) {
+			if (entry === 0) {
 				// Set the first user up on the match_points array, which will be used to find the top 10 scores
 				// skill_muliplier will get their multiplier based on how different their skill levels are
 				match_points.push({"id": result[0].matched_player, "score": skill_multiplier(result[0].skill_diff)});
