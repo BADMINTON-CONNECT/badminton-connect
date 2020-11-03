@@ -52,14 +52,14 @@ router.get("/:id", (req, res) => {
 			// If the current day is different to the last, add the array of the last day and reset
 			else {
 				day_of_week.push({"day": day, "hours": hours});
-				hours = [];
-				hours.push(result[entry].hour);
+				hours = [result[entry].hour];
+				// hours.push(result[entry].hour);
 				day = result[entry].day;
 			}
 		}
 
 		// Check if no days were added (No data available)
-		if (day == -1) {
+		if (day === -1) {
 			res.send(day_of_week);
 		} 
 		// Add the last day of hours
@@ -67,7 +67,7 @@ router.get("/:id", (req, res) => {
 			day_of_week.push({"day": day, "hours": hours});
 			res.send(day_of_week);
 		}
-	})
+	});
 });
 
 /*
@@ -112,12 +112,43 @@ router.post("/:id", (req, res) => {
 	res.send("Success");
 });
 
+/* 	Function user for calculating the skill multiplier
+	Negative numbers are from users with a higher skill than the given user
+	A higher skilled player is more desirable to play with
+	Positive numbers are from skill levels that were lower. 
+*/
+function skill_multiplier(skill_diff) {
+	// Sd = standard deviation
+	const sd = 2;
+	// Slightly shift the distribution left so that negative scores are weighed higher
+	const mean = -0.4; 
+	// Multiplier to make the max score 10 at 0
+	const multiplier = 51.14349127; 
+	return multiplier/(sd*Math.sqrt(2*Math.PI))*Math.pow(Math.E, -1 * Math.pow(skill_diff - mean, 2)/(2 * Math.pow(sd, 2)));
+}
+
+/*
+	Function to give a point score to the number of consecutive overlapping hours
+	of availablilty. The difference between 1 and 2 is almost triple
+	where as the difference between 2 and 3 is relatively small
+	This is weighted this way since it's most desirable to have a session
+	of 2 hours, where as larger consecutive sections are only slightly more
+	desirable because it makes it easier to plan a session
+*/
+function consec_score(consecutive) {
+	// Variables to give the consecutive score a sharp curve
+	const a = 0.11;
+	const b = 0.93;
+	const c = 0.2;
+	return a * Math.log10(consecutive - b) + c;
+}
+
 // From all players find the 10 (currently top 3) players that are the most compatible with the user
 router.get("/top10/:id", (req, res) => {
 
 	// SQL call which grabs all users that have an overlaping time with a given user
 	// From all those users, only return the users who are within each other user's max distance
-	sql_get = "SELECT DISTINCT user2 as matched_player, day, hour, skill_diff " 
+	const sql_get = "SELECT DISTINCT user2 as matched_player, day, hour, skill_diff " 
 	+ "FROM ("
 	+ "SELECT us1.user_id as user1, us2.user_id as user2, us1.day, us1.hour, "
 	+ "us1.max_dist as d1, us2.max_dist as d2, (us1.skill - us2.skill) as skill_diff, "
@@ -155,7 +186,7 @@ router.get("/top10/:id", (req, res) => {
 				consecutive = 1;
 			} 
 			// Check for when the current user is different, then calculate their score
-			else if (result[entry].matched_player != last_user) {
+			else if (result[entry].matched_player !== last_user) {
 				// Multiply the total points from all matching hours, and multiply it to the skill multiplier
 				match_points[index].score *= (points_total + consec_score(consecutive));
 				// Reset points and consecutive hours
@@ -169,7 +200,7 @@ router.get("/top10/:id", (req, res) => {
 			else {
 				
 				// Check if the day has changed or the hours are no longer consecutive
-				if (result[entry-1].day != result[entry].day || (result[entry-1].hour + 1) != result[entry].hour) {
+				if (result[entry-1].day !== result[entry].day || (result[entry-1].hour + 1) != result[entry].hour) {
 					// Calculate the score for that number of consecutive hours and reset consecutive
 					points_total += consec_score(consecutive);
 					consecutive = 1;
@@ -182,7 +213,7 @@ router.get("/top10/:id", (req, res) => {
 		}
 
 		// Check if there was no data available/no matches
-		if (index == -1) {
+		if (index === -1) {
 			// Send empty array
 			res.send(match_points);
 		} 
@@ -205,35 +236,4 @@ router.get("/top10/:id", (req, res) => {
 	});
 });
 
-/* 	Function user for calculating the skill multiplier
-	Negative numbers are from users with a higher skill than the given user
-	A higher skilled player is more desirable to play with
-	Positive numbers are from skill levels that were lower. 
-*/
-function skill_multiplier(skill_diff) {
-	// Sd = standard deviation
-	const sd = 2;
-	// Slightly shift the distribution left so that negative scores are weighed higher
-	const mean = -0.4; 
-	// Multiplier to make the max score 10 at 0
-	const multiplier = 51.14349127; 
-	return multiplier/(sd*Math.sqrt(2*Math.PI))*Math.pow(Math.E, -1 * Math.pow(skill_diff - mean, 2)/(2 * Math.pow(sd, 2)));
-}
-
-/*
-	Function to give a point score to the number of consecutive overlapping hours
-	of availablilty. The difference between 1 and 2 is almost triple
-	where as the difference between 2 and 3 is relatively small
-	This is weighted this way since it's most desirable to have a session
-	of 2 hours, where as larger consecutive sections are only slightly more
-	desirable because it makes it easier to plan a session
-*/
-function consec_score(consecutive) {
-	// Variables to give the consecutive score a sharp curve
-	const a = 0.11;
-	const b = 0.93;
-	const c = 0.2;
-	return a * Math.log10(consecutive - b) + c;
-}
-
-module.exports = router
+module.exports = router;
