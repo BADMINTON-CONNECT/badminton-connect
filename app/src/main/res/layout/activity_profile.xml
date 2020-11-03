@@ -23,30 +23,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
 
-    <EditText
-        android:id="@+id/textViewUserEmail"
-        android:layout_width="162dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="132dp"
-        android:background="@android:color/transparent"
-        android:gravity="right"
-        android:hint="Your Email"
-        android:singleLine="true"
-        android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.796"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
-
     <Spinner
         android:id="@+id/spinnerUserSkillLevel"
         android:layout_width="121dp"
         android:layout_height="31dp"
-        android:layout_marginTop="192dp"
+        android:layout_marginTop="160dp"
         android:textAlignment="center"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.835"
+        app:layout_constraintHorizontal_bias="0.838"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
+
+    <Spinner
+        android:id="@+id/spinnerUserDistancePreference"
+        android:layout_width="121dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="208dp"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.838"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
+
+    <TextView
+        android:id="@+id/textViewSkillLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="164dp"
+        android:text="Skill Level"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
+
+    <TextView
+        android:id="@+id/textViewDistancePreference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="212dp"
+        android:gravity="right"
+        android:text="Distance Preference"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.214"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
 
@@ -81,23 +103,26 @@
         android:id="@+id/textViewEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="108dp"
         android:text="Email: "
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.159"
+        app:layout_constraintHorizontal_bias="0.137"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
 
-    <TextView
-        android:id="@+id/textViewSkillLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
-        android:text="Skill Level"
-        android:textSize="20dp"
+    <EditText
+        android:id="@+id/textViewUserEmail"
+        android:layout_width="162dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="112dp"
+        android:background="@android:color/transparent"
+        android:gravity="right"
+        android:hint="Your Email"
+        android:singleLine="true"
+        android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.173"
+        app:layout_constraintHorizontal_bias="0.809"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
 
@@ -105,11 +130,11 @@
         android:id="@+id/textViewAvailability"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="264dp"
         android:text="Your Availability"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.211"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewProfilePicture" />
 
@@ -141,9 +166,9 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="10dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_marginTop="500dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -161,13 +186,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <TableRow>
+                    <TableRow android:layout_width="match_parent">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginRight="50dp"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="Weekday"
@@ -176,8 +201,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="50dp"
                             android:layout_weight="2"
                             android:gravity="center"
                             android:text="Available Times"
@@ -188,10 +213,11 @@
 
                         <EditText
                             android:id="@+id/availableWeekday"
-                            android:layout_width="80dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="50dp"
-                            android:layout_weight="1"
+                            android:layout_marginRight="30dp"
+                            android:layout_weight="1.5"
                             android:gravity="center"
                             android:hint="Monday"
                             android:singleLine="true"
@@ -200,9 +226,8 @@
 
                         <EditText
                             android:id="@+id/availableFrom"
-                            android:layout_width="40dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="50dp"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:hint="9"
@@ -212,19 +237,18 @@
 
                         <TextView
                             android:id="@+id/to"
-                            android:layout_width="20dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="0.5"
                             android:gravity="center"
                             android:text="to"
                             android:textStyle="bold" />
 
                         <EditText
                             android:id="@+id/availableTo"
-                            android:layout_width="40dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="50dp"
-                            android:layout_weight="2"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:hint="16"
                             android:singleLine="true"
@@ -244,12 +268,12 @@
         android:id="@+id/buttonAddRow"
         android:layout_width="117dp"
         android:layout_height="34dp"
-        android:layout_marginTop="448dp"
+        android:layout_marginTop="452dp"
         android:alpha="0"
         android:text="Add New Section"
         android:textSize="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.829"
+        app:layout_constraintHorizontal_bias="0.84"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
