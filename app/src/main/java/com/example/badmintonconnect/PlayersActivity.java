@@ -19,11 +19,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PlayersActivity extends Activity {
     final static String TAG = "Player Activity";
+    private HashMap<Integer, String> DAYS_OF_WEEK;
     private RequestQueue queue;
     private TextView playerName1;
     private TextView playerName2;
@@ -37,11 +40,24 @@ public class PlayersActivity extends Activity {
     private TextView playerEmail1;
     private TextView playerEmail2;
     private TextView playerEmail3;
+    private JSONArray userAvailability;
+    private JSONArray playerAvailabilityArray1;
+    private JSONArray playerAvailabilityArray2;
+    private JSONArray playerAvailabilityArray3;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_players);
         queue = Volley.newRequestQueue(this);
+
+        DAYS_OF_WEEK = new HashMap<>();
+        DAYS_OF_WEEK.put(0, "Monday");
+        DAYS_OF_WEEK.put(1, "Tuesday");
+        DAYS_OF_WEEK.put(2, "Wednesday");
+        DAYS_OF_WEEK.put(3, "Thursday");
+        DAYS_OF_WEEK.put(4, "Friday");
+        DAYS_OF_WEEK.put(5, "Saturday");
+        DAYS_OF_WEEK.put(6, "Sunday");
 
         playerName1 = (TextView) findViewById(R.id.player1_name);
         playerName2 = (TextView) findViewById(R.id.player2_name);
@@ -84,7 +100,7 @@ public class PlayersActivity extends Activity {
             public void onResponse(JSONObject response) {
                 // Display the result (what is send from server using res.send)
                 Log.d(TAG, response.toString());
-                getPlayerIds();
+                checkPlayerAvailability(user_ID, -1, null);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -139,11 +155,7 @@ public class PlayersActivity extends Activity {
                     public void onResponse(JSONObject response) {
                         // Display the result (what is send from server using res.send)
                         Log.d(TAG, response.toString());
-                        try {
-                            setPlayerAttributes(response, index);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                            checkPlayerAvailability(playerId, index, response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -158,24 +170,167 @@ public class PlayersActivity extends Activity {
 
     private void setPlayerAttributes(JSONObject player, int index) throws JSONException {
         Log.d(TAG, player.toString());
+        JSONArray overlap;
+
         switch(index){
             case 1:
+                overlap = compareAvailabilities(userAvailability, playerAvailabilityArray1);
+                displayAvailability(overlap, index);
                 playerName1.setText(player.get("first_name").toString() + " " + player.get("last_name").toString());
                 playerEmail1.setText("Email: " + player.get("email").toString());
                 playerSkill1.setText("Skill level: " + player.get("skill_level").toString());
                 break;
             case 2:
+                overlap = compareAvailabilities(userAvailability, playerAvailabilityArray2);
+                displayAvailability(overlap, index);
                 playerName2.setText(player.get("first_name").toString() + " " + player.get("last_name").toString());
                 playerEmail2.setText("Email: " + player.get("email").toString());
                 playerSkill2.setText("Skill level: " + player.get("skill_level").toString());
                 break;
             case 3:
+                overlap = compareAvailabilities(userAvailability, playerAvailabilityArray3);
+                displayAvailability(overlap, index);
                 playerName3.setText(player.get("first_name").toString() + " " + player.get("last_name").toString());
                 playerEmail3.setText("Email: " + player.get("email").toString());
                 playerSkill3.setText("Skill level: " + player.get("skill_level").toString());
                 break;
         }
 
+    }
+
+    private void checkPlayerAvailability(String user_ID, int index, JSONObject playerInfo){
+        String URL = "http://40.88.38.140:8080/availability/" + user_ID;
+        Log.d(TAG, URL);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
+            public void onResponse(JSONArray response) {
+                Log.d(TAG, "successfully received availability information");
+                Log.d(TAG, response.toString());
+                // parse user info
+                if (user_ID == null || response.length() == 0) {
+                    Log.d(TAG, "ERROR - userID null");
+                }
+
+                switch(index){
+                    case -1:
+                        userAvailability = response;
+                        getPlayerIds();
+                        break;
+                    case 1:
+                        playerAvailabilityArray1 = response;
+                        try {
+                            setPlayerAttributes(playerInfo, index);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 2:
+                        playerAvailabilityArray2 = response;
+                        try {
+                            setPlayerAttributes(playerInfo, index);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 3:
+                        playerAvailabilityArray3 = response;
+                        try {
+                            setPlayerAttributes(playerInfo, index);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Unable to retrieve user information see log below for details: ");
+                Log.d(TAG, error.toString());
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+        };
+
+        queue.add(jsonArrayRequest);
+    }
+
+    private JSONArray compareAvailabilities(JSONArray player1, JSONArray player2) throws JSONException {
+        JSONArray overlap = new JSONArray();
+        JSONObject avail1;
+        JSONObject avail2;
+
+        for (int i = 0; i < player1.length(); i++){
+            avail1 = (JSONObject) player1.get(i);
+
+            for (int j = 0; j < player2.length(); j++){
+                avail2 = (JSONObject) player2.get(j);
+                if(avail1.get("day").equals(avail2.get("day"))){
+                    JSONObject temp = new JSONObject();
+                    temp.put("day", avail1.get("day"));
+                    //compare hours
+                    temp.put("hours", compareHours((JSONArray) avail1.get("hours"), (JSONArray) avail2.get("hours")));
+                    overlap.put(temp);
+                }
+            }
+        }
+
+        return overlap;
+    }
+
+    private ArrayList<Integer> compareHours(JSONArray avail1, JSONArray avail2) throws JSONException {
+        ArrayList<Integer> finalHours = new ArrayList<>();
+
+        for(int i = 0; i < avail1.length(); i++){
+            for(int j = 0; j < avail2.length(); j++){
+                if(avail1.get(i).equals(avail2.get(j))){
+                    finalHours.add(avail1.getInt(i));
+                }
+            }
+        }
+
+        return finalHours;
+    }
+
+    private void displayAvailability(JSONArray availability, int index) throws JSONException {
+        int longestIndex = 0;
+
+        for(int i = 0; i < availability.length(); i++){
+            JSONObject temp = availability.getJSONObject(i);
+            ArrayList<Integer> avail = (ArrayList<Integer>) temp.get("hours");
+            if(avail.size() > longestIndex){
+                longestIndex = i;
+            }
+        }
+
+        JSONObject finalAvail = availability.getJSONObject(longestIndex);
+        ArrayList<Integer> finalHours = (ArrayList<Integer>) finalAvail.get("hours");
+        Integer day = finalAvail.getInt("day");
+        Integer hourBegin = finalHours.get(0);
+        Integer hourEnd =  finalHours.get(finalHours.size()-1);
+        String availText = "";
+
+        if(hourBegin != hourEnd){
+            availText = "Most available on " + DAYS_OF_WEEK.get(day) + "s at " + hourBegin.toString() + " to " + hourEnd.toString();
+        }
+        else{
+            availText = "Most available on " + DAYS_OF_WEEK.get(day) + "s at " + hourBegin.toString();
+        }
+
+        switch(index){
+            case 1:
+                playerAvailability1.setText(availText);
+                break;
+            case 2:
+                playerAvailability2.setText(availText);
+                break;
+            case 3:
+                playerAvailability3.setText(availText);
+                break;
+        }
     }
 
 }

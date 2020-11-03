@@ -46,7 +46,7 @@
 
                 <TextView
                     android:id="@+id/player1_name"
-                    android:layout_width="189dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/NoPlayerMatch"
@@ -55,21 +55,21 @@
 
                 <TextView
                     android:id="@+id/player1_skill"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
 
                 <TextView
                     android:id="@+id/player1_availability"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
 
                 <TextView
                     android:id="@+id/player1_email"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
@@ -108,7 +108,7 @@
 
                 <TextView
                     android:id="@+id/player2_name"
-                    android:layout_width="189dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/NoPlayerMatch"
@@ -117,21 +117,21 @@
 
                 <TextView
                     android:id="@+id/player2_skill"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
 
                 <TextView
                     android:id="@+id/player2_availability"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
 
                 <TextView
                     android:id="@+id/player2_email"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
@@ -170,7 +170,7 @@
 
                 <TextView
                     android:id="@+id/player3_name"
-                    android:layout_width="189dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/NoPlayerMatch"
@@ -179,21 +179,21 @@
 
                 <TextView
                     android:id="@+id/player3_skill"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
 
                 <TextView
                     android:id="@+id/player3_availability"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />
 
                 <TextView
                     android:id="@+id/player3_email"
-                    android:layout_width="202dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:layout_weight="1"
                     android:text="@string/NoPlayerMatch" />

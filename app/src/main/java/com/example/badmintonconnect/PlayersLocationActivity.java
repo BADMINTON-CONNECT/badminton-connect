@@ -41,6 +41,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
     private RequestQueue queue;
     private final int REQUEST_PERMISSION_LOCATION=1;
     private Map<String, Double> locationDetails;
+    private Intent findPlayersIntent;
     final static String TAG = "Player Location Activity";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         setContentView(R.layout.activity_playerlocation);
         locationDetails = new HashMap<>();
         queue = Volley.newRequestQueue(this);
+        findPlayersIntent = new Intent(PlayersLocationActivity.this, PlayersActivity.class);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -175,7 +177,6 @@ public class PlayersLocationActivity extends Activity implements LocationListene
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Intent findPlayersIntent = new Intent(PlayersLocationActivity.this, PlayersActivity.class);
                     findPlayersIntent.putExtra("longitude", locationDetails.get("longitude"));
                     findPlayersIntent.putExtra("latitude", locationDetails.get("latitude"));
                     startActivity(findPlayersIntent);
@@ -200,7 +201,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
     private void goToProfilePage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Profile Fields not set")
-                .setMessage("Please go back to the profile page to set you r" +
+                .setMessage("Please go back to the profile page to set your" +
                         "availability, skill level, and distance preference in order to" +
                         " use this functionality")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
