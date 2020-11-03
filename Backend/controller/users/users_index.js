@@ -4,9 +4,9 @@ THIS IS USERS INDEX
 
 */
 
-const express = require("express")
-const router = express.Router()
-const db = require("../../database/mysql")
+const express = require("express");
+const router = express.Router();
+const db = require("../../database/mysql");
 const admin = require("../../firebase/notification");
 
 function get_all_users(req, res) {
@@ -25,7 +25,7 @@ function get_all_users(req, res) {
 	})
 	.catch( (err) => {
 		throw err;
-	})
+	});
 }
 
 function get_userid_by_email(req, res) {
@@ -43,7 +43,9 @@ function get_specific_user(req, res) {
 	const sql = "SELECT * FROM users WHERE user_id = ?";
 
 	return db.query(sql, [req.params.id], (err, row, field) => {
-		if (err) throw err;
+		if (err) {
+			throw err;
+		}
 		res.send(row[0]);
 	});
 }

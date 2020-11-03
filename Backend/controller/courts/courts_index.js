@@ -50,7 +50,7 @@ router.put("/", (req, res) => {
 
 // set up court stats a week in advance 
 function add_court_date() {
-	const sql = "INSERT IGNORE INTO courts (year, month, date, time_slot1, time_slot2, time_slot3, time_slot4) VALUES (?, ?, ?, 10, 10, 10, 10)"
+	const sql = "INSERT IGNORE INTO courts (year, month, date, time_slot1, time_slot2, time_slot3, time_slot4) VALUES (?, ?, ?, 10, 10, 10, 10)";
 
 	var date = new Date();
 	date.setDate(date.getDate() + 7);
@@ -98,7 +98,7 @@ function delete_court() {
 		else {
 			console.log("Deleted court for: " + date.toString());
 		}
-	})
+	});
 }
 
 setInterval(delete_court, DAILY);
