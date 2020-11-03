@@ -72,7 +72,9 @@ function insert_user(req, res) {
 		const sql = "INSERT IGNORE INTO users SET first_name = ?, last_name = ?, email = ?";
 		const email = body.email;
 		return db.query(sql, [body.first_name, body.last_name, body.email], (err, result) => {
-			if (err) throw err;
+			if (err) {
+				throw err;
+			}
 			if (result.affectedRows === 0 && result.warningCount === 1) {
 				// if user already exists, return user_id to the front end  
 				
@@ -87,7 +89,7 @@ function insert_user(req, res) {
 				console.log("inserted at user id: " + result.insertId);
 				res.send("inserted at user id: " + result.insertId);
 			}
-		})
+		});
 	}
 }
 

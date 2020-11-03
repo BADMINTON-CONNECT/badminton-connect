@@ -4,7 +4,7 @@ var app = express();
 const bodyparser = require("body-parser");
 const port = 8080;
 
-const db = require("./database/mysql")
+const db = require("./database/mysql");
 const admin = require("./firebase/notification");
 const timeController = require("./controller/time/time_index");
 const usersController = require("./controller/users/users_index");
@@ -37,5 +37,5 @@ app.use("/availability", availabilityController);
 
 
 app.listen(port, () => {
-  console.log(`Server app listening at http://40.88.38.140:${port}`)
-})
+  console.log(`Server app listening at http://40.88.38.140:${port}`);
+});
