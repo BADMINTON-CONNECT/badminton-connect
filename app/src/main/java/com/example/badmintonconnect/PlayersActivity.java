@@ -136,7 +136,7 @@ public class PlayersActivity extends Activity {
                         // Display the result (what is send from server using res.send)
                         Log.d(TAG, response.toString());
                         try {
-                            for(int i = 0; i < 3; i++){
+                            for(int i = 0; i < response.length(); i++){
                                 getPlayerInfo(response.getJSONObject(i), (i+1));
                             }
                         } catch (JSONException e) {
