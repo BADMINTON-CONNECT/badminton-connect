@@ -526,7 +526,6 @@ public class ProfileActivity extends AppCompatActivity {
                 protected Response<String> parseNetworkResponse(NetworkResponse response) {
                     String responseString = "";
                     if (response != null) {
-                        //responseString = String.valueOf(response.statusCode);
                         return super.parseNetworkResponse(response);
                     }
                     return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
