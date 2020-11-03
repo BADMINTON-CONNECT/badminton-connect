@@ -41,6 +41,10 @@
             android:label="BookingActivityCourts">
         </activity>
         <activity
+            android:name=".SeeBookingsActivity"
+            android:label="SeeBookingsActivity">
+        </activity>
+        <activity
             android:name=".BookingActivityConfirmation"
             android:label="BookingActivityConfirmation">
         </activity>
