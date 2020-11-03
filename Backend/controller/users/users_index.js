@@ -124,7 +124,7 @@ router.get("/:id", get_specific_user);
 router.delete("/:id", delete_specific_user);
 router.post("/", insert_user);
 router.put("/:id", update_user_info);
-router.put("/location/:id", update_user_location)
+router.put("/location/:id", update_user_location);
 router.put("/RegistrationToken/:id", update_user_token);
 
 
