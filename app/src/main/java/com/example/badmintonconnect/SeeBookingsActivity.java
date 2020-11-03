@@ -31,12 +31,12 @@ public class SeeBookingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seebooking);
 
-        getUserBooking(UserInfo.getUserId());
+        getUserBooking(UserInfoHelper.getUserId());
     }
 
     private void getUserBooking(String user_ID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String userBookingURL = "http://40.88.38.140:8080/bookings/" + 77;
+        String userBookingURL = "http://40.88.38.140:8080/bookings/" + user_ID;
 
         JsonArrayRequest availabilityJsonObjectRequest = new JsonArrayRequest(Request.Method.GET, userBookingURL, null, new Response.Listener<JSONArray>() {
             @Override
