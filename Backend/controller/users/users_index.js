@@ -95,9 +95,9 @@ function insert_user(req, res) {
 
 function update_user_info(req, res) {
 	var body = req.body;
-	const sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, skill_level = ?, distance_preference = ? WHERE user_id = ?";
+	const sql = "UPDATE users SET first_name = ?, last_name = ?, skill_level = ?, distance_preference = ? WHERE user_id = ?";
 	
-    return db.query(sql, [body.first_name, body.last_name, body.email, body.skill_level, body.distance_preference, req.params.id], (err, result) => {
+    return db.query(sql, [body.first_name, body.last_name, body.skill_level, body.distance_preference, req.params.id], (err, result) => {
         if (err) throw err;
         res.send(result);
     });
