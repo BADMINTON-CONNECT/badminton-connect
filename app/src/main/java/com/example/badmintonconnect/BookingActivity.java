@@ -80,6 +80,14 @@ public class BookingActivity extends Activity {
 
     }
 
+    /*
+    * @desc: checks the date chosen by the datepicker. If it is before today the date is invalid.
+    * If the date is invalid, it will display a toast error message and not allow the user to move forward.
+    * If the date is valid the function will then make a get request to the db to check the court
+    * availability for this date and move to the next page
+    * @params: none
+    * @return: none
+    * */
     private void CheckDate() {
         Integer day = datePicker.getDayOfMonth();
         Integer month = datePicker.getMonth() + 1;
@@ -109,7 +117,7 @@ public class BookingActivity extends Activity {
         bookingDetails.put("month", month.toString());
         bookingDetails.put("year", year.toString());
 
-        // Request a json array response from the provided URL.
+        // Get request for court availability
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -148,6 +156,10 @@ public class BookingActivity extends Activity {
         queue.add(jsonArrayRequest);
     }
 
+    /*
+    * @desc: This function creates an intent to go to the court booking page and populates the
+    * booking details in the intent, so that the next page will have access to them.
+    * */
     private void goToCourtsPage(){
         Intent bookingCourtsIntent =
                 new Intent(BookingActivity.this, BookingActivityCourts.class);
