@@ -10,17 +10,12 @@ import android.widget.ImageButton;
 import android.view.View.OnClickListener;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -34,10 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-
 public class HomePageActivity extends AppCompatActivity{
-    final static String TAG = "HomePageActivity";
+    final private static String TAG = "HomePageActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private RequestQueue queue;
 
@@ -162,7 +155,7 @@ public class HomePageActivity extends AppCompatActivity{
                 try {
                     JSONObject obj = (JSONObject) response.get(0);
                     Log.d(TAG, obj.get("user_id").toString());
-                    UserInfo.setUserId(obj.get("user_id").toString());
+                    UserInfoHelper.setUserId(obj.get("user_id").toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -181,7 +174,7 @@ public class HomePageActivity extends AppCompatActivity{
 
                                 // Log and toast
                                 Log.d(TAG, token);
-                                sendUserToken(token, UserInfo.getUserId());
+                                sendUserToken(token, UserInfoHelper.getUserId());
                             }
                         });
             }

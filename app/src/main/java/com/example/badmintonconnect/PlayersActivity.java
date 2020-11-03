@@ -19,13 +19,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PlayersActivity extends Activity {
-    final static String TAG = "Player Activity";
+    final private static String TAG = "Player Activity";
     private HashMap<Integer, String> DAYS_OF_WEEK;
     private RequestQueue queue;
     private TextView playerName1;
@@ -63,8 +61,8 @@ public class PlayersActivity extends Activity {
         playerName2 = (TextView) findViewById(R.id.player2_name);
         playerName3 = (TextView) findViewById(R.id.player3_name);
         playerSkill1 = (TextView) findViewById(R.id.player1_skill);
-        playerSkill2 = (TextView) findViewById(R.id.player2_skill);;
-        playerSkill3 = (TextView) findViewById(R.id.player3_skill);;
+        playerSkill2 = (TextView) findViewById(R.id.player2_skill);
+        playerSkill3 = (TextView) findViewById(R.id.player3_skill);
         playerAvailability1 = (TextView) findViewById(R.id.player1_availability);
         playerAvailability2 = (TextView) findViewById(R.id.player2_availability);
         playerAvailability3 = (TextView) findViewById(R.id.player3_availability);
@@ -74,7 +72,7 @@ public class PlayersActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            setPlayerLocation(UserInfo.getUserId(), extras.getDouble("longitude"), extras.getDouble("latitude"));
+            setPlayerLocation(UserInfoHelper.getUserId(), extras.getDouble("longitude"), extras.getDouble("latitude"));
         }
         else{
             Toast.makeText(this, "An Error has Occurred", Toast.LENGTH_SHORT).show();
@@ -125,7 +123,7 @@ public class PlayersActivity extends Activity {
      * We will only display the top 3 most matched players.
      * */
     private void getPlayerIds(){
-        String url = "http://40.88.38.140:8080/availability/top10/" + UserInfo.getUserId();
+        String url = "http://40.88.38.140:8080/availability/top10/" + UserInfoHelper.getUserId();
         Log.d(TAG, url);
 
         // Request a json array response from the provided URL.
@@ -215,6 +213,8 @@ public class PlayersActivity extends Activity {
                 playerName3.setText(player.get("first_name").toString() + " " + player.get("last_name").toString());
                 playerEmail3.setText("Email: " + player.get("email").toString());
                 playerSkill3.setText("Skill level: " + player.get("skill_level").toString());
+                break;
+            default:
                 break;
         }
 
@@ -359,7 +359,7 @@ public class PlayersActivity extends Activity {
         Integer hourEnd =  finalHours.get(finalHours.size()-1);
         String availText = "";
 
-        if(hourBegin != hourEnd){
+        if(!hourBegin.equals(hourEnd)){
             availText = "Most available on " + DAYS_OF_WEEK.get(day) + "s at " + hourBegin.toString() + " to " + hourEnd.toString();
         }
         else{
@@ -375,6 +375,8 @@ public class PlayersActivity extends Activity {
                 break;
             case 3:
                 playerAvailability3.setText(availText);
+                break;
+            default:
                 break;
         }
     }

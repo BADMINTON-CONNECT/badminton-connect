@@ -10,18 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BookingActivityConfirmation extends Activity {
-    final static String TAG = "Booking Activity";
-    private ImageView checkMark;
-    private TextView bookingConfirmation;
-    private Button returnHomeButton;
+    final private static String TAG = "Booking Activity";
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_confirmation);
 
-        checkMark = (ImageView) findViewById(R.id.checkmark);
-        bookingConfirmation = (TextView) findViewById(R.id.booking_confirmation_text2);
-        returnHomeButton = (Button) findViewById(R.id.returnHomeButton);
+        ImageView checkMark = (ImageView) findViewById(R.id.checkmark);
+        TextView bookingConfirmation = (TextView) findViewById(R.id.booking_confirmation_text2);
+        Button returnHomeButton = (Button) findViewById(R.id.returnHomeButton);
 
         checkMark.setImageResource(R.drawable.checkmark);
         Bundle extras = getIntent().getExtras();
