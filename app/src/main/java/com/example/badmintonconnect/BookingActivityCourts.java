@@ -32,16 +32,13 @@ import java.util.Map;
 import static java.lang.Integer.parseInt;
 
 public class BookingActivityCourts extends Activity {
-    final static String TAG = "Booking Activity";
+    final private static String TAG = "Booking Activity";
     private RequestQueue queue;
-    Map<String, String> bookingDetails;
+    private Map<String, String> bookingDetails;
     private Spinner timeSlot1;
     private Spinner timeSlot2;
     private Spinner timeSlot3;
     private Spinner timeSlot4;
-    private TextView bookingDate;
-    private Button bookingButton;
-    private Button checkAnotherDateButton;
     private TextView avail1;
     private TextView avail2;
     private TextView avail3;
@@ -80,7 +77,7 @@ public class BookingActivityCourts extends Activity {
 
         setSpinners(parseInt(bookingDetails.get("time_slot1_original")), parseInt(bookingDetails.get("time_slot2_original")),
                 parseInt(bookingDetails.get("time_slot3_original")), parseInt(bookingDetails.get("time_slot4_original")));
-        SetAvailabilityText(bookingDetails.get("time_slot1_original"), bookingDetails.get("time_slot2_original"),
+        setAvailabilityText(bookingDetails.get("time_slot1_original"), bookingDetails.get("time_slot2_original"),
                 bookingDetails.get("time_slot3_original"), bookingDetails.get("time_slot4_original"));
 
         AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -91,28 +88,30 @@ public class BookingActivityCourts extends Activity {
 
                 switch(parentId){
                     case R.id.time_slot1:
-                        if(value != "No courts available at this time"){
+                        if(!value.equals("No courts available at this time")){
                             bookingDetails.put("time_slot1", value);
                             Log.d(TAG, value);
                         }
                         break;
                     case R.id.time_slot2:
-                        if(value != "No courts available at this time"){
+                        if(!value.equals("No courts available at this time")){
                             bookingDetails.put("time_slot2", value);
                             Log.d(TAG, value);
                         }
                         break;
                     case R.id.time_slot3:
-                        if(value != "No courts available at this time"){
+                        if(!value.equals("No courts available at this time")){
                             bookingDetails.put("time_slot3", value);
                             Log.d(TAG, value);
                         }
                         break;
                     case R.id.time_slot4:
-                        if(value != "No courts available at this time"){
+                        if(!value.equals("No courts available at this time")){
                             bookingDetails.put("time_slot4", value);
                             Log.d(TAG, value);
                         }
+                        break;
+                    default:
                         break;
                 }
             }
@@ -127,12 +126,12 @@ public class BookingActivityCourts extends Activity {
         timeSlot3.setOnItemSelectedListener(onItemSelectedListener);
         timeSlot4.setOnItemSelectedListener(onItemSelectedListener);
 
-        bookingDate = (TextView) findViewById(R.id.courtAvailabilityDateText);
+        TextView bookingDate = (TextView) findViewById(R.id.courtAvailabilityDateText);
         String bookingText = "Showing available courts for: " + bookingDetails.get("month") + "/" +
                 bookingDetails.get("day") + "/" + bookingDetails.get("year");
         bookingDate.setText(bookingText);
 
-        bookingButton = (Button) findViewById(R.id.bookingButton3);
+        Button bookingButton = (Button) findViewById(R.id.bookingButton3);
 
         bookingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +141,7 @@ public class BookingActivityCourts extends Activity {
             }
         });
 
-        checkAnotherDateButton = (Button) findViewById(R.id.checkAnotherDate);
+        Button checkAnotherDateButton = (Button) findViewById(R.id.checkAnotherDate);
 
         checkAnotherDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,10 +243,10 @@ public class BookingActivityCourts extends Activity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Integer time_slot1 = Integer.parseInt(bookingDetails.get("time_slot1_original")) - Integer.parseInt(bookingDetails.get("time_slot1"));
-                Integer time_slot2 = Integer.parseInt(bookingDetails.get("time_slot2_original")) - Integer.parseInt(bookingDetails.get("time_slot2"));
-                Integer time_slot3 = Integer.parseInt(bookingDetails.get("time_slot3_original")) - Integer.parseInt(bookingDetails.get("time_slot3"));
-                Integer time_slot4 = Integer.parseInt(bookingDetails.get("time_slot4_original")) - Integer.parseInt(bookingDetails.get("time_slot4"));
+                int time_slot1 = parseInt(bookingDetails.get("time_slot1_original")) - parseInt(bookingDetails.get("time_slot1"));
+                int time_slot2 = parseInt(bookingDetails.get("time_slot2_original")) - parseInt(bookingDetails.get("time_slot2"));
+                int time_slot3 = parseInt(bookingDetails.get("time_slot3_original")) - parseInt(bookingDetails.get("time_slot3"));
+                int time_slot4 = parseInt(bookingDetails.get("time_slot4_original")) - parseInt(bookingDetails.get("time_slot4"));
 
 
                 String urlCourts = "http://40.88.38.140:8080/courts";
@@ -256,10 +255,10 @@ public class BookingActivityCourts extends Activity {
                 JSONObject object = new JSONObject();
                 try {
                     //input your API parameters
-                    object.put("time_slot1", time_slot1.toString());
-                    object.put("time_slot2", time_slot2.toString());
-                    object.put("time_slot3", time_slot3.toString());
-                    object.put("time_slot4", time_slot4.toString());
+                    object.put("time_slot1", Integer.toString(time_slot1));
+                    object.put("time_slot2", Integer.toString(time_slot2));
+                    object.put("time_slot3", Integer.toString(time_slot3));
+                    object.put("time_slot4", Integer.toString(time_slot4));
                     object.put("court_id", bookingDetails.get("court_id"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -332,7 +331,7 @@ public class BookingActivityCourts extends Activity {
     /*
      * @desc: this function sets the time slot availability text with the appropriate availability
      * */
-    private void SetAvailabilityText(String time_slot1, String time_slot2, String time_slot3, String time_slot4){
+    private void setAvailabilityText(String time_slot1, String time_slot2, String time_slot3, String time_slot4){
         avail1.setText("Courts available: " + time_slot1);
         avail2.setText("Courts available: " + time_slot2);
         avail3.setText("Courts available: " + time_slot3);

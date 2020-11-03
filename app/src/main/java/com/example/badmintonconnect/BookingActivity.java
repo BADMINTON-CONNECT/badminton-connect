@@ -1,18 +1,12 @@
 package com.example.badmintonconnect;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,7 +14,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -29,17 +22,14 @@ import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BookingActivity extends Activity {
-    final static String TAG = "Booking Activity";
+    final private static String TAG = "Booking Activity";
     private RequestQueue queue;
-    private Button checkDateButton;
     private DatePicker datePicker;
-    private String userId;
     Map<String, String> bookingDetails;
 
 
@@ -47,10 +37,7 @@ public class BookingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
         datePicker = (DatePicker) findViewById(R.id.bookingDatePicker);
-        checkDateButton = (Button) findViewById(R.id.checkDateButton);
-
-        List<String> no_court_availability = new ArrayList<>();
-        no_court_availability.add("No courts available at this time");
+        Button checkDateButton = (Button) findViewById(R.id.checkDateButton);
 
         //initialize booking details with empty details
         bookingDetails = new HashMap<>();
@@ -124,10 +111,6 @@ public class BookingActivity extends Activity {
                     public void onResponse(JSONArray response) {
                         // Display the result (what is send from server using res.send)
                         Log.d(TAG, response.toString());
-                        int time_slot1_avail = 0;
-                        int time_slot2_avail = 0;
-                        int time_slot3_avail = 0;
-                        int time_slot4_avail = 0;
 
                         try {
                             JSONObject res = response.getJSONObject(0);
