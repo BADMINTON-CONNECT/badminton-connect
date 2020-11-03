@@ -45,12 +45,7 @@ public class BookingActivityTest {
     @Test
     public void bookingActivityTest() {
         ViewInteraction appCompatImageButton = onView(
-                allOf(withId(R.id.imageButtonBooking), withContentDescription("TODO"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
+                allOf(withId(R.id.imageButtonBooking),
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
@@ -93,7 +88,7 @@ public class BookingActivityTest {
         button2.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(android.R.id.message), withText("Would you like to book for: Date: 2/11/2020 At the following time slots:\n Time Slot 1: 1\n Time Slot 2: 0\n Time Slot 3: 0\n Time Slot 4: 0"),
+                allOf(withId(android.R.id.message), withText("Would you like to book for: Date: 11/3/2020 At the following time slots:\n Time Slot 1: 1\n Time Slot 2: 0\n Time Slot 3: 0\n Time Slot 4: 0"),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.check(matches(withText(containsString("Time Slot 1: 1"))));
@@ -108,7 +103,7 @@ public class BookingActivityTest {
         button3.perform(scrollTo(), click());
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.booking_confirmation_text2), withText("Booking made for \n Date: 11/2/2020\n At the following time slots:\n Time Slot 1: 1\n Time Slot 2: 0\n Time Slot 3: 0\n Time Slot 4: 0"),
+                allOf(withId(R.id.booking_confirmation_text2), withText("Booking made for \n Date: 11/3/2020\n At the following time slots:\n Time Slot 1: 1\n Time Slot 2: 0\n Time Slot 3: 0\n Time Slot 4: 0"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         textView2.check(matches(withText(containsString("Time Slot 1: 1"))));
