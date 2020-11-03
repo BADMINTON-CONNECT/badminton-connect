@@ -80,6 +80,42 @@ public class BookingActivityCourts extends Activity {
         setAvailabilityText(bookingDetails.get("time_slot1_original"), bookingDetails.get("time_slot2_original"),
                 bookingDetails.get("time_slot3_original"), bookingDetails.get("time_slot4_original"));
 
+        initiateSpinners();
+
+        TextView bookingDate = (TextView) findViewById(R.id.courtAvailabilityDateText);
+        String bookingText = "Showing available courts for: " + bookingDetails.get("month") + "/" +
+                bookingDetails.get("day") + "/" + bookingDetails.get("year");
+        bookingDate.setText(bookingText);
+
+        Button bookingButton = (Button) findViewById(R.id.bookingButton3);
+
+        bookingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeBooking();
+                Log.d(TAG, "Attempting to book");
+            }
+        });
+
+        Button checkAnotherDateButton = (Button) findViewById(R.id.checkAnotherDate);
+
+        checkAnotherDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "checking another date");
+                Intent bookingIntent = new Intent(BookingActivityCourts.this, BookingActivity.class);
+                startActivity(bookingIntent);
+            }
+        });
+
+        queue = Volley.newRequestQueue(this);
+
+    }
+
+    /*
+     * @desc: this function initiates the spinners and the listener functions
+     * */
+    private void initiateSpinners(){
         AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -126,35 +162,6 @@ public class BookingActivityCourts extends Activity {
         timeSlot2.setOnItemSelectedListener(onItemSelectedListener);
         timeSlot3.setOnItemSelectedListener(onItemSelectedListener);
         timeSlot4.setOnItemSelectedListener(onItemSelectedListener);
-
-        TextView bookingDate = (TextView) findViewById(R.id.courtAvailabilityDateText);
-        String bookingText = "Showing available courts for: " + bookingDetails.get("month") + "/" +
-                bookingDetails.get("day") + "/" + bookingDetails.get("year");
-        bookingDate.setText(bookingText);
-
-        Button bookingButton = (Button) findViewById(R.id.bookingButton3);
-
-        bookingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makeBooking();
-                Log.d(TAG, "Attempting to book");
-            }
-        });
-
-        Button checkAnotherDateButton = (Button) findViewById(R.id.checkAnotherDate);
-
-        checkAnotherDateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "checking another date");
-                Intent bookingIntent = new Intent(BookingActivityCourts.this, BookingActivity.class);
-                startActivity(bookingIntent);
-            }
-        });
-
-        queue = Volley.newRequestQueue(this);
-
     }
 
     /*
@@ -218,8 +225,8 @@ public class BookingActivityCourts extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(BookingActivityCourts.this);
 
 
-        String bookingText = "Date: " + bookingDetails.get("day") + "/" +
-                bookingDetails.get("month") + "/" + bookingDetails.get("year") + " At the following time slots:" +
+        String bookingText = "Date: " + bookingDetails.get("month") + "/" +
+                bookingDetails.get("day") + "/" + bookingDetails.get("year") + " At the following time slots:" +
                 "\n Time Slot 1: " + bookingDetails.get("time_slot1") + "\n Time Slot 2: " + bookingDetails.get("time_slot2") +
                 "\n Time Slot 3: " + bookingDetails.get("time_slot3") + "\n Time Slot 4: " + bookingDetails.get("time_slot4");
         Log.d(TAG, bookingText);
@@ -265,36 +272,7 @@ public class BookingActivityCourts extends Activity {
                     e.printStackTrace();
                 }
 
-                // Updating court availability
-                JsonObjectRequest jsonObjectRequestCourts = new JsonObjectRequest(Request.Method.PUT, urlCourts, object,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d("JSON", String.valueOf(response));
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, error.toString());
-                    }
-                });
-                queue.add(jsonObjectRequestCourts);
-
-                //Updating user booking
-                JsonObjectRequest jsonObjectRequestBookings = new JsonObjectRequest(Request.Method.POST, urlBookings, objectBooking,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d("JSON", String.valueOf(response));
-                                goToConfirmation();
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, error.toString());
-                    }
-                });
-                queue.add(jsonObjectRequestBookings);
+                makeBookingRequest(urlCourts, object, urlBookings, objectBooking);
             }
         });
 
@@ -309,6 +287,42 @@ public class BookingActivityCourts extends Activity {
         AlertDialog confirmBookingDialog = builder.create();
         confirmBookingDialog.show();
 
+    }
+
+    /*
+     * @desc: this function creates and executes the booking request to the db
+     * */
+    private void makeBookingRequest(String urlCourts, JSONObject object, String urlBookings, JSONObject objectBooking){
+        // Updating court availability
+        JsonObjectRequest jsonObjectRequestCourts = new JsonObjectRequest(Request.Method.PUT, urlCourts, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("JSON", String.valueOf(response));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+        queue.add(jsonObjectRequestCourts);
+
+        //Updating user booking
+        JsonObjectRequest jsonObjectRequestBookings = new JsonObjectRequest(Request.Method.POST, urlBookings, objectBooking,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("JSON", String.valueOf(response));
+                        goToConfirmation();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+        queue.add(jsonObjectRequestBookings);
     }
 
     /*

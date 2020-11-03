@@ -61,8 +61,8 @@ public class PlayersActivity extends Activity {
         playerName2 = (TextView) findViewById(R.id.player2_name);
         playerName3 = (TextView) findViewById(R.id.player3_name);
         playerSkill1 = (TextView) findViewById(R.id.player1_skill);
-        playerSkill2 = (TextView) findViewById(R.id.player2_skill);;
-        playerSkill3 = (TextView) findViewById(R.id.player3_skill);;
+        playerSkill2 = (TextView) findViewById(R.id.player2_skill);
+        playerSkill3 = (TextView) findViewById(R.id.player3_skill);
         playerAvailability1 = (TextView) findViewById(R.id.player1_availability);
         playerAvailability2 = (TextView) findViewById(R.id.player2_availability);
         playerAvailability3 = (TextView) findViewById(R.id.player3_availability);
@@ -359,7 +359,7 @@ public class PlayersActivity extends Activity {
         Integer hourEnd =  finalHours.get(finalHours.size()-1);
         String availText = "";
 
-        if(hourBegin != hourEnd){
+        if(!hourBegin.equals(hourEnd)){
             availText = "Most available on " + DAYS_OF_WEEK.get(day) + "s at " + hourBegin.toString() + " to " + hourEnd.toString();
         }
         else{
@@ -375,6 +375,8 @@ public class PlayersActivity extends Activity {
                 break;
             case 3:
                 playerAvailability3.setText(availText);
+                break;
+            default:
                 break;
         }
     }
