@@ -84,6 +84,13 @@ public class PlayersActivity extends Activity {
 
     }
 
+    /*
+     * @desc: this function sets the player location in their user, using the location passed from
+     * the previous page.
+     * @param: user_ID - current user id
+     * @param: x - longitude
+     * @param: y - latitude
+     * */
     private void setPlayerLocation(String user_ID, Double x, Double y){
         String URL = "http://40.88.38.140:8080/users/location/" + user_ID;
         JSONObject userInfo = new JSONObject();
@@ -113,6 +120,10 @@ public class PlayersActivity extends Activity {
         queue.add(jsonObjectRequest);
     }
 
+    /*
+     * @desc: this function creates a get request to retrieve the top 10 most matched players.
+     * We will only display the top 3 most matched players.
+     * */
     private void getPlayerIds(){
         String url = "http://40.88.38.140:8080/availability/top10/" + UserInfo.getUserId();
         Log.d(TAG, url);
@@ -143,6 +154,12 @@ public class PlayersActivity extends Activity {
         queue.add(jsonArrayRequest);
     }
 
+    /*
+     * @desc: this function creates a get request to retrieve the according player information
+     * to display
+     * @param: JSONObject player - player information
+     * @param: index - player rank
+     * */
     private void getPlayerInfo(JSONObject player, int index) throws JSONException{
         String playerId = player.get("id").toString();
         String url = "http://40.88.38.140:8080/users/" + playerId;
@@ -168,6 +185,11 @@ public class PlayersActivity extends Activity {
         queue.add(jsonObjectRequest);
     }
 
+    /*
+     * @desc: this function sets the according text views to display player information.
+     * @param: JSONObject player - player information object
+     * @param: index - the rank of this player
+     * */
     private void setPlayerAttributes(JSONObject player, int index) throws JSONException {
         Log.d(TAG, player.toString());
         JSONArray overlap;
@@ -198,6 +220,12 @@ public class PlayersActivity extends Activity {
 
     }
 
+    /*
+     * @desc: this function sends a get request to check the player availability
+     * @param: user_ID: ID of player to check availability for
+     * @param: JSONObject player - player information object
+     * @param: index - the rank of this player
+     * */
     private void checkPlayerAvailability(String user_ID, int index, JSONObject playerInfo){
         String URL = "http://40.88.38.140:8080/availability/" + user_ID;
         Log.d(TAG, URL);
@@ -258,6 +286,13 @@ public class PlayersActivity extends Activity {
         queue.add(jsonArrayRequest);
     }
 
+    /*
+     * @desc: this function compares two availability arrays and returns the overlap in their availabilities
+     * as a JSONArray
+     * @param: player1 - first availability to compare
+     * @param: player2 - second availability to compare
+     * @return: overlap - JSONArray containing overlap of the two
+     * */
     private JSONArray compareAvailabilities(JSONArray player1, JSONArray player2) throws JSONException {
         JSONArray overlap = new JSONArray();
         JSONObject avail1;
@@ -281,6 +316,12 @@ public class PlayersActivity extends Activity {
         return overlap;
     }
 
+    /*
+     * @desc: this function compares the hours given in two arrays and returns the similarity
+     * @param: avail1 - first availability to compare
+     * @param: avail2 - second availability to compare
+     * @return: finalHours - arraylist of hours which overlap
+     * */
     private ArrayList<Integer> compareHours(JSONArray avail1, JSONArray avail2) throws JSONException {
         ArrayList<Integer> finalHours = new ArrayList<>();
 
@@ -295,6 +336,11 @@ public class PlayersActivity extends Activity {
         return finalHours;
     }
 
+    /*
+     * @desc: this function sets the according text views to display player availability.
+     * @param: JSONArray availability - availability information array
+     * @param: index - the rank of this player
+     * */
     private void displayAvailability(JSONArray availability, int index) throws JSONException {
         int longestIndex = 0;
 

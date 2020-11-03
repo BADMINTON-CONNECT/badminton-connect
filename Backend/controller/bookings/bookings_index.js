@@ -30,7 +30,7 @@ router.get('/:id', (req, res) => {
 	});
 });
 
-// post of booking 
+// post a booking 
 router.post('/', (req, res) => {
     var body = req.body;
 	const sql = 'INSERT INTO bookings (user_id, Year, Month, Date, time_slot1, time_slot2, time_slot3, time_slot4) values (?, ?, ?, ?, ?, ?, ?, ?)';
@@ -64,20 +64,16 @@ function notify_bookings_near() {
 	db.query(sql, [current_year, current_month+1, current_date], (err, row) => {
 		if (err) throw err;
 		for(var r in row) {
-			//console.log(row[r].Registration_Token);
 			if (row[r].Registration_Token != null) {
 				admin.sendPushNotification(row[r].Registration_Token, 'Booking Notification', 'Your booking is coming up today!');
 			}
 		}
 	})
-	
 }
 
 
 
-//setInterval(check_bookings_near, 1500); // this is in ms
-// how often do i need to call this??
-// how to prevent from users already notified to get notify again? 
+//setInterval(notify_bookings_near, 3000); // 3 seconds
 notify_bookings_near();
 
 module.exports = router

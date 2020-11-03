@@ -23,8 +23,6 @@ const users_db = {
     }
 }
 
-var testdata = "hello";
-
 
 function get_all_users() {
     //console.log("calling from mocks")
