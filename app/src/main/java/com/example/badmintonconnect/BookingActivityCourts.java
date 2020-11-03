@@ -118,6 +118,7 @@ public class BookingActivityCourts extends Activity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                Log.d(TAG, "Nothing Selected");
             }
         };
 
@@ -228,7 +229,7 @@ public class BookingActivityCourts extends Activity {
 
         JSONObject objectBooking = new JSONObject();
         try {
-            objectBooking.put("user_id", UserInfo.getUserId());
+            objectBooking.put("user_id", UserInfoHelper.getUserId());
             objectBooking.put("Year", bookingDetails.get("year"));
             objectBooking.put("Month", bookingDetails.get("month"));
             objectBooking.put("Date", bookingDetails.get("day"));

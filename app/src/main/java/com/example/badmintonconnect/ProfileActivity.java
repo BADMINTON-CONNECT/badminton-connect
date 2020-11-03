@@ -45,7 +45,6 @@ import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
     private ImageView imageViewProfilePicture;
-    private ImageButton buttonEdit;
     private EditText editTextUserEmail;
     private EditText editTextUserName;
     private EditText availableFrom;
@@ -55,9 +54,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Spinner spinnerUserDistancePref;
     private Button buttonAddRow;
     private Button buttonSave;
-    private String TAG = "LoginActivity";
+    private final static String TAG = "LoginActivity";
     private boolean valid;
-    private Map<String, String> userInfo = new HashMap<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
         adapterUserDistancePref.notifyDataSetChanged();
 
         // create edit button
-        buttonEdit = (ImageButton) findViewById(R.id.imageButtonEdit);
+        ImageButton buttonEdit = (ImageButton) findViewById(R.id.imageButtonEdit);
         buttonEdit.setOnClickListener(v -> {
             Log.d(TAG, "Clicked settings button");
             enableTableEdit(true);
@@ -154,7 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
         buttonSave = (Button) findViewById(R.id.buttonSave);
         buttonSave.setEnabled(false);
         buttonSave.setOnClickListener(v -> {
-            valid = sendUserInfoToBackend(UserInfo.getUserId());
+            valid = sendUserInfoToBackend(UserInfoHelper.getUserId());
             if (valid) {
                 sendToast("SAVED");
                 enableTableEdit(false);
@@ -177,7 +175,7 @@ public class ProfileActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         // populate profile page with stored user information
-        getUserInfoFromBackend(UserInfo.getUserId());
+        getUserInfoFromBackend(UserInfoHelper.getUserId());
 
         // update UI (profile image)
         updateUI(account);

@@ -30,7 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class HomePageActivity extends AppCompatActivity{
-    final static String TAG = "HomePageActivity";
+    final private static String TAG = "HomePageActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private RequestQueue queue;
 
@@ -155,7 +155,7 @@ public class HomePageActivity extends AppCompatActivity{
                 try {
                     JSONObject obj = (JSONObject) response.get(0);
                     Log.d(TAG, obj.get("user_id").toString());
-                    UserInfo.setUserId(obj.get("user_id").toString());
+                    UserInfoHelper.setUserId(obj.get("user_id").toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -174,7 +174,7 @@ public class HomePageActivity extends AppCompatActivity{
 
                                 // Log and toast
                                 Log.d(TAG, token);
-                                sendUserToken(token, UserInfo.getUserId());
+                                sendUserToken(token, UserInfoHelper.getUserId());
                             }
                         });
             }

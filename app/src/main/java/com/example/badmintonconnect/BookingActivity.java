@@ -21,16 +21,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static java.time.LocalDate.now;
 
 public class BookingActivity extends Activity {
     final private static String TAG = "Booking Activity";
     private RequestQueue queue;
     private DatePicker datePicker;
-    Map<String, String> bookingDetails;
+    private Map<String, String> bookingDetails;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class BookingActivity extends Activity {
         checkDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CheckDate();
+                checkDate();
                 Log.d(TAG, "Attempting to check date");
             }
         });
@@ -75,7 +75,7 @@ public class BookingActivity extends Activity {
     * @params: none
     * @return: none
     * */
-    private void CheckDate() {
+    private void checkDate() {
         Integer day = datePicker.getDayOfMonth();
         Integer month = datePicker.getMonth() + 1;
         Integer year = datePicker.getYear();
@@ -90,7 +90,7 @@ public class BookingActivity extends Activity {
 
         String date = year + "-" + monthString + "-" + dayString;
         LocalDate bookingDate = LocalDate.parse(date);
-        LocalDate today = java.time.LocalDate.now();
+        LocalDate today = now();
 
         if(today.isAfter(bookingDate)){
             Toast.makeText(BookingActivity.this, "Must check date on or after today", Toast.LENGTH_SHORT).show();

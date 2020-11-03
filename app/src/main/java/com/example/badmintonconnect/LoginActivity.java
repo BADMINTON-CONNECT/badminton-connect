@@ -65,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                     case R.id.google_sign_in:
                         signIn();
                         break;
+                    default:
+                        break;
                 }
             }
         });
