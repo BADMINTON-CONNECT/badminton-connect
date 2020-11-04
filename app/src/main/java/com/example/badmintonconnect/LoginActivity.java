@@ -130,13 +130,13 @@ public class LoginActivity extends AppCompatActivity {
 
             // this is the json body that backend would use to get information
             userInfo.put("IDToken", account.getIdToken());
-            if(account.getGivenName().equals(null) || account.getGivenName().equals("")){
+            if(account.getGivenName() == null || account.getGivenName().equals("")){
                 userInfo.put("first_name", "");
             }
             else{
                 userInfo.put("first_name", account.getGivenName());
             }
-            if(account.getFamilyName().equals(null) || account.getFamilyName().equals("")){
+            if(account.getFamilyName() == null || account.getFamilyName().equals("")){
                 userInfo.put("last_name", "");
             }
             else{
