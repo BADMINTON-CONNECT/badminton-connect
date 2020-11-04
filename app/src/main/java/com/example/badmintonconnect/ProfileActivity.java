@@ -226,6 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     break;
                                 default:
                                     Log.d(TAG, widgetId);
+                                    break;
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "error finding resource id");

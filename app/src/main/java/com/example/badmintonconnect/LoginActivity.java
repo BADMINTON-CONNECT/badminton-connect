@@ -77,18 +77,18 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    // to delete all information from the app (and the database)
-    // TODO
-    private void revokeAccess() {
-        mGoogleSignInClient.revokeAccess()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                        // tell the back end to delete all information
-                    }
-                });
-    }
+//    // to delete all information from the app (and the database)
+//    // TODO
+//    private void revokeAccess() {
+//        mGoogleSignInClient.revokeAccess()
+//                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        // ...
+//                        // tell the back end to delete all information
+//                    }
+//                });
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
