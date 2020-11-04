@@ -35,7 +35,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 public class LoginActivity extends AppCompatActivity {
-        private SignInButton signInButton;
         private GoogleSignInClient mGoogleSignInClient;
         private int RC_SIGN_IN = 1;
         private String TAG = "LoginActivity";
@@ -43,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SignInButton signInButton;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -129,10 +129,21 @@ public class LoginActivity extends AppCompatActivity {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             String URL = "http://40.88.38.140:8080/users";
             JSONObject userInfo = new JSONObject();
+
             // this is the json body that backend would use to get information
             userInfo.put("IDToken", account.getIdToken());
-            userInfo.put("first_name", account.getGivenName());
-            userInfo.put("last_name", account.getFamilyName());
+            if(account.getGivenName().equals(null) || account.getGivenName().equals("")){
+                userInfo.put("first_name", "");
+            }
+            else{
+                userInfo.put("first_name", account.getGivenName());
+            }
+            if(account.getFamilyName().equals(null) || account.getFamilyName().equals("")){
+                userInfo.put("last_name", "");
+            }
+            else{
+                userInfo.put("last_name", account.getFamilyName());
+            }
             userInfo.put("email", account.getEmail());
             final String mRequestBody = userInfo.toString();
 

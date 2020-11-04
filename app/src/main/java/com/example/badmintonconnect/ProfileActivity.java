@@ -150,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
         buttonSave = (Button) findViewById(R.id.buttonSave);
         buttonSave.setEnabled(false);
         buttonSave.setOnClickListener(v -> {
-            valid = sendUserInfoToBackend(UserInfoHelper.getUserId());
+            valid = pushUserInfo(UserInfoHelper.getUserId());
             if (valid) {
                 sendToast("SAVED");
                 enableTableEdit(false);
@@ -173,7 +173,7 @@ public class ProfileActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         // populate profile page with stored user information
-        getUserInfoFromBackend(UserInfoHelper.getUserId());
+        pullUserInfo(UserInfoHelper.getUserId());
 
         // update UI (profile image)
         updateUI(account);
@@ -200,6 +200,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     break;
                                 default:
                                     Log.d(TAG, widgetId);
+                                    break;
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "error finding resource id");
@@ -245,7 +246,7 @@ public class ProfileActivity extends AppCompatActivity {
             View view = availabilityTable.getChildAt(i);
             if (view instanceof TableRow) {
                 JSONArray temp = new JSONArray();
-                hours_available oHoursAvail = new hours_available(1, temp);
+                Availability availability = new Availability(1, temp);
                 int rowChildCount = ((TableRow) view).getChildCount();
                 int from = 0;
                 int to = 0;
@@ -277,16 +278,16 @@ public class ProfileActivity extends AppCompatActivity {
                         EditText editText = (EditText) viewChild;
                         switch (widgetId) {
                             case "availableWeekday":
-                                if (editText.getText().toString() != "") {
+                                if (!editText.getText().toString().isEmpty()) {
                                     weekday += editText.getText().toString();
-                                    validWeekday = oHoursAvail.setDay(weekday);
+                                    validWeekday = availability.setDay(weekday);
                                     if (!validWeekday) {
                                         sendToast("VALIDWEEKDAY");
                                     }
                                 }
                                 break;
                             case "availableFrom":
-                                if (editText.getText().toString() != "") {
+                                if (!editText.getText().toString().isEmpty()) {
                                     from = Integer.parseInt(editText.getText().toString());
                                     validFrom = true;
                                 } else {
@@ -295,16 +296,16 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                                 break;
                             case "availableTo":
-                                if (editText.getText().toString() != "" && validFrom) {
+                                if (!editText.getText().toString().isEmpty() && validFrom) {
                                     to = Integer.parseInt(editText.getText().toString());
-                                    validTo = oHoursAvail.setHour(from, to);
+                                    validTo = availability.setHour(from, to);
                                     if (!validTo) {
                                         from = -1;
                                         sendToast("VALIDFROMTO");
                                         return null;
                                     } else {
                                         // SUCCESS
-                                        analyzedRow = oHoursAvail.getHoursAvailable();
+                                        analyzedRow = availability.getHoursAvailable();
                                         availableTimesArray.put(analyzedRow);
                                         Log.d(TAG, "" + availableTimesArray);
                                     }
@@ -388,7 +389,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
-        return;
     }
 
     // function to convert backend weekday integer to String
@@ -418,6 +418,7 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             default:
                 sendToast("ERROR");
+                break;
         }
         return weekday;
     }
@@ -463,11 +464,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // function to send basic user information
-    private boolean sendUserInfoToBackend(String user_ID) {
+    private boolean pushUserInfo(String user_ID) {
         try {
             String usersInfoURL = "http://40.88.38.140:8080/users/" + user_ID;
             String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
-            String json = "";
             String firstName = "";
             String lastName = "";
             int index;
@@ -479,7 +479,7 @@ public class ProfileActivity extends AppCompatActivity {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
 
             // process user information
-            if (validEntry == false) {
+            if (!validEntry) {
                 Log.d(TAG, "Could not save user info");
                 return false;
             }
@@ -571,7 +571,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // populate profile page from information retrieved from db
-    private void getUserInfoFromBackend(String user_ID) {
+    private void pullUserInfo(String user_ID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String usersURL = "http://40.88.38.140:8080/users/" + user_ID;
         String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
@@ -584,7 +584,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if (user_ID == null) {
                         Log.d(TAG, "ERROR - userID null");
                     }
-                    if (response.getString("first_name") == "NULL" || response.getString("last_name") == "NULL") {
+                    if (response.getString("first_name").equals("NULL") || response.getString("last_name").equals("NULL")) {
                         sendToast("VALIDNAME");
                     }
                     editTextUserName.setText(response.getString("first_name") + " " + response.getString("last_name"));
