@@ -267,6 +267,8 @@ public class PlayersActivity extends Activity {
                             e.printStackTrace();
                         }
                         break;
+                    default:
+                        break;
                 }
 
             }
