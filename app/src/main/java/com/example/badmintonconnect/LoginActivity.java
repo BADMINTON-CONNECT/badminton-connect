@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
     private void sendUserInfoToBackend(GoogleSignInAccount account) {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
-            String URL = "http://40.88.38.140:8080/users";
+            String URL = "http://40.88.148.58:8080/users";
             JSONObject userInfo = new JSONObject();
 
             // this is the json body that backend would use to get information

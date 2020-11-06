@@ -90,7 +90,7 @@ public class PlayersActivity extends Activity {
      * @param: y - latitude
      * */
     private void setPlayerLocation(String user_ID, Double x, Double y){
-        String URL = "http://40.88.38.140:8080/users/location/" + user_ID;
+        String URL = "http://40.88.148.58:8080/users/location/" + user_ID;
         JSONObject userInfo = new JSONObject();
         // this is the json body that backend would use to get information
         try {
@@ -123,7 +123,7 @@ public class PlayersActivity extends Activity {
      * We will only display the top 3 most matched players.
      * */
     private void getPlayerIds(){
-        String url = "http://40.88.38.140:8080/availability/top10/" + UserInfoHelper.getUserId();
+        String url = "http://40.88.148.58:8080/availability/top10/" + UserInfoHelper.getUserId();
         Log.d(TAG, url);
 
         // Request a json array response from the provided URL.
@@ -160,7 +160,7 @@ public class PlayersActivity extends Activity {
      * */
     private void getPlayerInfo(JSONObject player, int index) throws JSONException{
         String playerId = player.get("id").toString();
-        String url = "http://40.88.38.140:8080/users/" + playerId;
+        String url = "http://40.88.148.58:8080/users/" + playerId;
         Log.d(TAG, url);
 
         // Request a json array response from the provided URL.
@@ -227,7 +227,7 @@ public class PlayersActivity extends Activity {
      * @param: index - the rank of this player
      * */
     private void checkPlayerAvailability(String user_ID, int index, JSONObject playerInfo){
-        String URL = "http://40.88.38.140:8080/availability/" + user_ID;
+        String URL = "http://40.88.148.58:8080/availability/" + user_ID;
         Log.d(TAG, URL);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
             public void onResponse(JSONArray response) {

@@ -257,8 +257,8 @@ public class BookingActivityCourts extends Activity {
                 int time_slot4 = parseInt(bookingDetails.get("time_slot4_original")) - parseInt(bookingDetails.get("time_slot4"));
 
 
-                String urlCourts = "http://40.88.38.140:8080/courts";
-                String urlBookings = "http://40.88.38.140:8080/bookings";
+                String urlCourts = "http://40.88.148.58:8080/courts";
+                String urlBookings = "http://40.88.148.58:8080/bookings";
 
                 JSONObject object = new JSONObject();
                 try {

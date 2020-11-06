@@ -139,7 +139,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
      * If they are we then check the user availability.
      * */
     private void checkPlayerFields(String user_ID) {
-        String URL = "http://40.88.38.140:8080/users/" + user_ID;
+        String URL = "http://40.88.148.58:8080/users/" + user_ID;
         Log.d(TAG, URL);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
             public void onResponse(JSONObject response) {
@@ -184,7 +184,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
      * If they are we then go to the match players page.
      * */
     private void checkPlayerAvailability(String user_ID){
-        String URL = "http://40.88.38.140:8080/availability/" + user_ID;
+        String URL = "http://40.88.148.58:8080/availability/" + user_ID;
         Log.d(TAG, URL);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
             public void onResponse(JSONArray response) {

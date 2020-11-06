@@ -32,7 +32,7 @@ public class SeeBookingsActivity extends Activity {
 
     private void getUserBooking(String user_ID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String userBookingURL = "http://40.88.38.140:8080/bookings/" + user_ID;
+        String userBookingURL = "http://40.88.148.58:8080/bookings/" + user_ID;
 
         JsonArrayRequest availabilityJsonObjectRequest = new JsonArrayRequest(Request.Method.GET, userBookingURL, null, new Response.Listener<JSONArray>() {
             @Override

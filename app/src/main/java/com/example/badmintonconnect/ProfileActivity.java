@@ -467,8 +467,8 @@ public class ProfileActivity extends AppCompatActivity {
     // function to send basic user information
     private boolean pushUserInfo(String user_ID) {
         try {
-            String usersInfoURL = "http://40.88.38.140:8080/users/" + user_ID;
-            String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
+            String usersInfoURL = "http://40.88.148.58:8080/users/" + user_ID;
+            String availabilityURL = "http://40.88.148.58:8080/availability/" + user_ID;
             String firstName = "";
             String lastName = "";
             int index;
@@ -574,8 +574,8 @@ public class ProfileActivity extends AppCompatActivity {
     // populate profile page from information retrieved from db
     private void pullUserInfo(String user_ID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String usersURL = "http://40.88.38.140:8080/users/" + user_ID;
-        String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
+        String usersURL = "http://40.88.148.58:8080/users/" + user_ID;
+        String availabilityURL = "http://40.88.148.58:8080/availability/" + user_ID;
 
         JsonObjectRequest usersJsonObjectRequest = new JsonObjectRequest(Request.Method.GET, usersURL, null, new Response.Listener<JSONObject>() {
             public void onResponse(JSONObject response) {
