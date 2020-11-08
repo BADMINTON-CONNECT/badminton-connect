@@ -37,7 +37,6 @@ import java.util.Map;
 import static android.location.LocationManager.GPS_PROVIDER;
 
 public class PlayersLocationActivity extends Activity implements LocationListener {
-    private LocationManager locationManager;
     private RequestQueue queue;
     private final int REQUEST_PERMISSION_LOCATION=1;
     private Map<String, Double> locationDetails;
@@ -51,7 +50,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
         queue = Volley.newRequestQueue(this);
         findPlayersIntent = new Intent(PlayersLocationActivity.this, PlayersActivity.class);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             showExplanation("Allow location access?", "In order to use the find players"  +
@@ -140,7 +139,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
      * If they are we then check the user availability.
      * */
     private void checkPlayerFields(String user_ID) {
-        String URL = "http://40.88.38.140:8080/users/" + user_ID;
+        String URL = "http://40.88.148.58:8080/users/" + user_ID;
         Log.d(TAG, URL);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
             public void onResponse(JSONObject response) {
@@ -185,7 +184,7 @@ public class PlayersLocationActivity extends Activity implements LocationListene
      * If they are we then go to the match players page.
      * */
     private void checkPlayerAvailability(String user_ID){
-        String URL = "http://40.88.38.140:8080/availability/" + user_ID;
+        String URL = "http://40.88.148.58:8080/availability/" + user_ID;
         Log.d(TAG, URL);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
             public void onResponse(JSONArray response) {

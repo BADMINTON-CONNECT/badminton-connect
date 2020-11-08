@@ -97,7 +97,7 @@ public class BookingActivity extends Activity {
             return;
         }
 
-        String url = "http://40.88.38.140:8080/courts/" + year + "/" + month + "/" + day + "/"; // this is the server url
+        String url = "http://40.88.148.58:8080/courts/" + year + "/" + month + "/" + day + "/"; // this is the server url
         Log.d(TAG, url);
 
         bookingDetails.put("day", day.toString());

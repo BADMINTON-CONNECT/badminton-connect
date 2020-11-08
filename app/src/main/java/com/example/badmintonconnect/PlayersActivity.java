@@ -61,8 +61,8 @@ public class PlayersActivity extends Activity {
         playerName2 = (TextView) findViewById(R.id.player2_name);
         playerName3 = (TextView) findViewById(R.id.player3_name);
         playerSkill1 = (TextView) findViewById(R.id.player1_skill);
-        playerSkill2 = (TextView) findViewById(R.id.player2_skill);;
-        playerSkill3 = (TextView) findViewById(R.id.player3_skill);;
+        playerSkill2 = (TextView) findViewById(R.id.player2_skill);
+        playerSkill3 = (TextView) findViewById(R.id.player3_skill);
         playerAvailability1 = (TextView) findViewById(R.id.player1_availability);
         playerAvailability2 = (TextView) findViewById(R.id.player2_availability);
         playerAvailability3 = (TextView) findViewById(R.id.player3_availability);
@@ -90,7 +90,7 @@ public class PlayersActivity extends Activity {
      * @param: y - latitude
      * */
     private void setPlayerLocation(String user_ID, Double x, Double y){
-        String URL = "http://40.88.38.140:8080/users/location/" + user_ID;
+        String URL = "http://40.88.148.58:8080/users/location/" + user_ID;
         JSONObject userInfo = new JSONObject();
         // this is the json body that backend would use to get information
         try {
@@ -123,7 +123,7 @@ public class PlayersActivity extends Activity {
      * We will only display the top 3 most matched players.
      * */
     private void getPlayerIds(){
-        String url = "http://40.88.38.140:8080/availability/top10/" + UserInfoHelper.getUserId();
+        String url = "http://40.88.148.58:8080/availability/top10/" + UserInfoHelper.getUserId();
         Log.d(TAG, url);
 
         // Request a json array response from the provided URL.
@@ -160,7 +160,7 @@ public class PlayersActivity extends Activity {
      * */
     private void getPlayerInfo(JSONObject player, int index) throws JSONException{
         String playerId = player.get("id").toString();
-        String url = "http://40.88.38.140:8080/users/" + playerId;
+        String url = "http://40.88.148.58:8080/users/" + playerId;
         Log.d(TAG, url);
 
         // Request a json array response from the provided URL.
@@ -227,7 +227,7 @@ public class PlayersActivity extends Activity {
      * @param: index - the rank of this player
      * */
     private void checkPlayerAvailability(String user_ID, int index, JSONObject playerInfo){
-        String URL = "http://40.88.38.140:8080/availability/" + user_ID;
+        String URL = "http://40.88.148.58:8080/availability/" + user_ID;
         Log.d(TAG, URL);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
             public void onResponse(JSONArray response) {
@@ -266,6 +266,8 @@ public class PlayersActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        break;
+                    default:
                         break;
                 }
 
@@ -359,7 +361,7 @@ public class PlayersActivity extends Activity {
         Integer hourEnd =  finalHours.get(finalHours.size()-1);
         String availText = "";
 
-        if(hourBegin != hourEnd){
+        if(!hourBegin.equals(hourEnd)){
             availText = "Most available on " + DAYS_OF_WEEK.get(day) + "s at " + hourBegin.toString() + " to " + hourEnd.toString();
         }
         else{
@@ -375,6 +377,8 @@ public class PlayersActivity extends Activity {
                 break;
             case 3:
                 playerAvailability3.setText(availText);
+                break;
+            default:
                 break;
         }
     }

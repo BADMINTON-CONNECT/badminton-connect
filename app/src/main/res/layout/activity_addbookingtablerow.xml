@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+android:layout_width="match_parent"
+android:layout_marginTop="10dp"
+android:layout_marginBottom="10dp"
+xmlns:android="http://schemas.android.com/apk/res/android">
+
+<TextView
+    android:id="@+id/date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:textStyle="bold" />
+
+<TextView
+    android:id="@+id/slot1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_weight="2"
+    android:gravity="center"
+    android:textStyle="bold" />
+
+<TextView
+    android:id="@+id/slot2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_weight="2"
+    android:gravity="center"
+    android:textStyle="bold" />
+
+<TextView
+    android:id="@+id/slot3"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_weight="2"
+    android:gravity="center"
+    android:textStyle="bold" />
+
+<TextView
+    android:id="@+id/slot4"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_weight="2"
+    android:gravity="center"
+    android:textStyle="bold" />
+</TableRow>

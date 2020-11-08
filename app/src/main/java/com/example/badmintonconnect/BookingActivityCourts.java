@@ -225,8 +225,8 @@ public class BookingActivityCourts extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(BookingActivityCourts.this);
 
 
-        String bookingText = "Date: " + bookingDetails.get("day") + "/" +
-                bookingDetails.get("month") + "/" + bookingDetails.get("year") + " At the following time slots:" +
+        String bookingText = "Date: " + bookingDetails.get("month") + "/" +
+                bookingDetails.get("day") + "/" + bookingDetails.get("year") + " At the following time slots:" +
                 "\n Time Slot 1: " + bookingDetails.get("time_slot1") + "\n Time Slot 2: " + bookingDetails.get("time_slot2") +
                 "\n Time Slot 3: " + bookingDetails.get("time_slot3") + "\n Time Slot 4: " + bookingDetails.get("time_slot4");
         Log.d(TAG, bookingText);
@@ -257,8 +257,8 @@ public class BookingActivityCourts extends Activity {
                 int time_slot4 = parseInt(bookingDetails.get("time_slot4_original")) - parseInt(bookingDetails.get("time_slot4"));
 
 
-                String urlCourts = "http://40.88.38.140:8080/courts";
-                String urlBookings = "http://40.88.38.140:8080/bookings";
+                String urlCourts = "http://40.88.148.58:8080/courts";
+                String urlBookings = "http://40.88.148.58:8080/bookings";
 
                 JSONObject object = new JSONObject();
                 try {

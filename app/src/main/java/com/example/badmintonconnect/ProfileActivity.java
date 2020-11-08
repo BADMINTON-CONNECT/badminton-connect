@@ -52,7 +52,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Spinner spinnerUserDistancePref;
     private Button buttonAddRow;
     private Button buttonSave;
-    private final static String TAG = "LoginActivity";
+    private TableLayout availabilityTable;
+    private final static String TAG = "ProfileActivity";
     private boolean valid;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
          * - available To : must be populated with an integer value (24 hour format) - e.g. 16 (represents 4pm)
          * *Note that the availableFrom < availableTo
          */
-        TableLayout availabilityTable = (TableLayout) findViewById(R.id.TableLayoutAvailability);
+        availabilityTable = (TableLayout) findViewById(R.id.TableLayoutAvailability);
 
         availableWeekday = (EditText) findViewById(R.id.availableWeekday);
         availableWeekday.setTag(availableWeekday.getKeyListener());
@@ -80,17 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
         availableTo.setTag(availableTo.getKeyListener());
         availableTo.setKeyListener(null);
 
-        // create button to allow users to add more rows to the availability table - by default, off
-        buttonAddRow = (Button) findViewById(R.id.buttonAddRow);
-        buttonAddRow.setEnabled(false);
-        buttonAddRow.setOnClickListener(v -> {
-            Log.d(TAG, "add Row button clicked");
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            inflater.inflate(R.layout.activity_addtablerow, availabilityTable);
-            availableWeekday.setKeyListener((KeyListener) availableWeekday.getTag());
-            availableFrom.setKeyListener((KeyListener) availableFrom.getTag());
-            availableTo.setKeyListener((KeyListener) availableTo.getTag());
-        });
+        setButtons();
 
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
 
@@ -104,6 +95,19 @@ public class ProfileActivity extends AppCompatActivity {
         editTextUserName.setTag(editTextUserName.getKeyListener());
         editTextUserName.setKeyListener(null);
 
+        setSpinners();
+
+        // get the current logged-in account information
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        // populate profile page with stored user information
+        pullUserInfo(UserInfoHelper.getUserId());
+
+        // update UI (profile image)
+        updateUI(account);
+    }
+
+    private void setSpinners(){
         // create spinner for user skill level
         spinnerUserSkillLevel = (Spinner) findViewById(R.id.spinnerUserSkillLevel);
         spinnerUserSkillLevel.setEnabled(false);
@@ -129,6 +133,20 @@ public class ProfileActivity extends AppCompatActivity {
                         R.layout.contact_spinner_row_nothing_selected,
                         this));
         adapterUserDistancePref.notifyDataSetChanged();
+    }
+
+    private void setButtons(){
+        // create button to allow users to add more rows to the availability table - by default, off
+        buttonAddRow = (Button) findViewById(R.id.buttonAddRow);
+        buttonAddRow.setEnabled(false);
+        buttonAddRow.setOnClickListener(v -> {
+            Log.d(TAG, "add Row button clicked");
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater.inflate(R.layout.activity_addtablerow, availabilityTable);
+            availableWeekday.setKeyListener((KeyListener) availableWeekday.getTag());
+            availableFrom.setKeyListener((KeyListener) availableFrom.getTag());
+            availableTo.setKeyListener((KeyListener) availableTo.getTag());
+        });
 
         // create edit button
         ImageButton buttonEdit = (ImageButton) findViewById(R.id.imageButtonEdit);
@@ -136,6 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
             Log.d(TAG, "Clicked settings button");
             enableTableEdit(true);
             editTextUserName.setKeyListener((KeyListener) editTextUserName.getTag());
+            editTextUserEmail.setKeyListener((KeyListener) editTextUserEmail.getTag());
             spinnerUserSkillLevel.setEnabled(true);
             spinnerUserSkillLevel.setClickable(true);
             spinnerUserDistancePref.setEnabled(true);
@@ -150,7 +169,7 @@ public class ProfileActivity extends AppCompatActivity {
         buttonSave = (Button) findViewById(R.id.buttonSave);
         buttonSave.setEnabled(false);
         buttonSave.setOnClickListener(v -> {
-            valid = sendUserInfoToBackend(UserInfoHelper.getUserId());
+            valid = pushUserInfo(UserInfoHelper.getUserId());
             if (valid) {
                 sendToast("SAVED");
                 enableTableEdit(false);
@@ -168,15 +187,6 @@ public class ProfileActivity extends AppCompatActivity {
                 buttonSave.setEnabled(false);
             }
         });
-
-        // get the current logged-in account information
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        // populate profile page with stored user information
-        getUserInfoFromBackend(UserInfoHelper.getUserId());
-
-        // update UI (profile image)
-        updateUI(account);
     }
 
     // function to allow contents in the table to be editable or not
@@ -200,6 +210,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     break;
                                 default:
                                     Log.d(TAG, widgetId);
+                                    break;
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "error finding resource id");
@@ -225,6 +236,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     break;
                                 default:
                                     Log.d(TAG, widgetId);
+                                    break;
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "error finding resource id");
@@ -245,7 +257,7 @@ public class ProfileActivity extends AppCompatActivity {
             View view = availabilityTable.getChildAt(i);
             if (view instanceof TableRow) {
                 JSONArray temp = new JSONArray();
-                hours_available oHoursAvail = new hours_available(1, temp);
+                Availability availability = new Availability(1, temp);
                 int rowChildCount = ((TableRow) view).getChildCount();
                 int from = 0;
                 int to = 0;
@@ -277,16 +289,16 @@ public class ProfileActivity extends AppCompatActivity {
                         EditText editText = (EditText) viewChild;
                         switch (widgetId) {
                             case "availableWeekday":
-                                if (editText.getText().toString() != "") {
+                                if (!editText.getText().toString().isEmpty()) {
                                     weekday += editText.getText().toString();
-                                    validWeekday = oHoursAvail.setDay(weekday);
+                                    validWeekday = availability.setDay(weekday);
                                     if (!validWeekday) {
                                         sendToast("VALIDWEEKDAY");
                                     }
                                 }
                                 break;
                             case "availableFrom":
-                                if (editText.getText().toString() != "") {
+                                if (!editText.getText().toString().isEmpty()) {
                                     from = Integer.parseInt(editText.getText().toString());
                                     validFrom = true;
                                 } else {
@@ -295,16 +307,16 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                                 break;
                             case "availableTo":
-                                if (editText.getText().toString() != "" && validFrom) {
+                                if (!editText.getText().toString().isEmpty() && validFrom) {
                                     to = Integer.parseInt(editText.getText().toString());
-                                    validTo = oHoursAvail.setHour(from, to);
+                                    validTo = availability.setHour(from, to);
                                     if (!validTo) {
                                         from = -1;
                                         sendToast("VALIDFROMTO");
                                         return null;
                                     } else {
                                         // SUCCESS
-                                        analyzedRow = oHoursAvail.getHoursAvailable();
+                                        analyzedRow = availability.getHoursAvailable();
                                         availableTimesArray.put(analyzedRow);
                                         Log.d(TAG, "" + availableTimesArray);
                                     }
@@ -388,7 +400,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
-        return;
     }
 
     // function to convert backend weekday integer to String
@@ -418,6 +429,7 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             default:
                 sendToast("ERROR");
+                break;
         }
         return weekday;
     }
@@ -463,24 +475,19 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // function to send basic user information
-    private boolean sendUserInfoToBackend(String user_ID) {
+    private boolean pushUserInfo(String user_ID) {
         try {
-            String usersInfoURL = "http://40.88.38.140:8080/users/" + user_ID;
-            String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
-            String json = "";
+            String usersInfoURL = "http://40.88.148.58:8080/users/" + user_ID;
+            String availabilityURL = "http://40.88.148.58:8080/availability/" + user_ID;
             String firstName = "";
             String lastName = "";
             int index;
             boolean validEntry = checkEmptyEditText();
 
-            editTextUserName = (EditText) findViewById(R.id.editTextUserName);
-            editTextUserEmail = (EditText) findViewById(R.id.textViewUserEmail);
-            spinnerUserSkillLevel = (Spinner) findViewById(R.id.spinnerUserSkillLevel);
-
             RequestQueue requestQueue = Volley.newRequestQueue(this);
 
             // process user information
-            if (validEntry == false) {
+            if (!validEntry) {
                 Log.d(TAG, "Could not save user info");
                 return false;
             }
@@ -494,7 +501,6 @@ public class ProfileActivity extends AppCompatActivity {
             userInfo.put("user_ID", user_ID);
             userInfo.put("first_name", firstName);
             userInfo.put("last_name", lastName);
-            userInfo.put("email", editTextUserEmail.getText().toString());
             userInfo.put("skill_level", spinnerUserSkillLevel.getSelectedItem());
             userInfo.put("distance_preference", spinnerUserDistancePref.getSelectedItem());
             final String mRequestBody = userInfo.toString();
@@ -523,31 +529,7 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, error.toString());
                 }
-            }) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
-
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    try {
-                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                    } catch (UnsupportedEncodingException uee) {
-                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                        return null;
-                    }
-                }
-
-                @Override
-                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                    String responseString = "";
-                    if (response != null) {
-                        return super.parseNetworkResponse(response);
-                    }
-                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                }
-            };
+            });
 
             JsonObjectRequest jsonObjectRequestAvailability = new JsonObjectRequest(Request.Method.POST, availabilityURL, userAvailabilityObject,
                     new Response.Listener<JSONObject>() {
@@ -573,10 +555,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // populate profile page from information retrieved from db
-    private void getUserInfoFromBackend(String user_ID) {
+    private void pullUserInfo(String user_ID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String usersURL = "http://40.88.38.140:8080/users/" + user_ID;
-        String availabilityURL = "http://40.88.38.140:8080/availability/" + user_ID;
+        String usersURL = "http://40.88.148.58:8080/users/" + user_ID;
+        String availabilityURL = "http://40.88.148.58:8080/availability/" + user_ID;
 
         JsonObjectRequest usersJsonObjectRequest = new JsonObjectRequest(Request.Method.GET, usersURL, null, new Response.Listener<JSONObject>() {
             public void onResponse(JSONObject response) {
@@ -586,7 +568,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if (user_ID == null) {
                         Log.d(TAG, "ERROR - userID null");
                     }
-                    if (response.getString("first_name") == "NULL" || response.getString("last_name") == "NULL") {
+                    if (response.getString("first_name").equals("NULL") || response.getString("last_name").equals("NULL")) {
                         sendToast("VALIDNAME");
                     }
                     editTextUserName.setText(response.getString("first_name") + " " + response.getString("last_name"));

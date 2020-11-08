@@ -4,12 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class hours_available {
+public class Availability {
     private int day;
     private JSONArray hour = new JSONArray();
     private JSONObject availability = new JSONObject();
 
-    public hours_available(int day, JSONArray hour) {
+    public Availability(int day, JSONArray hour) {
         this.day = day;
         this.hour = hour;
     }

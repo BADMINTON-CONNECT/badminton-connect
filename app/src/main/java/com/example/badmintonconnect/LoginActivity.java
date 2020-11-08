@@ -1,6 +1,5 @@
 package com.example.badmintonconnect;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -31,11 +30,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 public class LoginActivity extends AppCompatActivity {
-        private SignInButton signInButton;
         private GoogleSignInClient mGoogleSignInClient;
         private int RC_SIGN_IN = 1;
         private String TAG = "LoginActivity";
@@ -43,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SignInButton signInButton;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -77,18 +75,18 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    // to delete all information from the app (and the database)
-    // TODO
-    private void revokeAccess() {
-        mGoogleSignInClient.revokeAccess()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                        // tell the back end to delete all information
-                    }
-                });
-    }
+//    // to delete all information from the app (and the database)
+//    // TODO
+//    private void revokeAccess() {
+//        mGoogleSignInClient.revokeAccess()
+//                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        // ...
+//                        // tell the back end to delete all information
+//                    }
+//                });
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -127,12 +125,23 @@ public class LoginActivity extends AppCompatActivity {
     private void sendUserInfoToBackend(GoogleSignInAccount account) {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
-            String URL = "http://40.88.38.140:8080/users";
+            String URL = "http://40.88.148.58:8080/users";
             JSONObject userInfo = new JSONObject();
+
             // this is the json body that backend would use to get information
             userInfo.put("IDToken", account.getIdToken());
-            userInfo.put("first_name", account.getGivenName());
-            userInfo.put("last_name", account.getFamilyName());
+            if(account.getGivenName() == null || account.getGivenName().equals("")){
+                userInfo.put("first_name", "");
+            }
+            else{
+                userInfo.put("first_name", account.getGivenName());
+            }
+            if(account.getFamilyName() == null || account.getFamilyName().equals("")){
+                userInfo.put("last_name", "");
+            }
+            else{
+                userInfo.put("last_name", account.getFamilyName());
+            }
             userInfo.put("email", account.getEmail());
             final String mRequestBody = userInfo.toString();
 
