@@ -199,7 +199,7 @@ router.get("/top10/:id", (req, res) => {
 				// Check for when the current user is different, then calculate their score
 				else if (result[parseInt(entry, 10)].matched_player !== lastUser) {
 					// Multiply the total points from all matching hours, and multiply it to the skill multiplier
-					matchPoints[index].score *= (pointsTotal + consecScore(consecutive));
+					matchPoints[parseInt(index, 10)].score *= (pointsTotal + consecScore(consecutive));
 					// Reset points and consecutive hours
 					pointsTotal = 0;
 					consecutive = 1;
@@ -231,7 +231,7 @@ router.get("/top10/:id", (req, res) => {
 		} 
 		else {
 			// Add the points for the last user since the loop will break before it does
-			matchPoints[index].score *= (pointsTotal + consecScore(consecutive));
+			matchPoints[parseInt(index, 10)].score *= (pointsTotal + consecScore(consecutive));
 
 			// Sort the array in decending order, leaving the the highest score at the lowest index
 			matchPoints.sort(function(a, b) {
