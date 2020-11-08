@@ -52,7 +52,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Spinner spinnerUserDistancePref;
     private Button buttonAddRow;
     private Button buttonSave;
-    private final static String TAG = "LoginActivity";
+    private TableLayout availabilityTable;
+    private final static String TAG = "ProfileActivity";
     private boolean valid;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
          * - available To : must be populated with an integer value (24 hour format) - e.g. 16 (represents 4pm)
          * *Note that the availableFrom < availableTo
          */
-        TableLayout availabilityTable = (TableLayout) findViewById(R.id.TableLayoutAvailability);
+        availabilityTable = (TableLayout) findViewById(R.id.TableLayoutAvailability);
 
         availableWeekday = (EditText) findViewById(R.id.availableWeekday);
         availableWeekday.setTag(availableWeekday.getKeyListener());
@@ -80,17 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
         availableTo.setTag(availableTo.getKeyListener());
         availableTo.setKeyListener(null);
 
-        // create button to allow users to add more rows to the availability table - by default, off
-        buttonAddRow = (Button) findViewById(R.id.buttonAddRow);
-        buttonAddRow.setEnabled(false);
-        buttonAddRow.setOnClickListener(v -> {
-            Log.d(TAG, "add Row button clicked");
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            inflater.inflate(R.layout.activity_addtablerow, availabilityTable);
-            availableWeekday.setKeyListener((KeyListener) availableWeekday.getTag());
-            availableFrom.setKeyListener((KeyListener) availableFrom.getTag());
-            availableTo.setKeyListener((KeyListener) availableTo.getTag());
-        });
+        setButtons();
 
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
 
@@ -104,6 +95,19 @@ public class ProfileActivity extends AppCompatActivity {
         editTextUserName.setTag(editTextUserName.getKeyListener());
         editTextUserName.setKeyListener(null);
 
+        setSpinners();
+
+        // get the current logged-in account information
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        // populate profile page with stored user information
+        pullUserInfo(UserInfoHelper.getUserId());
+
+        // update UI (profile image)
+        updateUI(account);
+    }
+
+    private void setSpinners(){
         // create spinner for user skill level
         spinnerUserSkillLevel = (Spinner) findViewById(R.id.spinnerUserSkillLevel);
         spinnerUserSkillLevel.setEnabled(false);
@@ -129,6 +133,20 @@ public class ProfileActivity extends AppCompatActivity {
                         R.layout.contact_spinner_row_nothing_selected,
                         this));
         adapterUserDistancePref.notifyDataSetChanged();
+    }
+
+    private void setButtons(){
+        // create button to allow users to add more rows to the availability table - by default, off
+        buttonAddRow = (Button) findViewById(R.id.buttonAddRow);
+        buttonAddRow.setEnabled(false);
+        buttonAddRow.setOnClickListener(v -> {
+            Log.d(TAG, "add Row button clicked");
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater.inflate(R.layout.activity_addtablerow, availabilityTable);
+            availableWeekday.setKeyListener((KeyListener) availableWeekday.getTag());
+            availableFrom.setKeyListener((KeyListener) availableFrom.getTag());
+            availableTo.setKeyListener((KeyListener) availableTo.getTag());
+        });
 
         // create edit button
         ImageButton buttonEdit = (ImageButton) findViewById(R.id.imageButtonEdit);
@@ -136,6 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
             Log.d(TAG, "Clicked settings button");
             enableTableEdit(true);
             editTextUserName.setKeyListener((KeyListener) editTextUserName.getTag());
+            editTextUserEmail.setKeyListener((KeyListener) editTextUserEmail.getTag());
             spinnerUserSkillLevel.setEnabled(true);
             spinnerUserSkillLevel.setClickable(true);
             spinnerUserDistancePref.setEnabled(true);
@@ -168,15 +187,6 @@ public class ProfileActivity extends AppCompatActivity {
                 buttonSave.setEnabled(false);
             }
         });
-
-        // get the current logged-in account information
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        // populate profile page with stored user information
-        pullUserInfo(UserInfoHelper.getUserId());
-
-        // update UI (profile image)
-        updateUI(account);
     }
 
     // function to allow contents in the table to be editable or not
@@ -474,9 +484,6 @@ public class ProfileActivity extends AppCompatActivity {
             int index;
             boolean validEntry = checkEmptyEditText();
 
-            editTextUserName = (EditText) findViewById(R.id.editTextUserName);
-            spinnerUserSkillLevel = (Spinner) findViewById(R.id.spinnerUserSkillLevel);
-
             RequestQueue requestQueue = Volley.newRequestQueue(this);
 
             // process user information
@@ -547,28 +554,29 @@ public class ProfileActivity extends AppCompatActivity {
                     return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
                 }
             };
-
-            JsonObjectRequest jsonObjectRequestAvailability = new JsonObjectRequest(Request.Method.POST, availabilityURL, userAvailabilityObject,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(TAG, "user availability has been successfully stored!");
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, error.toString());
-                }
-            });
-
             requestQueue.add(stringRequest);
-            requestQueue.add(jsonObjectRequestAvailability);
-
+            requestAvailability(availabilityURL, userAvailabilityObject, requestQueue);
         } catch (JSONException | JsonProcessingException e) {
             e.printStackTrace();
             return true;
         }
         return true;
+    }
+
+    private void requestAvailability(String availabilityURL, JSONObject userAvailabilityObject, RequestQueue requestQueue){
+        JsonObjectRequest jsonObjectRequestAvailability = new JsonObjectRequest(Request.Method.POST, availabilityURL, userAvailabilityObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "user availability has been successfully stored!");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+        requestQueue.add(jsonObjectRequestAvailability);
     }
 
     // populate profile page from information retrieved from db
