@@ -4,7 +4,7 @@ THIS IS COURTS INDEX
 
 */
 
-const DAILY = 86400000; //1 * 24 * 60 * 60 * 1000 ms
+//const DAILY = 86400000; //1 * 24 * 60 * 60 * 1000 ms
 const express = require("express");
 const router = express.Router();
 const db = require("../../database/mysql");
@@ -77,7 +77,7 @@ function addCourtDate() {
 
 }
 
-setInterval(addCourtDate, DAILY);
+setInterval(addCourtDate, 86400000);
 
 
 // delete court that"s 2 weeks old
@@ -103,6 +103,6 @@ function deleteCourt() {
 	});
 }
 
-setInterval(deleteCourt, DAILY);
+setInterval(deleteCourt, 86400000);
 
 module.exports = router;

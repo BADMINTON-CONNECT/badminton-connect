@@ -1,4 +1,6 @@
 var admin = require("firebase-admin");
+const logger = require("../../logs/logger.js");
+const firebaseLogger = logger.firebaseLogger;
 
 var serviceAccount = require("/home/m5/M5/badminton-connect-4976a-firebase-adminsdk-391bo-e5eaea9e1a.json");
 
@@ -23,11 +25,11 @@ function sendPushNotification(regToken, notificationTitle, notificationBody) {
 
   admin.messaging().sendToDevice(regToken, messageNotification, notificationOptions)
 	.then((response) => {
-		// Response is a message ID string.
-		console.log("Successfully sent message:", response);
+    // Response is a message ID string.
+    courtsLogger.info("Successfully sent message:", response);
 	})
 	.catch((error) => {
-		console.log("Error sending message:", error);
+    courtsLogger.error("Error sending message:", error);
   });
   
 }
