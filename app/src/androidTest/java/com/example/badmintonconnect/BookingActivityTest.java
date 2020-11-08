@@ -1,6 +1,5 @@
 package com.example.badmintonconnect;
 
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -18,7 +17,6 @@ import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.Assert;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -43,7 +41,7 @@ public class BookingActivityTest {
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void bookingActivityTest() {
+    public void assertBookingValidTest() {
         ViewInteraction appCompatImageButton = onView(
                 allOf(withId(R.id.imageButtonBooking),
                         isDisplayed()));
@@ -107,7 +105,8 @@ public class BookingActivityTest {
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         textView2.check(matches(withText(containsString("Time Slot 1: 1"))));
-        org.junit.Assert.assertNotNull(textView2);
+        assert(!textView2.equals(textView));
+
     }
 
     private static Matcher<View> childAtPosition(

@@ -11,7 +11,8 @@ const usersController = require("./controller/users/users_index");
 const courtsController = require("./controller/courts/courts_index");
 const bookingsController = require("./controller/bookings/bookings_index");
 const availabilityController = require("./controller/availability/availability_index");
-
+const logger = require("./logs/logger.js");
+const serverLogger = logger.serverLogger;
 
 app.use(bodyparser.json());
 
@@ -37,5 +38,6 @@ app.use("/availability", availabilityController);
 
 
 app.listen(port, () => {
-  console.log(`Server app listening at http://40.88.148.58:${port}`);
+  serverLogger.info(`Server app listening at http://40.88.148.58:${port}`);
+  //console.log(`Server app listening at http://40.88.148.58:${port}`);
 });

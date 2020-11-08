@@ -1,8 +1,10 @@
 var mysql = require("mysql");
+const logger = require("../../logs/logger.js");
+const mysqlLogger = logger.mysqlLogger;
 
 var db;
 
-function connect_db() {
+function connectDb() {
 	db = mysql.createConnection({
 		host: "localhost",
 		user: "root",
@@ -13,16 +15,16 @@ function connect_db() {
 	
 	db.connect( (err) => {
 		if (err) {
-			console.log("Error when connecting to the database: ", + err);
-			setTimeout(connect_db, 2000);
+			mysqlLogger.error("Error when connecting to the database: ", + err);
+			setTimeout(connectDb, 2000);
 		}
 	});
 
 	db.on("error", (err) => {
-		console.log("database error" + err);
+		mysqlLogger.error("database error" + err);
 		if (err.code === "PROTOCOL_CONNECTION_LOST") {
-			console.log("Error caught, re-creating the connection");
-			connect_db();
+			mysqlLogger.error("Error caught, re-creating the connection");
+			connectDb();
 		}
 		else {
 			throw err;
@@ -30,6 +32,6 @@ function connect_db() {
 	});
 }
 
-connect_db();
+connectDb();
 
 module.exports = db;

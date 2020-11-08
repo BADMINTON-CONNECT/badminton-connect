@@ -8,8 +8,10 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../database/mysql");
 const admin = require("../../firebase/notification");
+const logger = require("../../logs/logger.js");
+const usersLogger = logger.usersLogger;
 
-function get_all_users(req, res) {
+function getAllUsers(req, res) {
 	const sql = "SELECT * FROM users";
 
 	return new Promise ( (resolve, reject) => {
@@ -28,7 +30,7 @@ function get_all_users(req, res) {
 	});
 }
 
-function get_userid_by_email(req, res) {
+function getUserIdByEmail(req, res) {
 	const sql = "select user_id from users where email = ?";
 
 	return db.query(sql, [req.query.email], (err, result) => {
@@ -39,7 +41,7 @@ function get_userid_by_email(req, res) {
 	});
 }
 
-function get_specific_user(req, res) {
+function getSpecificUser(req, res) {
 	const sql = "SELECT * FROM users WHERE user_id = ?";
 
 	return db.query(sql, [req.params.id], (err, row, field) => {
@@ -51,7 +53,7 @@ function get_specific_user(req, res) {
 }
 
 
-function delete_specific_user(req, res) {
+function deleteSpecificUser(req, res) {
 	const sql = "DELETE FROM users WHERE user_id = ?";
 
 	return db.query(sql, [req.params.id], (err, result) => {
@@ -62,10 +64,10 @@ function delete_specific_user(req, res) {
 	});
 }
 
-function insert_user(req, res) {
+function insertUser(req, res) {
 	var body = req.body;
 	if (body.first_name == null && body.last_name == null && body.email == null) {
-		console.log("null is being inserted");
+		usersLogger.info("null is being inserted");
 		res.send("null is being inserted");
 	}
 	else {
@@ -83,20 +85,20 @@ function insert_user(req, res) {
 					if (err) {
 						throw err;
 					}
-					console.log("user already exist at user id: " + row[0].user_id);
+					usersLogger.info("user already exist at user id: " + row[0].user_id);
 					res.send("" + row[0].user_id);
 				});
 			}
 			else {
 				// if not already exists, insert and return the user_id
-				console.log("inserted at user id: " + result.insertId);
+				usersLogger.info("inserted at user id: " + result.insertId);
 				res.send("inserted at user id: " + result.insertId);
 			}
 		});
 	}
 }
 
-function update_user_info(req, res) {
+function updateUserInfo(req, res) {
 	var body = req.body;
 	const sql = "UPDATE users SET first_name = ?, last_name = ?, skill_level = ?, distance_preference = ? WHERE user_id = ?";
 	
@@ -108,7 +110,7 @@ function update_user_info(req, res) {
     });
 }
 
-function update_user_location(req, res) {
+function updateUserLocation(req, res) {
 	var body = req.body;
 	const sql = "UPDATE users SET location_x = ?, location_y = ? WHERE user_id = ?";
 	
@@ -120,7 +122,7 @@ function update_user_location(req, res) {
     });
 }
 
-function update_user_token(req, res) {
+function updateUserToken(req, res) {
 	var body = req.body;
 	const sql = "UPDATE users set Registration_Token = ? WHERE user_id = ?";
 
@@ -132,14 +134,14 @@ function update_user_token(req, res) {
 	});
 }
 
-router.get("/email", get_userid_by_email);
-router.get("/", get_all_users);
-router.get("/:id", get_specific_user);
-router.delete("/:id", delete_specific_user);
-router.post("/", insert_user);
-router.put("/:id", update_user_info);
-router.put("/location/:id", update_user_location);
-router.put("/RegistrationToken/:id", update_user_token);
+router.get("/email", getUserIdByEmail);
+router.get("/", getAllUsers);
+router.get("/:id", getSpecificUser);
+router.delete("/:id", deleteSpecificUser);
+router.post("/", insertUser);
+router.put("/:id", updateUserInfo);
+router.put("/location/:id", updateUserLocation);
+router.put("/RegistrationToken/:id", updateUserToken);
 
 
 module.exports = router;

@@ -4,11 +4,13 @@ THIS IS COURTS INDEX
 
 */
 
-const DAILY = 86400000; //1 * 24 * 60 * 60 * 1000 ms
+const DAILY = 86400; //1 * 24 * 60 * 60 seconds
 const express = require("express");
 const router = express.Router();
 const db = require("../../database/mysql");
 const admin = require("../../firebase/notification");
+const logger = require("../../logs/logger.js");
+const courtsLogger = logger.courtsLogger;
 
 
 
@@ -49,58 +51,58 @@ router.put("/", (req, res) => {
 
 
 // set up court stats a week in advance 
-function add_court_date() {
+function addCourtDate() {
 	const sql = "INSERT IGNORE INTO courts (year, month, date, time_slot1, time_slot2, time_slot3, time_slot4) VALUES (?, ?, ?, 10, 10, 10, 10)";
 
 	var date = new Date();
 	date.setDate(date.getDate() + 7);
 
-	const current_year = date.getFullYear();
-	const current_month = date.getMonth(); // month is 0 indexed
-	const current_date = date.getDate();
+	const currentYear = date.getFullYear();
+	const currentMonth = date.getMonth(); // month is 0 indexed
+	const currentDate = date.getDate();
 
-	db.query(sql, [current_year, current_month+1, current_date], (err, result) => {
+	db.query(sql, [currentYear, currentMonth+1, currentDate], (err, result) => {
 		if (err) {
 			throw err;
 		}
 
 		if (result.affectedRows === 0 && result.warningCount === 1) {
-			console.log("Court for " + date.toString() + " already exists");
+			courtsLogger.info("Court for " + date.toString() + " already exists");
 		}
 		else {
-			console.log("Inserted court for: " + date.toString());
+			courtsLogger.info("Inserted court for: " + date.toString());
 		}
 		
 	});
 
 }
 
-setInterval(add_court_date, DAILY);
+setInterval(addCourtDate, DAILY*1000);
 
 
 // delete court that"s 2 weeks old
-function delete_court() {
+function deleteCourt() {
 	const sql = "DELETE FROM courts WHERE year = ? AND month = ? AND date = ?";
 
 	var date = new Date();
 	date.setDate(date.getDate() - 14);
-	const current_year = date.getFullYear();
-	const current_month = date.getMonth(); // month is 0 indexed
-	const current_date = date.getDate();
+	const currentYear = date.getFullYear();
+	const currentMonth = date.getMonth(); // month is 0 indexed
+	const currentDate = date.getDate();
 
-	db.query(sql, [current_year, current_month+1, current_date], (err, result) => {
+	db.query(sql, [currentYear, currentMonth+1, currentDate], (err, result) => {
 		if (err) {
 			throw err;
 		}
 		if (result.affectedRows === 0) {
-			console.log("Court for: " + date.toString() + " does not exist");
+			courtsLogger.info("Court for: " + date.toString() + " does not exist");
 		}
 		else {
-			console.log("Deleted court for: " + date.toString());
+			courtsLogger.info("Deleted court for: " + date.toString());
 		}
 	});
 }
 
-setInterval(delete_court, DAILY);
+setInterval(deleteCourt, DAILY*1000);
 
 module.exports = router;

@@ -8,7 +8,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../database/mysql");
 const admin = require("../../firebase/notification");
-
+const logger = require("../../logs/logger.js");
+const bookingsLogger = logger.bookingsLogger;
 
 // get all the bookings 
 router.get("/", (req, res) => {
@@ -60,15 +61,15 @@ router.delete("/:id", (req, res) => {
 
 
 
-function notify_bookings_near() {
+function notifyBookingsNear() {
 	var date = new Date();
-	const current_year = date.getFullYear();
-	const current_month = date.getMonth(); // month is 0 indexed
-	const current_date = date.getDate();
+	const currentYear = date.getFullYear();
+	const currentMonth = date.getMonth(); // month is 0 indexed
+	const currentDate = date.getDate();
 
 	const sql = "SELECT DISTINCT users.Registration_Token FROM users INNER JOIN bookings ON users.user_id = bookings.user_id WHERE bookings.Year = ? and bookings.Month = ? and bookings.Date = ?";
 
-	db.query(sql, [current_year, current_month+1, current_date], (err, row) => {
+	db.query(sql, [currentYear, currentMonth+1, currentDate], (err, row) => {
 		if (err) {
 			throw err;
 		}
@@ -83,6 +84,6 @@ function notify_bookings_near() {
 
 
 //setInterval(notify_bookings_near, 3000); // 3 seconds
-notify_bookings_near();
+notifyBookingsNear();
 
 module.exports = router;
