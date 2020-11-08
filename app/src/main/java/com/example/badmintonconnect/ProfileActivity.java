@@ -18,10 +18,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -34,6 +38,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 public class ProfileActivity extends AppCompatActivity {
     private ImageView imageViewProfilePicture;
@@ -523,29 +529,54 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, error.toString());
                 }
-            });
-
-            JsonObjectRequest jsonObjectRequestAvailability = new JsonObjectRequest(Request.Method.POST, availabilityURL, userAvailabilityObject,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(TAG, "user availability has been successfully stored!");
-                        }
-                    }, new Response.ErrorListener() {
+            }) {
                 @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, error.toString());
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
                 }
-            });
 
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null) {
+                        return super.parseNetworkResponse(response);
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
             requestQueue.add(stringRequest);
-            requestQueue.add(jsonObjectRequestAvailability);
-
+            requestAvailability(availabilityURL, userAvailabilityObject, requestQueue);
         } catch (JSONException | JsonProcessingException e) {
             e.printStackTrace();
             return true;
         }
         return true;
+    }
+
+    private void requestAvailability(String availabilityURL, JSONObject userAvailabilityObject, RequestQueue requestQueue){
+        JsonObjectRequest jsonObjectRequestAvailability = new JsonObjectRequest(Request.Method.POST, availabilityURL, userAvailabilityObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "user availability has been successfully stored!");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+        requestQueue.add(jsonObjectRequestAvailability);
     }
 
     // populate profile page from information retrieved from db
