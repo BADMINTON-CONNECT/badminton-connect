@@ -1,5 +1,5 @@
 const dut = require("../users_index");
-import {jest} from "@jest/globals";
+const jest = require("jest");
 jest.mock("../users_index");
 
 

@@ -1,4 +1,4 @@
-import {jest} from "@jest/globals";
+const jest = require("jest");
 const users = jest.createMockFromModule("./users_index");
 
 
