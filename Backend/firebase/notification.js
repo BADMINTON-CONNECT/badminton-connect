@@ -1,8 +1,10 @@
 var admin = require("firebase-admin");
+const logger = require("../../logs/logger.js");
+const firebaseLogger = logger.firebaseLogger;
 
 var serviceAccount = require("/home/m5/M5/badminton-connect-4976a-firebase-adminsdk-391bo-e5eaea9e1a.json");
 
-const notification_options = {
+const notificationOptions = {
   priority: "high",
   timeToLive: 60 * 60 * 24
 };
@@ -12,22 +14,22 @@ admin.initializeApp({
   databaseURL: "https://badminton-connect-4976a.firebaseio.com"
 });
 
-function sendPushNotification(reg_token, notification_title, notification_body) {
+function sendPushNotification(regToken, notificationTitle, notificationBody) {
   
-  const message_notification = {
+  const messageNotification = {
     notification: {
-      title: notification_title,
-      body: notification_body
+      title: notificationTitle,
+      body: notificationBody
     }
   };
 
-  admin.messaging().sendToDevice(reg_token, message_notification, notification_options)
+  admin.messaging().sendToDevice(regToken, messageNotification, notificationOptions)
 	.then((response) => {
-		// Response is a message ID string.
-		console.log("Successfully sent message:", response);
+    // Response is a message ID string.
+    firebaseLogger.info("Successfully sent message:", response);
 	})
 	.catch((error) => {
-		console.log("Error sending message:", error);
+    firebaseLogger.error("Error sending message:", error);
   });
   
 }

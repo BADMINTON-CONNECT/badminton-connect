@@ -18,25 +18,25 @@ const empty = {
 
 };
 
-const all_users = {
+const allUsers = {
     17: {
-        first_name: "Neo",
-        last_name: "Tsai",
+        firstName: "Neo",
+        lastName: "Tsai",
         email: "neo@gmail.com",
-        location_x: "-123.1336",
-        location_y: "49.167",
-        skill_level: 6,
-        distance_preference: 20
+        locationX: "-123.1336",
+        locationY: "49.167",
+        skillLevel: 6,
+        distancePreference: 20
     },
 
     41: {
-        first_name: "Eleigh",
-        last_name: "Hangeveld",
+        firstName: "Eleigh",
+        lastName: "Hangeveld",
         email: "neo@gmail.com",
-        location_x: "-123.1336",
-        location_y: "49.167",
-        skill_level: 6,
-        distance_preference: 20
+        locationX: "-123.1336",
+        locationY: "49.167",
+        skillLevel: 6,
+        distancePreference: 20
     }
 };
 
@@ -55,8 +55,8 @@ const res = Object.create(response);
 test("Testing get all request", () => {
     
     expect.assertions(1);
-    return dut.get_all_users(req, res).then( (data) => {
-        expect(data).toEqual(all_users);
+    return dut.getAllUsers(req, res).then( (data) => {
+        expect(data).toEqual(allUsers);
     });
     
 });
@@ -64,14 +64,14 @@ test("Testing get all request", () => {
 
 var id = 17;
 test("Testing get specific request", () => {
-    return dut.get_specific_user(id).then( (data) => {
-        expect(data).toEqual(all_users[id]);
+    return dut.getSpecificUser(id).then( (data) => {
+        expect(data).toEqual(allUsers[id]);
     });
 });
 
 
 test("Testing delete specific request", () => {
-    return dut.delete_specific_user(id).then( (data) => {
+    return dut.deleteSpecificUser(id).then( (data) => {
         expect(data).toEqual("Deleted succesfully");
     });
 });
