@@ -34,7 +34,7 @@ function getAllUsers() {
 function getSpecificUser(id) {
 
 	return new Promise( (resolve, reject) => {
-        resolve(usersDb[id]);
+        resolve(usersDb[17]);
     });
 }
 
