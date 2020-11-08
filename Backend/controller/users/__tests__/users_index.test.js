@@ -1,5 +1,4 @@
 const dut = require("../users_index");
-const jest = require("jest");
 jest.mock("../users_index");
 
 
