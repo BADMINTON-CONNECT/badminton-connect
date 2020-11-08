@@ -62,12 +62,10 @@ test("Testing get all request", () => {
 });
 
 
-var id = 17;
+//var id = 17;
 test("Testing get specific request", () => {
     return dut.getSpecificUser(id).then( (data) => {
-        let theInt = parseInt(id);
-        var expected = allUsers[theInt];
-        expect(data).toEqual(expected);
+        expect(data).toEqual(allUsers[17]);
     });
 });
 
