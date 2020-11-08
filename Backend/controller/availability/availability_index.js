@@ -29,7 +29,7 @@ router.get("/", (req, res) => {
 */
 router.get("/:id", (req, res) => {
 	const sql = "SELECT DISTINCT day, hour FROM availability WHERE user_id = ? ORDER BY day asc, hour asc";
-	var day_of_week = [];
+	var dayOfWeek = [];
 	var hours = [];
 	var day = -1;
 
@@ -51,7 +51,7 @@ router.get("/:id", (req, res) => {
 				} 
 				// If the current day is different to the last, add the array of the last day and reset
 				else {
-					day_of_week.push({"day": day, "hours": hours});
+					dayOfWeek.push({"day": day, "hours": hours});
 					hours = [result[entry].hour];
 					// hours.push(result[entry].hour);
 					day = result[entry].day;
@@ -61,12 +61,12 @@ router.get("/:id", (req, res) => {
 
 		// Check if no days were added (No data available)
 		if (day === -1) {
-			res.send(day_of_week);
+			res.send(dayOfWeek);
 		} 
 		// Add the last day of hours
 		else { 
-			day_of_week.push({"day": day, "hours": hours});
-			res.send(day_of_week);
+			dayOfWeek.push({"day": day, "hours": hours});
+			res.send(dayOfWeek);
 		}
 	});
 });
@@ -77,19 +77,19 @@ router.get("/:id", (req, res) => {
 	and insert the new one.
 */
 router.post("/:id", (req, res) => {
-	const sql_get = "SELECT * FROM users WHERE user_id = ?";
-	const sql_ins = "INSERT INTO availability (user_id,day,hour,skill,location_x,location_y,max_dist) VALUES (?,?,?,?,?,?,?)";
-	const sql_del = "DELETE FROM availability WHERE user_id = ?";
+	const sqlGet = "SELECT * FROM users WHERE user_id = ?";
+	const sqlIns = "INSERT INTO availability (user_id,day,hour,skill,location_x,location_y,max_dist) VALUES (?,?,?,?,?,?,?)";
+	const sqlDel = "DELETE FROM availability WHERE user_id = ?";
 	var body = req.body;
 
 	// Get the information for the user from the users database
-	db.query(sql_get, [req.params.id], (err, row) => {
+	db.query(sqlGet, [req.params.id], (err, row) => {
 		if (err) {
 			throw err;
 		}
 
 		// Delete the old schedule of the user
-		db.query(sql_del, [req.params.id], (err, result) => {
+		db.query(sqlDel, [req.params.id], (err, result) => {
 			if (err) {
 				throw err;
 			}
@@ -101,7 +101,7 @@ router.post("/:id", (req, res) => {
 					for(var hour in body.hours_available[day].hour) {
 						if (Object.prototype.hasOwnProperty.call(body.hours_available[day].hour, hour)) {
 
-							db.query(sql_ins, [req.params.id, body.hours_available[day].day,
+							db.query(sqlIns, [req.params.id, body.hours_available[day].day,
 								body.hours_available[day].hour[hour], row[0].skill_level, row[0].location_x,
 								row[0].location_y, row[0].distance_preference], (err, result) => {
 								if (err) {
@@ -123,14 +123,14 @@ router.post("/:id", (req, res) => {
 	A higher skilled player is more desirable to play with
 	Positive numbers are from skill levels that were lower. 
 */
-function skill_multiplier(skill_diff) {
+function skillMultiplier(skillDiff) {
 	// Sd = standard deviation
 	const sd = 2;
 	// Slightly shift the distribution left so that negative scores are weighed higher
 	const mean = -0.4; 
 	// Multiplier to make the max score 10 at 0
 	const multiplier = 51.14349127; 
-	return multiplier/(sd*Math.sqrt(2*Math.PI))*Math.pow(Math.E, -1 * Math.pow(skill_diff - mean, 2)/(2 * Math.pow(sd, 2)));
+	return multiplier/(sd*Math.sqrt(2*Math.PI))*Math.pow(Math.E, -1 * Math.pow(skillDiff - mean, 2)/(2 * Math.pow(sd, 2)));
 }
 
 /*
@@ -141,7 +141,7 @@ function skill_multiplier(skill_diff) {
 	of 2 hours, where as larger consecutive sections are only slightly more
 	desirable because it makes it easier to plan a session
 */
-function consec_score(consecutive) {
+function consecScore(consecutive) {
 	// Variables to give the consecutive score a sharp curve
 	const a = 0.11;
 	const b = 0.93;
@@ -154,7 +154,7 @@ router.get("/top10/:id", (req, res) => {
 
 	// SQL call which grabs all users that have an overlaping time with a given user
 	// From all those users, only return the users who are within each other user's max distance
-	const sql_get = "SELECT DISTINCT user2 as matched_player, day, hour, skill_diff " 
+	const sqlGet = "SELECT DISTINCT user2 as matched_player, day, hour, skill_diff " 
 	+ "FROM ("
 	+ "SELECT us1.user_id as user1, us2.user_id as user2, us1.day, us1.hour, "
 	+ "us1.max_dist as d1, us2.max_dist as d2, (us1.skill - us2.skill) as skill_diff, "
@@ -168,14 +168,14 @@ router.get("/top10/:id", (req, res) => {
 	+ ") as Matches "
 	+ "WHERE (dist_diff <= d1 AND dist_diff <= d2)";
 	
-	var last_user = -1;
+	var lastUser = -1;
 	var index = -1;
-	var points_total = 0;
+	var pointsTotal = 0;
 	var consecutive = 0;
-	var match_points = [];
+	var matchPoints = [];
 
 	// Grab all of the compatible users from the availability db
-	db.query(sql_get, [req.params.id], (err, result) => {
+	db.query(sqlGet, [req.params.id], (err, result) => {
 		if (err) {
 			throw err;
 		}
@@ -185,23 +185,23 @@ router.get("/top10/:id", (req, res) => {
 
 				// Skip calculations on the first entry
 				if (entry === 0) {
-					// Set the first user up on the match_points array, which will be used to find the top 10 scores
+					// Set the first user up on the matchPoints array, which will be used to find the top 10 scores
 					// skill_muliplier will get their multiplier based on how different their skill levels are
-					match_points.push({"id": result[0].matched_player, "score": skill_multiplier(result[0].skill_diff)});
-					last_user = result[0].matched_player;
+					matchPoints.push({"id": result[0].matched_player, "score": skillMultiplier(result[0].skill_diff)});
+					lastUser = result[0].matched_player;
 					index++;
 					consecutive = 1;
 				} 
 				// Check for when the current user is different, then calculate their score
-				else if (result[entry].matched_player !== last_user) {
+				else if (result[entry].matched_player !== lastUser) {
 					// Multiply the total points from all matching hours, and multiply it to the skill multiplier
-					match_points[index].score *= (points_total + consec_score(consecutive));
+					matchPoints[index].score *= (pointsTotal + consecScore(consecutive));
 					// Reset points and consecutive hours
-					points_total = 0;
+					pointsTotal = 0;
 					consecutive = 1;
-					// Add the next user to match_points and increment index for that array
-					match_points.push({"id": result[entry].matched_player, "score": skill_multiplier(result[entry].skill_diff)});
-					last_user = result[entry].matched_player;
+					// Add the next user to matchPoints and increment index for that array
+					matchPoints.push({"id": result[entry].matched_player, "score": skillMultiplier(result[entry].skill_diff)});
+					lastUser = result[entry].matched_player;
 					index++;
 				} 
 				else {
@@ -209,7 +209,7 @@ router.get("/top10/:id", (req, res) => {
 					// Check if the day has changed or the hours are no longer consecutive
 					if (result[entry-1].day !== result[entry].day || (result[entry-1].hour + 1) !== result[entry].hour) {
 						// Calculate the score for that number of consecutive hours and reset consecutive
-						points_total += consec_score(consecutive);
+						pointsTotal += consecScore(consecutive);
 						consecutive = 1;
 					} 
 					// If we got here, that means the hours were consecutive
@@ -223,23 +223,23 @@ router.get("/top10/:id", (req, res) => {
 		// Check if there was no data available/no matches
 		if (index === -1) {
 			// Send empty array
-			res.send(match_points);
+			res.send(matchPoints);
 		} 
 		else {
 			// Add the points for the last user since the loop will break before it does
-			match_points[index].score *= (points_total + consec_score(consecutive));
+			matchPoints[index].score *= (pointsTotal + consecScore(consecutive));
 
 			// Sort the array in decending order, leaving the the highest score at the lowest index
-			match_points.sort(function(a, b) {
+			matchPoints.sort(function(a, b) {
 				return b.score - a.score;
 			});
 
 			// Remove extra users
-			while (match_points.length > 3) {
-				match_points.pop();
+			while (matchPoints.length > 3) {
+				matchPoints.pop();
 			}
 
-			res.send(match_points);
+			res.send(matchPoints);
 		}
 	});
 });
