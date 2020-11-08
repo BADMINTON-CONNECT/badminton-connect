@@ -74,8 +74,8 @@ function notifyBookingsNear() {
 			throw err;
 		}
 		for(var r in row) {
-			if (row[r].Registration_Token != null) {
-				admin.sendPushNotification(row[r].Registration_Token, "Booking Notification", "Your booking is coming up today!");
+			if (row[parseInt(r, 10)].Registration_Token != null) {
+				admin.sendPushNotification(row[parseInt(r, 10)].Registration_Token, "Booking Notification", "Your booking is coming up today!");
 			}
 		}
 	});
