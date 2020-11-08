@@ -26,10 +26,10 @@ function sendPushNotification(regToken, notificationTitle, notificationBody) {
   admin.messaging().sendToDevice(regToken, messageNotification, notificationOptions)
 	.then((response) => {
     // Response is a message ID string.
-    courtsLogger.info("Successfully sent message:", response);
+    firebaseLogger.info("Successfully sent message:", response);
 	})
 	.catch((error) => {
-    courtsLogger.error("Error sending message:", error);
+    firebaseLogger.error("Error sending message:", error);
   });
   
 }
