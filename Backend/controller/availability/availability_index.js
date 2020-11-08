@@ -74,36 +74,7 @@ router.get("/:id", (req, res) => {
 		}
 
 		dayOfWeek = dummyFunction(result);
-		for (var entry in result) {
-			if (Object.prototype.hasOwnProperty.call(result, entry)) {
-				// The first entry does not need to be compared to anything
-				if (entry === 0) {
-					day = result[entry].day;
-					hours.push(result[entry].hour);
-				} 
-				// If the current day is the same as the last, add the hour to the array
-				else if (day === result[entry].day) {
-					hours.push(result[entry].hour);
-				} 
-				// If the current day is different to the last, add the array of the last day and reset
-				else {
-					dayOfWeek.push({"day": day, "hours": hours});
-					hours = [result[entry].hour];
-					// hours.push(result[entry].hour);
-					day = result[entry].day;
-				}
-			}
-		}
-
-		// Check if no days were added (No data available)
-		if (day === -1) {
-			res.send(dayOfWeek);
-		} 
-		// Add the last day of hours
-		else { 
-			dayOfWeek.push({"day": day, "hours": hours});
-			res.send(dayOfWeek);
-		}
+		res.send(dayOfWeek);
 	});
 });
 
