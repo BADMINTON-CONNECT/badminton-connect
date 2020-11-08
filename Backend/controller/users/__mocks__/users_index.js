@@ -1,4 +1,3 @@
-const jest = require("jest");
 const users = jest.createMockFromModule("./users_index");
 
 
