@@ -37,7 +37,7 @@ function dummyFunction(result) {
 		} 
 		// If the current day is different to the last, add the array of the last day and reset
 		else {
-			dayOfWeek.push({"day": day, "hours": hours});
+			dayOfWeek.push({day, hours});
 			hours = [result[parseInt(entry, 10)].hour];
 			// hours.push(result[entry].hour);
 			day = result[parseInt(entry, 10)].day;
@@ -103,11 +103,11 @@ router.post("/:id", (req, res) => {
 			for(var day in body.hours_available) {
 				if (Object.prototype.hasOwnProperty.call(body.hours_available, day)) {
 					
-					for(var hour in body.hours_available[day].hour) {
-						if (Object.prototype.hasOwnProperty.call(body.hours_available[day].hour, hour)) {
+					for(var hour in body.hours_available[parseInt(day, 10)].hour) {
+						if (Object.prototype.hasOwnProperty.call(body.hours_available[parseInt(day, 10)].hour, hour)) {
 
-							db.query(sqlIns, [req.params.id, body.hours_available[day].day,
-								body.hours_available[day].hour[hour], row[0].skill_level, row[0].location_x,
+							db.query(sqlIns, [req.params.id, body.hours_available[parseInt(day, 10)].day,
+								body.hours_available[parseInt(day, 10)].hour[parseInt(hour, 10)], row[0].skill_level, row[0].location_x,
 								row[0].location_y, row[0].distance_preference], (err, result) => {
 								if (err) {
 									throw err;
