@@ -197,21 +197,21 @@ router.get("/top10/:id", (req, res) => {
 					consecutive = 1;
 				} 
 				// Check for when the current user is different, then calculate their score
-				else if (result[entry].matched_player !== lastUser) {
+				else if (result[parseInt(entry, 10)].matched_player !== lastUser) {
 					// Multiply the total points from all matching hours, and multiply it to the skill multiplier
 					matchPoints[index].score *= (pointsTotal + consecScore(consecutive));
 					// Reset points and consecutive hours
 					pointsTotal = 0;
 					consecutive = 1;
 					// Add the next user to matchPoints and increment index for that array
-					matchPoints.push({"id": result[entry].matched_player, "score": skillMultiplier(result[entry].skill_diff)});
-					lastUser = result[entry].matched_player;
+					matchPoints.push({"id": result[parseInt(entry, 10)].matched_player, "score": skillMultiplier(result[parseInt(entry, 10)].skill_diff)});
+					lastUser = result[parseInt(entry, 10)].matched_player;
 					index++;
 				} 
 				else {
 					
 					// Check if the day has changed or the hours are no longer consecutive
-					if (result[entry-1].day !== result[entry].day || (result[entry-1].hour + 1) !== result[entry].hour) {
+					if (result[parseInt(entry, 10)-1].day !== result[parseInt(entry, 10)].day || (result[parseInt(entry, 10)-1].hour + 1) !== result[parseInt(entry, 10)].hour) {
 						// Calculate the score for that number of consecutive hours and reset consecutive
 						pointsTotal += consecScore(consecutive);
 						consecutive = 1;
