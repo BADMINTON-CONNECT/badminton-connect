@@ -50,7 +50,7 @@ function dummyFunction(result) {
 	} 
 	// Add the last day of hours
 	else { 
-		dayOfWeek.push({"day": day, "hours": hours});
+		dayOfWeek.push({day, hours});
 		return dayOfWeek;
 	}
 }
