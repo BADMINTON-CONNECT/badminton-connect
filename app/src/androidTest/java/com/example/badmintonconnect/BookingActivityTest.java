@@ -42,7 +42,7 @@ public class BookingActivityTest {
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void bookingActivityTest() {
+    public void assertBookingValidTest() {
         ViewInteraction appCompatImageButton = onView(
                 allOf(withId(R.id.imageButtonBooking),
                         isDisplayed()));
@@ -106,7 +106,6 @@ public class BookingActivityTest {
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         textView2.check(matches(withText(containsString("Time Slot 1: 1"))));
-        assert(!textView2.equals(textView));
     }
 
     private static Matcher<View> childAtPosition(
