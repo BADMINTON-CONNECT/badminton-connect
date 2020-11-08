@@ -20,6 +20,43 @@ router.get("/", (req, res) => {
 	});
 });
 
+function dummyFunction(result) {
+	var dayOfWeek = [];
+	var hours = [];
+	var day = -1;
+
+	for (var entry in result) {
+		if (Object.prototype.hasOwnProperty.call(result, entry)) {
+			// The first entry does not need to be compared to anything
+			if (entry === 0) {
+				day = result[entry].day;
+				hours.push(result[entry].hour);
+			} 
+			// If the current day is the same as the last, add the hour to the array
+			else if (day === result[entry].day) {
+				hours.push(result[entry].hour);
+			} 
+			// If the current day is different to the last, add the array of the last day and reset
+			else {
+				dayOfWeek.push({"day": day, "hours": hours});
+				hours = [result[entry].hour];
+				// hours.push(result[entry].hour);
+				day = result[entry].day;
+			}
+		}
+	}
+
+	// Check if no days were added (No data available)
+	if (day === -1) {
+		return dayOfWeek;
+	} 
+	// Add the last day of hours
+	else { 
+		dayOfWeek.push({"day": day, "hours": hours});
+		return dayOfWeek;
+	}
+}
+
 /*
 	Request to see the availability from a select user.
 	Front end does not handle duplicates and it's too much work to handle them
@@ -30,14 +67,13 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
 	const sql = "SELECT DISTINCT day, hour FROM availability WHERE user_id = ? ORDER BY day asc, hour asc";
 	var dayOfWeek = [];
-	var hours = [];
-	var day = -1;
 
 	db.query(sql, [req.params.id], (err, result) => {
 		if (err) {
 			throw err;
 		}
 
+		dayOfWeek = dummyFunction(result);
 		for (var entry in result) {
 			if (Object.prototype.hasOwnProperty.call(result, entry)) {
 				// The first entry does not need to be compared to anything
@@ -114,7 +150,6 @@ router.post("/:id", (req, res) => {
 			}
 		});
 	});
-
 	res.send("Success");
 });
 
