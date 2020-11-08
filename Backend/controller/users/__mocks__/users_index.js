@@ -1,4 +1,3 @@
-import {jest} from "@jest/globals";
 const users = jest.createMockFromModule("./users_index");
 
 
