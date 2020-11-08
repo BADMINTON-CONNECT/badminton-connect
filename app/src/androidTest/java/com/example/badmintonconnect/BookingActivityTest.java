@@ -18,7 +18,6 @@ import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.Assert;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -107,7 +106,7 @@ public class BookingActivityTest {
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         textView2.check(matches(withText(containsString("Time Slot 1: 1"))));
-        org.junit.Assert.assertNotNull(textView2);
+        assert(!textView2.equals(textView));
     }
 
     private static Matcher<View> childAtPosition(
