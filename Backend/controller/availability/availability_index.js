@@ -28,19 +28,19 @@ function dummyFunction(result) {
 	for (var entry in result) {
 		// The first entry does not need to be compared to anything
 		if (entry === 0) {
-			day = result[entry].day;
-			hours.push(result[entry].hour);
+			day = result[parseInt(entry)].day;
+			hours.push(result[parseInt(entry)].hour);
 		} 
 		// If the current day is the same as the last, add the hour to the array
-		else if (day === result[entry].day) {
-			hours.push(result[entry].hour);
+		else if (day === result[parseInt(entry)].day) {
+			hours.push(result[parseInt(entry)].hour);
 		} 
 		// If the current day is different to the last, add the array of the last day and reset
 		else {
 			dayOfWeek.push({"day": day, "hours": hours});
-			hours = [result[entry].hour];
+			hours = [result[parseInt(entry)].hour];
 			// hours.push(result[entry].hour);
-			day = result[entry].day;
+			day = result[parseInt(entry)].day;
 		}
 	}
 
