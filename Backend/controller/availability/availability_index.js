@@ -74,20 +74,24 @@ router.get("/:id", (req, res) => {
 	});
 });
 
-function dummyFunction2(body, req, res) {
+function dummyFunction2(body, req, row, res) {
 	const sqlIns = "INSERT INTO availability (user_id,day,hour,skill,location_x,location_y,max_dist) VALUES (?,?,?,?,?,?,?)";
 	// For each hour given, make an entry into the database
 	for(var day in body.hours_available) {
-					
-		for(var hour in body.hours_available[parseInt(day, 10)].hour) {
+		if (Object.prototype.hasOwnProperty.call(body.hours_available, day)) {
+			
+			for(var hour in body.hours_available[parseInt(day, 10)].hour) {
+				if (Object.prototype.hasOwnProperty.call(body.hours_available[parseInt(day, 10)].hour, hour)) {
 
-			db.query(sqlIns, [req.params.id, body.hours_available[parseInt(day, 10)].day,
-				body.hours_available[parseInt(day, 10)].hour[parseInt(hour, 10)], row[0].skill_level, row[0].location_x,
-				row[0].location_y, row[0].distance_preference], (err, result) => {
-				if (err) {
-					throw err;
+					db.query(sqlIns, [req.params.id, body.hours_available[parseInt(day, 10)].day,
+						body.hours_available[parseInt(day, 10)].hour[parseInt(hour, 10)], row[0].skill_level, row[0].location_x,
+						row[0].location_y, row[0].distance_preference], (err, result) => {
+						if (err) {
+							throw err;
+						}
+					});
 				}
-			});
+			}
 		}
 	}
 	res.send("Success");
@@ -114,7 +118,7 @@ router.post("/:id", (req, res) => {
 			if (err) {
 				throw err;
 			}
-			dummyFunction2(body, req, res);
+			dummyFunction2(body, req, row, res);
 			//////////////////////////////////////
 		});
 	});
