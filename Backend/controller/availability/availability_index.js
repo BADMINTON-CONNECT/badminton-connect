@@ -178,6 +178,24 @@ function formatResult(matchPoints, index, pointsTotal, consecutive, res) {
 	}
 }
 
+function checkDayChange(result, entry, pointsTotal, consecutive) {
+
+	// Check if the day has changed or the hours are no longer consecutive
+	if (result[parseInt(entry, 10)-1].day !== result[parseInt(entry, 10)].day || (result[parseInt(entry, 10)-1].hour + 1) !== result[parseInt(entry, 10)].hour) {
+		// Calculate the score for that number of consecutive hours and reset consecutive
+		pointsTotal += consecScore(consecutive);
+		consecutive = 1;
+	} 
+	// If we got here, that means the hours were consecutive
+	else {
+		consecutive++;
+	}
+
+	var returnVal = [pointsTotal, consecutive];
+	return returnVal;
+
+}
+
 // From all players find the 10 (currently top 3) players that are the most compatible with the user
 router.get("/top10/:id", (req, res) => {
 
@@ -249,22 +267,6 @@ router.get("/top10/:id", (req, res) => {
 	});
 });
 
-function checkDayChange(result, entry, pointsTotal, consecutive) {
 
-	// Check if the day has changed or the hours are no longer consecutive
-	if (result[parseInt(entry, 10)-1].day !== result[parseInt(entry, 10)].day || (result[parseInt(entry, 10)-1].hour + 1) !== result[parseInt(entry, 10)].hour) {
-		// Calculate the score for that number of consecutive hours and reset consecutive
-		pointsTotal += consecScore(consecutive);
-		consecutive = 1;
-	} 
-	// If we got here, that means the hours were consecutive
-	else {
-		consecutive++;
-	}
-
-	returnVal = [pointsTotal, consecutive];
-	return returnVal;
-
-}
 
 module.exports = router;
