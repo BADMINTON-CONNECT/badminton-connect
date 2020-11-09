@@ -196,6 +196,43 @@ function checkDayChange(result, entry, pointsTotal, consecutive) {
 
 }
 
+function complexLogic(entry, matchPoints, result, lastUser, index, consecutive, pointsTotal) {
+
+	// Skip calculations on the first entry
+	if (entry === 0) {
+		// Set the first user up on the matchPoints array, which will be used to find the top 10 scores
+		// skill_muliplier will get their multiplier based on how different their skill levels are
+		matchPoints.push({"id": result[0].matched_player, "score": skillMultiplier(result[0].skill_diff)});
+		lastUser = result[0].matched_player;
+		index++;
+		consecutive = 1;
+	} 
+	// Check for when the current user is different, then calculate their score
+	else if (result[parseInt(entry, 10)].matched_player !== lastUser) {
+		// Multiply the total points from all matching hours, and multiply it to the skill multiplier
+		matchPoints[parseInt(index, 10)].score *= (pointsTotal + consecScore(consecutive));
+		// Reset points and consecutive hours
+		pointsTotal = 0;
+		consecutive = 1;
+		// Add the next user to matchPoints and increment index for that array
+		matchPoints.push({"id": result[parseInt(entry, 10)].matched_player, "score": skillMultiplier(result[parseInt(entry, 10)].skill_diff)});
+		lastUser = result[parseInt(entry, 10)].matched_player;
+		index++;
+	} 
+	else {
+
+		var returnVal = checkDayChange(result, entry, pointsTotal, consecutive);
+
+		pointsTotal = returnVal[0];
+		consecutive = returnVal[1];
+		
+	}
+
+	var bigReturn = [matchPoints, lastUser, index, consecutive, pointsTotal];
+
+	return bigReturn;
+}
+
 // From all players find the 10 (currently top 3) players that are the most compatible with the user
 router.get("/top10/:id", (req, res) => {
 
@@ -229,37 +266,15 @@ router.get("/top10/:id", (req, res) => {
 
 		for(var entry in result) {
 			if (Object.prototype.hasOwnProperty.call(result, entry)) {
+				// var bigReturn = [matchPoints, lastUser, index, consecutive, pointsTotal];
+				var returnVal = complexLogic(entry, matchPoints, result, lastUser, index, consecutive, pointsTotal);
 
-				// Skip calculations on the first entry
-				if (entry === 0) {
-					// Set the first user up on the matchPoints array, which will be used to find the top 10 scores
-					// skill_muliplier will get their multiplier based on how different their skill levels are
-					matchPoints.push({"id": result[0].matched_player, "score": skillMultiplier(result[0].skill_diff)});
-					lastUser = result[0].matched_player;
-					index++;
-					consecutive = 1;
-				} 
-				// Check for when the current user is different, then calculate their score
-				else if (result[parseInt(entry, 10)].matched_player !== lastUser) {
-					// Multiply the total points from all matching hours, and multiply it to the skill multiplier
-					matchPoints[parseInt(index, 10)].score *= (pointsTotal + consecScore(consecutive));
-					// Reset points and consecutive hours
-					pointsTotal = 0;
-					consecutive = 1;
-					// Add the next user to matchPoints and increment index for that array
-					matchPoints.push({"id": result[parseInt(entry, 10)].matched_player, "score": skillMultiplier(result[parseInt(entry, 10)].skill_diff)});
-					lastUser = result[parseInt(entry, 10)].matched_player;
-					index++;
-				} 
-				else {
+				matchPoints = returnVal[0];
+				lastUser = returnVal[1];
+				index = returnVal[2];
+				consecutive = returnVal[3];
+				pointsTotal = returnVal[4];
 
-					var returnVal = checkDayChange(result, entry, pointsTotal, consecutive);
-
-					pointsTotal = returnVal[0];
-					consecutive = returnVal[1];
-					
-					
-				}
 			}
 		}
 
