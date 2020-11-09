@@ -234,17 +234,13 @@ router.get("/top10/:id", (req, res) => {
 					index++;
 				} 
 				else {
+
+					var returnVal = checkDayChange(result, entry, pointsTotal, consecutive);
+
+					pointsTotal = returnVal[0];
+					consecutive = returnVal[1];
 					
-					// Check if the day has changed or the hours are no longer consecutive
-					if (result[parseInt(entry, 10)-1].day !== result[parseInt(entry, 10)].day || (result[parseInt(entry, 10)-1].hour + 1) !== result[parseInt(entry, 10)].hour) {
-						// Calculate the score for that number of consecutive hours and reset consecutive
-						pointsTotal += consecScore(consecutive);
-						consecutive = 1;
-					} 
-					// If we got here, that means the hours were consecutive
-					else {
-						consecutive++;
-					}
+					
 				}
 			}
 		}
@@ -252,5 +248,23 @@ router.get("/top10/:id", (req, res) => {
 		formatResult(matchPoints, index, pointsTotal, consecutive, res);
 	});
 });
+
+function checkDayChange(result, entry, pointsTotal, consecutive) {
+
+	// Check if the day has changed or the hours are no longer consecutive
+	if (result[parseInt(entry, 10)-1].day !== result[parseInt(entry, 10)].day || (result[parseInt(entry, 10)-1].hour + 1) !== result[parseInt(entry, 10)].hour) {
+		// Calculate the score for that number of consecutive hours and reset consecutive
+		pointsTotal += consecScore(consecutive);
+		consecutive = 1;
+	} 
+	// If we got here, that means the hours were consecutive
+	else {
+		consecutive++;
+	}
+
+	returnVal = [pointsTotal, consecutive];
+	return returnVal;
+
+}
 
 module.exports = router;
