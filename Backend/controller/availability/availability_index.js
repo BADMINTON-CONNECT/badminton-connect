@@ -154,7 +154,7 @@ function consecScore(consecutive) {
 	return a * Math.log10(consecutive - b) + c;
 }
 
-function formatResult(matchPoints, index, res) {
+function formatResult(matchPoints, index, pointsTotal, res) {
 	// Check if there was no data available/no matches
 	if (index === -1) {
 		// Send empty array
