@@ -154,7 +154,7 @@ function consecScore(consecutive) {
 	return a * Math.log10(consecutive - b) + c;
 }
 
-function formatResult(matchPoints, index, res, pointsTotal) {
+function formatResult(matchPoints, index, pointsTotal, consecutive, res) {
 	// Check if there was no data available/no matches
 	if (index === -1) {
 		// Send empty array
@@ -249,7 +249,7 @@ router.get("/top10/:id", (req, res) => {
 			}
 		}
 
-		formatResult(matchPoints, index, res, pointsTotal);
+		formatResult(matchPoints, index, pointsTotal, consecutive, res);
 	});
 });
 
