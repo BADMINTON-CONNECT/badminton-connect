@@ -39,20 +39,17 @@ function dummyFunction(result) {
 		else {
 			dayOfWeek.push({day, hours});
 			hours = [result[parseInt(entry, 10)].hour];
-			// hours.push(result[entry].hour);
 			day = result[parseInt(entry, 10)].day;
+			if (entry == result.length - 1) {
+				dayOfWeek.push({day, hours});
+				return dayOfWeek;
+			}
 		}
 	}
 
 	// Check if no days were added (No data available)
-	if (day === -1) {
-		return dayOfWeek;
-	} 
-	// Add the last day of hours
-	else { 
-		dayOfWeek.push({day, hours});
-		return dayOfWeek;
-	}
+	return dayOfWeek;
+	
 }
 
 /*
