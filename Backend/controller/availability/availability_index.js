@@ -74,6 +74,25 @@ router.get("/:id", (req, res) => {
 	});
 });
 
+function dummyFunction2(body, req, res) {
+	const sqlIns = "INSERT INTO availability (user_id,day,hour,skill,location_x,location_y,max_dist) VALUES (?,?,?,?,?,?,?)";
+	// For each hour given, make an entry into the database
+	for(var day in body.hours_available) {
+					
+		for(var hour in body.hours_available[parseInt(day, 10)].hour) {
+
+			db.query(sqlIns, [req.params.id, body.hours_available[parseInt(day, 10)].day,
+				body.hours_available[parseInt(day, 10)].hour[parseInt(hour, 10)], row[0].skill_level, row[0].location_x,
+				row[0].location_y, row[0].distance_preference], (err, result) => {
+				if (err) {
+					throw err;
+				}
+			});
+		}
+	}
+	res.send("Success");
+}
+
 /*
 	Post request to update user availability. It is expensive to compare their new
 	schedule to their old schedule, so instead of doing that we delete the old schedule
@@ -81,7 +100,6 @@ router.get("/:id", (req, res) => {
 */
 router.post("/:id", (req, res) => {
 	const sqlGet = "SELECT * FROM users WHERE user_id = ?";
-	const sqlIns = "INSERT INTO availability (user_id,day,hour,skill,location_x,location_y,max_dist) VALUES (?,?,?,?,?,?,?)";
 	const sqlDel = "DELETE FROM availability WHERE user_id = ?";
 	var body = req.body;
 
@@ -96,28 +114,10 @@ router.post("/:id", (req, res) => {
 			if (err) {
 				throw err;
 			}
-
-			// For each hour given, make an entry into the database
-			for(var day in body.hours_available) {
-				if (Object.prototype.hasOwnProperty.call(body.hours_available, day)) {
-					
-					for(var hour in body.hours_available[parseInt(day, 10)].hour) {
-						if (Object.prototype.hasOwnProperty.call(body.hours_available[parseInt(day, 10)].hour, hour)) {
-
-							db.query(sqlIns, [req.params.id, body.hours_available[parseInt(day, 10)].day,
-								body.hours_available[parseInt(day, 10)].hour[parseInt(hour, 10)], row[0].skill_level, row[0].location_x,
-								row[0].location_y, row[0].distance_preference], (err, result) => {
-								if (err) {
-									throw err;
-								}
-							});
-						}
-					}
-				}
-			}
+			dummyFunction2(body, req, res);
+			//////////////////////////////////////
 		});
 	});
-	res.send("Success");
 });
 
 /* 	Function user for calculating the skill multiplier
