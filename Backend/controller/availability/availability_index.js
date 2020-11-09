@@ -66,6 +66,9 @@ router.get("/:id", (req, res) => {
 			throw err;
 		}
 
+		if (result.length === 0) {
+			res.send(dayOfWeek);
+		}
 		dayOfWeek = dummyFunction(result);
 		res.send(dayOfWeek);
 	});
