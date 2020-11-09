@@ -40,15 +40,13 @@ function dummyFunction(result) {
 			dayOfWeek.push({day, hours});
 			hours = [result[parseInt(entry, 10)].hour];
 			day = result[parseInt(entry, 10)].day;
-			if (entry == result.length - 1) {
-				dayOfWeek.push({day, hours});
-				return dayOfWeek;
-			}
 		}
 	}
-
-	// Check if no days were added (No data available)
+	dayOfWeek.push({day, hours});
 	return dayOfWeek;
+
+	// // Check if no days were added (No data available)
+	// return dayOfWeek;
 	
 }
 
