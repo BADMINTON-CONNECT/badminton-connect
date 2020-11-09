@@ -154,6 +154,30 @@ function consecScore(consecutive) {
 	return a * Math.log10(consecutive - b) + c;
 }
 
+function formatResult(matchPoints, index, res) {
+	// Check if there was no data available/no matches
+	if (index === -1) {
+		// Send empty array
+		res.send(matchPoints);
+	} 
+	else {
+		// Add the points for the last user since the loop will break before it does
+		matchPoints[parseInt(index, 10)].score *= (pointsTotal + consecScore(consecutive));
+
+		// Sort the array in decending order, leaving the the highest score at the lowest index
+		matchPoints.sort(function(a, b) {
+			return b.score - a.score;
+		});
+
+		// Remove extra users
+		while (matchPoints.length > 3) {
+			matchPoints.pop();
+		}
+
+		res.send(matchPoints);
+	}
+}
+
 // From all players find the 10 (currently top 3) players that are the most compatible with the user
 router.get("/top10/:id", (req, res) => {
 
@@ -225,27 +249,7 @@ router.get("/top10/:id", (req, res) => {
 			}
 		}
 
-		// Check if there was no data available/no matches
-		if (index === -1) {
-			// Send empty array
-			res.send(matchPoints);
-		} 
-		else {
-			// Add the points for the last user since the loop will break before it does
-			matchPoints[parseInt(index, 10)].score *= (pointsTotal + consecScore(consecutive));
-
-			// Sort the array in decending order, leaving the the highest score at the lowest index
-			matchPoints.sort(function(a, b) {
-				return b.score - a.score;
-			});
-
-			// Remove extra users
-			while (matchPoints.length > 3) {
-				matchPoints.pop();
-			}
-
-			res.send(matchPoints);
-		}
+		formatResult(matchPoints, index, pointsTotal, res);
 	});
 });
 
