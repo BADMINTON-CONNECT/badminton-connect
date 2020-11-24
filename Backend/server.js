@@ -39,5 +39,5 @@ app.use("/availability", availabilityController);
 
 app.listen(port, () => {
   serverLogger.info(`Server app listening at http://40.88.148.58:${port}`);
-  //console.log(`Server app listening at http://40.88.148.58:${port}`)
+  //console.log(`Server app listening at http://40.88.148.58:${port}`);
 });
